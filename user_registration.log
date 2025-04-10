@@ -1,0 +1,10 @@
+[2024-10-11 15:43:01] [INFO] Attempting to send email to: sabiranouar00@gmail.com
+[2024-10-11 15:43:04] [INFO] Email sent successfully to: sabiranouar00@gmail.com
+[2024-10-12 17:06:09] [INFO] Attempting to send email to: sabiranouar99@gmail.com
+[2024-10-12 17:06:14] [INFO] Email sent successfully to: sabiranouar99@gmail.com
+[2024-12-30 16:14:28] [INFO] Attempting to send email to: dracula@gmail.com
+[2024-12-30 16:14:30] [ERROR] Failed to send email to: dracula@gmail.com. Error: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set()
+[2024-12-31 16:29:24] [INFO] Attempting to send email to: molina@gmail.com
+[2024-12-31 16:29:26] [ERROR] Failed to send email to: molina@gmail.com. Error: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set()
+[2024-12-31 16:32:42] [INFO] Attempting to send email to: molina00@gmail.com
+[2024-12-31 16:33:41] [INFO] Attempting to send email to: molina00@gmail.com

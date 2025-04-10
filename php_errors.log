@@ -1,0 +1,14 @@
+[31-Dec-2024 16:36:45 UTC] Request data: 
+[31-Dec-2024 16:36:45 UTC] Request data: {"email":"molina00@gmail.com","password":"Molina@00","username":"molina00","confirmPassword":"Molina@00","created_at":"2024-12-31T16:36:45.307Z"}
+[31-Dec-2024 16:36:45 UTC] Error: [2] Undefined array key "app_url" in C:\xampp2\htdocs\api\user_register.php on line 146
+[31-Dec-2024 16:36:50 UTC] Request data: 
+[31-Dec-2024 16:36:50 UTC] Request data: {"email":"molina00@gmail.com","password":"Molina@00","username":"molina00","confirmPassword":"Molina@00","created_at":"2024-12-31T16:36:50.606Z"}
+[31-Dec-2024 16:36:50 UTC] Error: Email already registered
+[31-Dec-2024 16:37:21 UTC] Request data: 
+[31-Dec-2024 16:37:21 UTC] Request data: {"email":"molina@gmail.com","password":"Molina@00","username":"molina","confirmPassword":"Molina@00","created_at":"2024-12-31T16:37:21.500Z"}
+[31-Dec-2024 16:37:21 UTC] Error: [2] Undefined array key "app_url" in C:\xampp2\htdocs\api\user_register.php on line 146
+[31-Dec-2024 16:40:16 UTC] Request data: 
+[31-Dec-2024 16:40:16 UTC] Request data: {"email":"molina@gmail.com","password":"Molina@00","username":"molina","confirmPassword":"Molina@00","created_at":"2024-12-31T16:40:15.345Z"}
+[31-Dec-2024 16:40:16 UTC] Error: [2] Undefined array key "app_url" in C:\xampp2\htdocs\api\user_register.php on line 146
+[08-Jan-2025 15:47:25 UTC] Tournament API Error: Incoming request data: {"id":11,"nom_des_qualifications":"New_balance","competition_type":"Free Fire","participation_type":"team","nombre_maximum":32,"slug":"---uj--","start_date":"2025-02-28","end_date":"2025-03-06","status":"Ouvert aux inscriptions","description_des_qualifications":"-","rules":"--","prize_pool":"5000.00","format_des_qualifications":"Single Elimination","type_de_match":"-","type_de_jeu":"-","image":"/uploads/677e9101a24a6_téléchargement.jpeg","created_at":"2025-01-08 14:51:45","updated_at":"2025-01-08 14:51:45"}
+[08-Jan-2025 15:47:25 UTC] Tournament API Error: Database error: SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: NO)

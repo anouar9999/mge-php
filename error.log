@@ -1,0 +1,207 @@
+[31-Dec-2024 16:41:57 UTC] Incoming request: Array
+(
+)
+
+[31-Dec-2024 16:41:57 UTC] Raw input: 
+[31-Dec-2024 16:41:57 UTC] Incoming request: Array
+(
+)
+
+[31-Dec-2024 16:41:57 UTC] Raw input: {"email":"molina@gmail.com","password":"Molina@00","username":"molina","confirmPassword":"Molina@00","created_at":"2024-12-31T16:41:57.441Z"}
+[31-Dec-2024 16:41:57 UTC] PHP Warning:  Undefined variable $db_host in C:\xampp2\htdocs\api\user_register.php on line 28
+[31-Dec-2024 16:41:57 UTC] PHP Warning:  Undefined variable $db_name in C:\xampp2\htdocs\api\user_register.php on line 28
+[31-Dec-2024 16:41:57 UTC] PHP Warning:  Undefined variable $db_user in C:\xampp2\htdocs\api\user_register.php on line 28
+[31-Dec-2024 16:41:57 UTC] PHP Warning:  Undefined variable $db_pass in C:\xampp2\htdocs\api\user_register.php on line 28
+[31-Dec-2024 16:41:57 UTC] Database error: SQLSTATE[HY000] [1045] Access denied for user ''@'localhost' (using password: NO)
+[31-Dec-2024 16:42:39 UTC] Incoming request: Array
+(
+)
+
+[31-Dec-2024 16:42:39 UTC] Raw input: 
+[31-Dec-2024 16:42:39 UTC] Incoming request: Array
+(
+)
+
+[31-Dec-2024 16:42:39 UTC] Raw input: {"email":"molina@gmail.com","password":"Molina@00","username":"molina","confirmPassword":"Molina@00","created_at":"2024-12-31T16:42:39.390Z"}
+[31-Dec-2024 18:17:59 UTC] Incoming request: Array
+(
+)
+
+[31-Dec-2024 18:17:59 UTC] Raw input: 
+[31-Dec-2024 18:17:59 UTC] Incoming request: Array
+(
+)
+
+[31-Dec-2024 18:17:59 UTC] Raw input: {"username":"ignasio","email":"ignasio@gmail.com","password":"Dimaraja@00","confirmPassword":"Dimaraja@00","avatar":"","bio":"","is_verified":1,"created_at":"2024-12-31T18:17:59.600Z"}
+[31-Dec-2024 22:03:07 UTC] Incoming request: Array
+(
+    [username] => iwni
+    [email] => inwi@gmail.com
+    [password] => Vamosrca@00
+    [bio] => nyunyun
+    [is_verified] => 1
+    [created_at] => 2024-12-31T22:03:07.445Z
+)
+
+[31-Dec-2024 22:03:07 UTC] Raw input: 
+[31-Dec-2024 22:07:05 UTC] Incoming request: Array
+(
+    [username] => dolino
+    [email] => dolino@gmail.com
+    [password] => Dolino@00
+    [bio] => frtttt
+    [is_verified] => 1
+    [created_at] => 2024-12-31T22:07:05.023Z
+)
+
+[31-Dec-2024 22:07:05 UTC] Raw input: 
+[31-Dec-2024 22:10:42 UTC] Incoming request: Array
+(
+    [username] => Moulchi
+    [email] => moulchi@gmail.com
+    [password] => Azerty@00
+    [bio] => yes
+    [is_verified] => 1
+    [created_at] => 2024-12-31T22:10:42.650Z
+)
+
+[31-Dec-2024 22:10:42 UTC] Raw input: 
+[31-Dec-2024 22:10:42 UTC] Database error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'participant' in 'field list'
+[31-Dec-2024 22:11:13 UTC] Incoming request: Array
+(
+    [username] => Moulchi
+    [email] => moulchi@gmail.com
+    [password] => Azerty@00
+    [bio] => yes
+    [is_verified] => 1
+    [created_at] => 2024-12-31T22:11:13.892Z
+)
+
+[31-Dec-2024 22:11:13 UTC] Raw input: 
+[31-Dec-2024 22:11:14 UTC] Database error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'participant' in 'field list'
+[31-Dec-2024 22:13:19 UTC] Incoming request: Array
+(
+    [username] => Moulchi
+    [email] => moulchi@gmail.com
+    [password] => Azerty@00
+    [bio] => yes
+    [is_verified] => 1
+    [created_at] => 2024-12-31T22:13:19.538Z
+)
+
+[31-Dec-2024 22:13:19 UTC] Raw input: 
+[03-Jan-2025 15:52:43 UTC] Incoming request: Array
+(
+    [username] => inwi
+    [email] => inwi@gmail.com
+    [password] => Inwi@000
+    [bio] => 
+    [is_verified] => 1
+    [created_at] => 2025-01-03T15:52:43.611Z
+)
+
+[03-Jan-2025 15:52:43 UTC] Raw input: 
+[03-Jan-2025 15:52:43 UTC] Error: Email or username already exists
+[03-Jan-2025 15:52:51 UTC] Incoming request: Array
+(
+    [username] => inwi
+    [email] => inwi00@gmail.com
+    [password] => Inwi@000
+    [bio] => 
+    [is_verified] => 1
+    [created_at] => 2025-01-03T15:52:51.709Z
+)
+
+[03-Jan-2025 15:52:51 UTC] Raw input: 
+[08-Jan-2025 15:49:24 UTC] Received data: {"id":11,"nom_des_qualifications":"new-balance","competition_type":"Free Fire","participation_type":"team","nombre_maximum":32,"slug":"---uj--","start_date":"2025-02-28","end_date":"2025-03-06","status":"Ouvert aux inscriptions","description_des_qualifications":"-","rules":"--","prize_pool":"5000.00","format_des_qualifications":"Single Elimination","type_de_match":"-","type_de_jeu":"-","image":"/uploads/677e9101a24a6_téléchargement.jpeg","created_at":"2025-01-08 14:51:45","updated_at":"2025-01-08 14:51:45"}
+[08-Jan-2025 15:49:24 UTC] PHP Warning:  Undefined variable $db_config in C:\xampp2\htdocs\api\edit_tournament.php on line 38
+[08-Jan-2025 15:49:24 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\edit_tournament.php on line 38
+[08-Jan-2025 15:49:24 UTC] PHP Warning:  Undefined variable $db_config in C:\xampp2\htdocs\api\edit_tournament.php on line 38
+[08-Jan-2025 15:49:24 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\edit_tournament.php on line 38
+[08-Jan-2025 15:49:24 UTC] PHP Warning:  Undefined variable $db_config in C:\xampp2\htdocs\api\edit_tournament.php on line 39
+[08-Jan-2025 15:49:24 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\edit_tournament.php on line 39
+[08-Jan-2025 15:49:24 UTC] PHP Warning:  Undefined variable $db_config in C:\xampp2\htdocs\api\edit_tournament.php on line 40
+[08-Jan-2025 15:49:24 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\edit_tournament.php on line 40
+[08-Jan-2025 15:49:24 UTC] Database Error: SQLSTATE[HY000] [1045] Access denied for user ''@'localhost' (using password: YES)
+[08-Jan-2025 15:50:13 UTC] Database Error: SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: NO)
+[13-Jan-2025 14:37:13 UTC] Incoming request: Array
+(
+    [username] => leao
+    [email] => leao@gmail.com
+    [password] => Leao@000
+    [bio] => 
+    [is_verified] => 1
+    [created_at] => 2025-01-13T14:37:13.255Z
+)
+
+[13-Jan-2025 14:37:13 UTC] Raw input: 
+[20-Jan-2025 23:48:17 UTC] Database error occurred
+[21-Jan-2025 00:34:21 UTC] Database error occurred
+[21-Jan-2025 00:37:02 UTC] Database error occurred
+[28-Jan-2025 16:14:37 UTC] Database error occurred
+[28-Jan-2025 16:16:24 UTC] Database error occurred
+[28-Jan-2025 16:34:07 UTC] Database error occurred
+[28-Jan-2025 16:38:28 UTC] Database error occurred
+[28-Jan-2025 16:42:08 UTC] Database error occurred
+[28-Jan-2025 16:46:07 UTC] Database error occurred
+[28-Jan-2025 16:58:19 UTC] Email or username already exists
+[26-Feb-2025 18:09:24 UTC] Processing registration request
+[26-Feb-2025 18:09:24 UTC] Database connection established
+[26-Feb-2025 18:09:24 UTC] Processing form POST data
+[26-Feb-2025 18:09:24 UTC] Validating input data
+[26-Feb-2025 18:09:24 UTC] Input validated for user: sasa
+[26-Feb-2025 18:09:24 UTC] Processing avatar upload
+[26-Feb-2025 18:09:24 UTC] Uploaded file MIME type: image/png
+[26-Feb-2025 18:09:24 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_67bf58d4cd20a.png
+[26-Feb-2025 18:09:24 UTC] Avatar uploaded: /uploads/avatars/avatar_67bf58d4cd20a.png
+[26-Feb-2025 18:09:24 UTC] Checking for existing user with email: sasa@gmail.com or username: sasa
+[26-Feb-2025 18:09:25 UTC] User uniqueness verified
+[26-Feb-2025 18:09:25 UTC] Creating new user: sasa
+[26-Feb-2025 18:09:25 UTC] User table columns: id, username, password, email, type, points, rank, is_verified, verification_token, created_at, bio, avatar, failed_attempts, user_type
+[26-Feb-2025 18:09:25 UTC] User inserted successfully with ID: 52
+[26-Feb-2025 18:09:25 UTC] User created successfully
+[03-Mar-2025 13:43:58 UTC] Processing registration request
+[03-Mar-2025 13:43:58 UTC] Database connection established
+[03-Mar-2025 13:43:58 UTC] Processing form POST data
+[03-Mar-2025 13:43:58 UTC] Validating input data
+[03-Mar-2025 13:43:58 UTC] Input validated for user: lamar
+[03-Mar-2025 13:43:58 UTC] Processing avatar upload
+[03-Mar-2025 13:43:58 UTC] Uploaded file MIME type: image/jpeg
+[03-Mar-2025 13:43:58 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_67c5b21e45b52.jpg
+[03-Mar-2025 13:43:58 UTC] Avatar uploaded: /uploads/avatars/avatar_67c5b21e45b52.jpg
+[03-Mar-2025 13:43:58 UTC] Checking for existing user with email: lamar@gmail.com or username: lamar
+[03-Mar-2025 13:43:58 UTC] User uniqueness verified
+[03-Mar-2025 13:43:58 UTC] Creating new user: lamar
+[03-Mar-2025 13:43:58 UTC] User table columns: id, username, password, email, type, points, rank, is_verified, verification_token, created_at, bio, avatar, failed_attempts, user_type
+[03-Mar-2025 13:43:58 UTC] User inserted successfully with ID: 53
+[03-Mar-2025 13:43:58 UTC] User created successfully
+[23-Mar-2025 15:39:00 UTC] Processing registration request
+[23-Mar-2025 15:39:00 UTC] Database connection established
+[23-Mar-2025 15:39:00 UTC] Processing form POST data
+[23-Mar-2025 15:39:00 UTC] Validating input data
+[23-Mar-2025 15:39:00 UTC] Input validated for user: john
+[23-Mar-2025 15:39:00 UTC] Processing avatar upload
+[23-Mar-2025 15:39:00 UTC] Uploaded file MIME type: image/png
+[23-Mar-2025 15:39:00 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_67e02b14455d5.png
+[23-Mar-2025 15:39:00 UTC] Avatar uploaded: /uploads/avatars/avatar_67e02b14455d5.png
+[23-Mar-2025 15:39:00 UTC] Checking for existing user with email: sabiranouar99@gmail.com or username: john
+[23-Mar-2025 15:39:00 UTC] User uniqueness verified
+[23-Mar-2025 15:39:00 UTC] Creating new user: john
+[23-Mar-2025 15:39:00 UTC] User table columns: id, username, password, email, type, points, rank, is_verified, verification_token, created_at, bio, avatar, failed_attempts, user_type
+[23-Mar-2025 15:39:00 UTC] User inserted successfully with ID: 54
+[23-Mar-2025 15:39:00 UTC] User created successfully
+[08-Apr-2025 13:14:14 UTC] Processing registration request
+[08-Apr-2025 13:14:14 UTC] Database connection established
+[08-Apr-2025 13:14:14 UTC] Processing form POST data
+[08-Apr-2025 13:14:14 UTC] Validating input data
+[08-Apr-2025 13:14:14 UTC] Input validated for user: fishy
+[08-Apr-2025 13:14:14 UTC] Processing avatar upload
+[08-Apr-2025 13:14:14 UTC] Uploaded file MIME type: image/png
+[08-Apr-2025 13:14:14 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_67f521265cd45.png
+[08-Apr-2025 13:14:14 UTC] Avatar uploaded: /uploads/avatars/avatar_67f521265cd45.png
+[08-Apr-2025 13:14:14 UTC] Checking for existing user with email: fishy@gmail.com or username: fishy
+[08-Apr-2025 13:14:14 UTC] User uniqueness verified
+[08-Apr-2025 13:14:14 UTC] Creating new user: fishy
+[08-Apr-2025 13:14:14 UTC] User table columns: id, username, password, email, type, points, rank, is_verified, verification_token, created_at, bio, avatar, failed_attempts, user_type
+[08-Apr-2025 13:14:14 UTC] User inserted successfully with ID: 0
+[08-Apr-2025 13:14:14 UTC] User created successfully
