@@ -155,42 +155,37 @@ function handleTeamMembers($pdo, $method, $requestBody = null)
                     sendResponse(false, null, 'Team not found', 404);
                 }
 
-                // Then get members with their info
+                // Then get members with their info - Updated to match the actual database schema
                 $memberQuery = "
                     SELECT 
                         tm.id,
-                        tm.name,
+                        tm.user_id,
                         tm.role,
-                        tm.rank,
-                        tm.status as member_status,
-                        tm.avatar_url,
-                        u.avatar as user_avatar,
-                        u.id as user_id,
+                        tm.is_captain,
+                        tm.join_date,
+                        u.username,
+                        u.avatar,
                         CASE 
                             WHEN t.owner_id = u.id THEN 'Captain'
+                            WHEN tm.is_captain = 1 THEN 'Captain'
                             ELSE 'Member'
                         END as position
                     FROM team_members tm
                     LEFT JOIN teams t ON tm.team_id = t.id
-                    LEFT JOIN users u ON tm.name = u.username
+                    LEFT JOIN users u ON tm.user_id = u.id
                     WHERE tm.team_id = ?
                     ORDER BY 
                         CASE 
                             WHEN t.owner_id = u.id THEN 0
-                            ELSE 1
+                            WHEN tm.is_captain = 1 THEN 1
+                            ELSE 2
                         END,
-                        tm.created_at DESC
+                        tm.join_date DESC
                 ";
 
                 $memberStmt = $pdo->prepare($memberQuery);
                 $memberStmt->execute([$teamId]);
                 $members = $memberStmt->fetchAll(PDO::FETCH_ASSOC);
-
-                // Process members to ensure avatar is correctly set
-                foreach ($members as &$member) {
-                    $member['avatar'] = $member['user_avatar'] ?? $member['avatar_url'] ?? null;
-                    unset($member['user_avatar'], $member['avatar_url']);
-                }
 
                 // Get total member count
                 $countQuery = "SELECT COUNT(*) FROM team_members WHERE team_id = ?";
@@ -216,23 +211,31 @@ function handleTeamMembers($pdo, $method, $requestBody = null)
             break;
 
         case 'POST':
-            if (!isset($requestBody['team_id'], $requestBody['name'], $requestBody['role'], $requestBody['rank'])) {
+            if (!isset($requestBody['team_id'], $requestBody['user_id'], $requestBody['role'])) {
                 sendResponse(false, null, 'Missing required fields', 400);
             }
 
             try {
+                // Check if the user is already a member
+                $checkQuery = "SELECT id FROM team_members WHERE team_id = ? AND user_id = ?";
+                $checkStmt = $pdo->prepare($checkQuery);
+                $checkStmt->execute([$requestBody['team_id'], $requestBody['user_id']]);
+                
+                if ($checkStmt->rowCount() > 0) {
+                    sendResponse(false, null, 'User is already a member of this team', 400);
+                }
+                
                 $query = "
-                    INSERT INTO team_members (team_id, name, avatar_url, role, rank, status, created_at)
-                    VALUES (?, ?, ?, ?, ?, 'online', NOW())
+                    INSERT INTO team_members (team_id, user_id, role, is_captain, join_date)
+                    VALUES (?, ?, ?, ?, NOW())
                 ";
 
                 $stmt = $pdo->prepare($query);
                 $result = $stmt->execute([
                     $requestBody['team_id'],
-                    $requestBody['name'],
-                    $requestBody['avatar_url'] ?? null,
+                    $requestBody['user_id'],
                     $requestBody['role'],
-                    $requestBody['rank']
+                    $requestBody['is_captain'] ?? 0
                 ]);
 
                 if (!$result) {
