@@ -1,0 +1,130 @@
+[2024-10-11 15:15:17] [INFO] Starting tournament registration process
+[2024-10-11 15:15:17] [INFO] Email sent successfully to: 1
+[2024-10-11 15:15:17] [INFO] Registration completed and confirmation email sent
+[2024-10-11 15:18:38] [INFO] Starting tournament registration process
+[2024-10-11 15:18:38] [INFO] Preparing to send email to: chaos@gmail.com
+[2024-10-11 15:18:38] [INFO] Attempting to send email to: chaos@gmail.com
+[2024-10-11 15:18:38] [INFO] Email sent successfully to: chaos@gmail.com
+[2024-10-11 15:18:38] [INFO] Registration completed and confirmation email sent to: chaos@gmail.com
+[2024-10-11 15:19:38] [INFO] Starting tournament registration process
+[2024-10-11 15:19:38] [INFO] Preparing to send email to: sabiranouar00@gmail.com
+[2024-10-11 15:19:38] [INFO] Attempting to send email to: sabiranouar00@gmail.com
+[2024-10-11 15:19:38] [INFO] Email sent successfully to: sabiranouar00@gmail.com
+[2024-10-11 15:19:38] [INFO] Registration completed and confirmation email sent to: sabiranouar00@gmail.com
+[2024-10-11 15:22:16] [INFO] Starting tournament registration process
+[2024-10-11 15:22:16] [INFO] Preparing to send email to: sabiranouar00@gmail.com
+[2024-10-11 15:22:16] [INFO] Attempting to send email to: sabiranouar00@gmail.com
+[2024-10-11 15:22:16] [INFO] Email sent successfully to: sabiranouar00@gmail.com
+[2024-10-11 15:22:16] [INFO] Registration completed and confirmation email sent to: sabiranouar00@gmail.com
+[2024-10-11 15:35:13] [INFO] Starting tournament registration process
+[2024-10-11 15:35:13] [INFO] Preparing to send email to: sabiranouar00@gmail.com
+[2024-10-11 15:35:13] [INFO] Attempting to send email to: sabiranouar00@gmail.com
+[2024-10-11 15:35:16] [INFO] Email sent successfully to: sabiranouar00@gmail.com
+[2024-10-11 15:35:16] [INFO] Registration completed and confirmation email sent to: sabiranouar00@gmail.com
+[2024-10-11 15:38:48] [INFO] Starting tournament registration process
+[2024-10-11 15:38:48] [INFO] Preparing to send email to: sabiranouar00@gmail.com
+[2024-10-11 15:38:48] [INFO] Attempting to send email to: sabiranouar00@gmail.com
+[2024-10-11 15:38:51] [INFO] Email sent successfully to: sabiranouar00@gmail.com
+[2024-10-11 15:38:51] [INFO] Registration completed and confirmation email sent to: sabiranouar00@gmail.com
+[2024-10-11 16:46:59] [INFO] Starting tournament registration process
+[2024-10-11 16:46:59] [INFO] Starting tournament registration process
+[2024-10-11 16:46:59] [ERROR] PHP Error [2]: Undefined array key "image" in C:\xampp2\htdocs\api\user_join_tournament.php on line 194
+[2024-10-11 16:46:59] [INFO] Preparing to send email to: sabiranouar00@gmail.com
+[2024-10-11 16:46:59] [INFO] Attempting to send email to: sabiranouar00@gmail.com
+[2024-10-11 16:47:06] [INFO] Email sent successfully to: sabiranouar00@gmail.com
+[2024-10-11 16:47:06] [INFO] Registration completed and confirmation email sent to: sabiranouar00@gmail.com
+[2024-10-11 16:48:22] [INFO] Starting tournament registration process
+[2024-10-11 16:48:22] [ERROR] PHP Error [2]: Undefined array key "image" in C:\xampp2\htdocs\api\user_join_tournament.php on line 194
+[2024-10-11 16:48:22] [INFO] Preparing to send email to: sabiranouar00@gmail.com
+[2024-10-11 16:48:22] [INFO] Attempting to send email to: sabiranouar00@gmail.com
+[2024-10-11 16:48:25] [INFO] Email sent successfully to: sabiranouar00@gmail.com
+[2024-10-11 16:48:25] [INFO] Registration completed and confirmation email sent to: sabiranouar00@gmail.com
+[2024-10-11 16:48:58] [INFO] Starting tournament registration process
+[2024-10-11 16:48:58] [ERROR] PHP Error [2]: Undefined array key "image" in C:\xampp2\htdocs\api\user_join_tournament.php on line 194
+[2024-10-11 16:48:58] [INFO] Preparing to send email to: sabiranouar00@gmail.com
+[2024-10-11 16:48:58] [INFO] Attempting to send email to: sabiranouar00@gmail.com
+[2024-10-11 16:49:01] [INFO] Email sent successfully to: sabiranouar00@gmail.com
+[2024-10-11 16:49:01] [INFO] Registration completed and confirmation email sent to: sabiranouar00@gmail.com
+[2024-10-12 17:11:45] [INFO] Starting tournament registration process
+[2024-10-12 17:12:28] [INFO] Starting tournament registration process
+[2024-10-12 17:12:28] [INFO] Starting tournament registration process
+[2024-10-12 17:12:28] [ERROR] PHP Error [2]: Undefined array key "image" in C:\xampp2\htdocs\api\user_join_tournament.php on line 194
+[2024-10-12 17:12:28] [INFO] Preparing to send email to: sabiranouar00@gmail.com
+[2024-10-12 17:12:28] [INFO] Attempting to send email to: sabiranouar00@gmail.com
+[2024-10-12 17:12:37] [INFO] Email sent successfully to: sabiranouar00@gmail.com
+[2024-10-12 17:12:37] [INFO] Registration completed and confirmation email sent to: sabiranouar00@gmail.com
+[2024-10-21 14:48:24] [INFO] Starting tournament registration process
+[2024-10-21 14:48:24] [INFO] Starting tournament registration process
+[2024-10-21 14:48:24] [ERROR] PHP Error [2]: Undefined array key "image" in C:\xampp2\htdocs\api\user_join_tournament.php on line 194
+[2024-10-21 14:48:24] [INFO] Preparing to send email to: sabiranouar00@gmail.com
+[2024-10-21 14:48:24] [INFO] Attempting to send email to: sabiranouar00@gmail.com
+[2024-10-21 14:48:33] [INFO] Email sent successfully to: sabiranouar00@gmail.com
+[2024-10-21 14:48:33] [INFO] Registration completed and confirmation email sent to: sabiranouar00@gmail.com
+[2024-10-28 15:28:52] [INFO] Starting tournament registration process
+[2024-10-28 15:28:52] [INFO] Starting tournament registration process
+[2024-10-28 15:28:52] [ERROR] PHP Error [2]: Undefined array key "image" in C:\xampp2\htdocs\api\user_join_tournament.php on line 194
+[2024-10-28 15:28:52] [INFO] Preparing to send email to: sabiranouar00@gmail.com
+[2024-10-28 15:28:52] [INFO] Attempting to send email to: sabiranouar00@gmail.com
+[2024-10-28 15:29:02] [INFO] Email sent successfully to: sabiranouar00@gmail.com
+[2024-10-28 15:29:02] [INFO] Registration completed and confirmation email sent to: sabiranouar00@gmail.com
+[2024-11-13 16:10:04] [INFO] Starting tournament registration process
+[2024-11-13 16:10:04] [INFO] Starting tournament registration process
+[2024-11-13 16:10:04] [ERROR] PHP Error [2]: Undefined array key "image" in C:\xampp2\htdocs\api\user_join_tournament.php on line 194
+[2024-11-13 16:10:04] [INFO] Preparing to send email to: sabiranouar00@gmail.com
+[2024-11-13 16:10:04] [INFO] Attempting to send email to: sabiranouar00@gmail.com
+[2024-11-13 16:10:06] [ERROR] PHP Error [2]: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in C:\xampp2\htdocs\api\user_join_tournament.php on line 67
+[2024-11-13 16:10:06] [ERROR] Failed to send email to: sabiranouar00@gmail.com. Error: Unknown error
+[2024-11-13 16:10:06] [WARNING] Registration completed but failed to send confirmation email to: sabiranouar00@gmail.com
+[2024-11-14 14:12:48] [INFO] Starting tournament registration process
+[2024-11-14 14:12:48] [INFO] Starting tournament registration process
+[2024-11-14 14:12:48] [ERROR] Error: Tournament is full
+[2024-11-14 14:59:34] [INFO] Starting tournament registration process
+[2024-11-14 14:59:34] [ERROR] Error: Tournament is full
+[2024-11-14 15:03:50] [INFO] Starting tournament registration process
+[2024-11-14 15:03:50] [ERROR] Error: Tournament is full
+[2024-11-14 15:13:56] [INFO] Starting tournament registration process
+[2024-11-14 15:13:56] [INFO] Starting tournament registration process
+[2024-11-14 15:13:56] [ERROR] Error: Tournament is full
+[2024-11-14 15:17:26] [INFO] Starting tournament registration process
+[2024-11-14 15:17:26] [ERROR] Error: Tournament is full
+[2024-11-14 15:19:14] [INFO] Starting tournament registration process
+[2024-11-14 15:19:14] [ERROR] Error: Tournament is full
+[2024-11-14 15:20:07] [INFO] Starting tournament registration process
+[2024-11-14 15:20:07] [ERROR] Error: Tournament is full
+[2024-11-14 15:35:03] [INFO] Starting tournament registration process
+[2024-11-14 15:35:03] [ERROR] Error: Tournament is full
+[2024-11-14 15:35:36] [INFO] Starting tournament registration process
+[2024-11-14 15:35:36] [ERROR] Error: Tournament is full
+[2024-11-14 15:37:20] [INFO] Starting tournament registration process
+[2024-11-14 15:37:20] [ERROR] Error: Tournament is full
+[2024-11-14 15:39:22] [INFO] Starting tournament registration process
+[2024-11-14 15:39:22] [ERROR] Error: Tournament is full
+[2024-11-14 15:41:24] [INFO] Starting tournament registration process
+[2024-11-14 15:41:24] [INFO] Tournament full: 0/ spots taken
+[2024-11-14 15:41:24] [ERROR] Error: Tournament is full
+[2024-11-14 15:47:35] [INFO] Starting tournament registration process
+[2024-11-14 15:47:35] [INFO] Tournament full: 0/ spots taken
+[2024-11-14 15:47:35] [ERROR] Error: Tournament is full
+[2024-11-14 15:48:53] [INFO] Starting tournament registration process
+[2024-11-14 15:48:53] [INFO] Tournament full: 0/ spots taken
+[2024-11-14 15:48:53] [ERROR] Error: Tournament is full
+[2024-11-14 15:53:30] [INFO] Starting tournament registration process
+[2024-11-14 15:53:30] [INFO] Tournament full: 0/ spots taken
+[2024-11-14 15:53:30] [ERROR] Error: Tournament is full
+[2024-11-14 15:55:21] [INFO] Starting tournament registration process
+[2024-11-14 15:55:21] [ERROR] PHP Error [2]: Undefined array key "image" in C:\xampp2\htdocs\api\user_join_tournament.php on line 199
+[2024-11-14 15:55:21] [INFO] Preparing to send email to: sabiranouar00@gmail.com
+[2024-11-14 15:55:21] [INFO] Attempting to send email to: sabiranouar00@gmail.com
+[2024-11-14 15:55:23] [ERROR] PHP Error [2]: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in C:\xampp2\htdocs\api\user_join_tournament.php on line 70
+[2024-11-14 15:55:23] [ERROR] Failed to send email to: sabiranouar00@gmail.com. Error: Unknown error
+[2024-11-14 15:55:23] [WARNING] Registration completed but failed to send confirmation email to: sabiranouar00@gmail.com
+[2024-11-14 15:58:48] [INFO] Starting tournament registration process
+[2024-11-14 15:58:48] [ERROR] PHP Error [2]: Undefined array key "image" in C:\xampp2\htdocs\api\user_join_tournament.php on line 199
+[2024-11-14 15:58:48] [INFO] Preparing to send email to: sabiranouar00@gmail.com
+[2024-11-14 15:58:48] [INFO] Attempting to send email to: sabiranouar00@gmail.com
+[2024-11-14 15:58:50] [ERROR] PHP Error [2]: mail(): Failed to connect to mailserver at &quot;localhost&quot; port 25, verify your &quot;SMTP&quot; and &quot;smtp_port&quot; setting in php.ini or use ini_set() in C:\xampp2\htdocs\api\user_join_tournament.php on line 70
+[2024-11-14 15:58:50] [ERROR] Failed to send email to: sabiranouar00@gmail.com. Error: Unknown error
+[2024-11-14 15:58:50] [WARNING] Registration completed but failed to send confirmation email to: sabiranouar00@gmail.com
+[2024-11-14 16:04:51] [INFO] Starting tournament registration process
+[2024-11-14 16:04:51] [INFO] Tournament full: 0/ spots taken
+[2024-11-14 16:04:51] [ERROR] Error: Tournament is full
