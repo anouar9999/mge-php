@@ -12,7 +12,6 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('Access-Control-Allow-Credentials: true');
 header('Content-Type: application/json');
 header('Cache-Control: no-cache, must-revalidate');
-header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 
 // Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -98,14 +97,17 @@ function handleGetTeamStats($pdo)
     }
 
     try {
+        // Updated query to match actual schema
         $query = "
             SELECT 
                 t.*,
                 COUNT(DISTINCT tm.id) as total_members,
-                COUNT(DISTINCT tjr.id) as pending_requests
+                COUNT(DISTINCT tjr.id) as pending_requests,
+                g.name as game_name
             FROM teams t
             LEFT JOIN team_members tm ON t.id = tm.team_id
             LEFT JOIN team_join_requests tjr ON t.id = tjr.team_id AND tjr.status = 'pending'
+            LEFT JOIN games g ON t.game_id = g.id
             WHERE t.id = ?
             GROUP BY t.id
         ";
@@ -141,9 +143,11 @@ function handleTeamMembers($pdo, $method, $requestBody = null)
                         t.*,
                         u.username as owner_name,
                         u.email as owner_email,
-                        u.avatar as owner_avatar
+                        u.avatar as owner_avatar,
+                        g.name as game_name
                     FROM teams t
                     LEFT JOIN users u ON t.owner_id = u.id
+                    LEFT JOIN games g ON t.game_id = g.id
                     WHERE t.id = ?
                 ";
 
@@ -166,7 +170,7 @@ function handleTeamMembers($pdo, $method, $requestBody = null)
                         u.username,
                         u.avatar,
                         CASE 
-                            WHEN t.owner_id = u.id THEN 'Captain'
+                            WHEN t.owner_id = u.id THEN 'Owner'
                             WHEN tm.is_captain = 1 THEN 'Captain'
                             ELSE 'Member'
                         END as position
@@ -225,6 +229,7 @@ function handleTeamMembers($pdo, $method, $requestBody = null)
                     sendResponse(false, null, 'User is already a member of this team', 400);
                 }
                 
+                // Modified to match the team_members table structure
                 $query = "
                     INSERT INTO team_members (team_id, user_id, role, is_captain, join_date)
                     VALUES (?, ?, ?, ?, NOW())
@@ -242,6 +247,15 @@ function handleTeamMembers($pdo, $method, $requestBody = null)
                     throw new Exception('Failed to add member');
                 }
 
+                // Update the team's total_members count
+                $updateTeamQuery = "
+                    UPDATE teams 
+                    SET total_members = (SELECT COUNT(*) FROM team_members WHERE team_id = ?) 
+                    WHERE id = ?
+                ";
+                $updateStmt = $pdo->prepare($updateTeamQuery);
+                $updateStmt->execute([$requestBody['team_id'], $requestBody['team_id']]);
+
                 sendResponse(true, null, 'Member added successfully');
             } catch (Exception $e) {
                 error_log('Error adding team member: ' . $e->getMessage());
@@ -256,6 +270,16 @@ function handleTeamMembers($pdo, $method, $requestBody = null)
             }
 
             try {
+                // Get the team_id first for later use
+                $getTeamQuery = "SELECT team_id FROM team_members WHERE id = ?";
+                $getTeamStmt = $pdo->prepare($getTeamQuery);
+                $getTeamStmt->execute([$memberId]);
+                $teamId = $getTeamStmt->fetchColumn();
+                
+                if (!$teamId) {
+                    sendResponse(false, null, 'Member not found', 404);
+                }
+                
                 $query = "DELETE FROM team_members WHERE id = ?";
                 $stmt = $pdo->prepare($query);
                 $result = $stmt->execute([$memberId]);
@@ -267,6 +291,15 @@ function handleTeamMembers($pdo, $method, $requestBody = null)
                 if ($stmt->rowCount() === 0) {
                     sendResponse(false, null, 'Member not found', 404);
                 }
+
+                // Update the team's total_members count
+                $updateTeamQuery = "
+                    UPDATE teams 
+                    SET total_members = (SELECT COUNT(*) FROM team_members WHERE team_id = ?) 
+                    WHERE id = ?
+                ";
+                $updateStmt = $pdo->prepare($updateTeamQuery);
+                $updateStmt->execute([$teamId, $teamId]);
 
                 sendResponse(true, null, 'Member removed successfully');
             } catch (Exception $e) {
@@ -291,11 +324,11 @@ function handleTeamRequests($pdo, $method, $requestBody = null)
             }
 
             try {
+                // Updated query to match the team_join_requests table structure
                 $query = "
                     SELECT 
                         tjr.*,
-                        u.username,
-                        u.avatar
+                        u.avatar as avatar
                     FROM team_join_requests tjr
                     LEFT JOIN users u ON tjr.name = u.username
                     WHERE tjr.team_id = ? AND tjr.status = 'pending'
@@ -324,7 +357,7 @@ function handleTeamRequests($pdo, $method, $requestBody = null)
             try {
                 // Get request details
                 $requestQuery = "
-                    SELECT tjr.*, u.avatar 
+                    SELECT tjr.*, u.id as user_id, u.avatar 
                     FROM team_join_requests tjr
                     LEFT JOIN users u ON tjr.name = u.username
                     WHERE tjr.id = ? AND tjr.status = 'pending'
@@ -343,34 +376,30 @@ function handleTeamRequests($pdo, $method, $requestBody = null)
                     // Check if already a member
                     $memberCheckQuery = "
                         SELECT id FROM team_members 
-                        WHERE team_id = ? AND name = ?
+                        WHERE team_id = ? AND user_id = ?
                     ";
                     $memberCheckStmt = $pdo->prepare($memberCheckQuery);
-                    $memberCheckStmt->execute([$request['team_id'], $request['name']]);
+                    $memberCheckStmt->execute([$request['team_id'], $request['user_id']]);
 
                     if ($memberCheckStmt->rowCount() > 0) {
                         throw new Exception('User is already a team member');
                     }
 
-                    // Add to team members
+                    // Add to team members - updated to match the team_members table structure
                     $addMemberQuery = "
                         INSERT INTO team_members (
                             team_id,
-                            name,
+                            user_id,
                             role,
-                            avatar_url,
-                            `rank`,
-                            status,
-                            created_at
-                        ) VALUES (?, ?, ?, ?, ?, 'online', NOW())
+                            is_captain,
+                            join_date
+                        ) VALUES (?, ?, ?, 0, NOW())
                     ";
 
                     $memberParams = [
                         $request['team_id'],
-                        $request['name'],
-                        $request['role'],
-                        $request['avatar_url'] ?? null,
-                        $request['rank']
+                        $request['user_id'],
+                        $request['role']
                     ];
 
                     error_log('Adding member with params: ' . json_encode($memberParams));
@@ -380,6 +409,15 @@ function handleTeamRequests($pdo, $method, $requestBody = null)
                         error_log('SQL Error: ' . json_encode($addMemberStmt->errorInfo()));
                         throw new Exception('Failed to add member to team');
                     }
+                    
+                    // Update team's total_members count
+                    $updateTeamQuery = "
+                        UPDATE teams 
+                        SET total_members = (SELECT COUNT(*) FROM team_members WHERE team_id = ?) 
+                        WHERE id = ?
+                    ";
+                    $updateTeamStmt = $pdo->prepare($updateTeamQuery);
+                    $updateTeamStmt->execute([$request['team_id'], $request['team_id']]);
                 }
 
                 // Update request status
@@ -425,9 +463,11 @@ function handleTeamSettings($pdo, $method, $requestBody = null)
                     SELECT 
                         t.*,
                         u.username as owner_username,
-                        u.avatar as owner_avatar
+                        u.avatar as owner_avatar,
+                        g.name as game_name
                     FROM teams t
                     LEFT JOIN users u ON t.owner_id = u.id
+                    LEFT JOIN games g ON t.game_id = g.id
                     WHERE t.id = ?
                 ";
 
@@ -451,14 +491,19 @@ function handleTeamSettings($pdo, $method, $requestBody = null)
                 sendResponse(false, null, 'Team ID is required', 400);
             }
 
+            // Update allowed fields based on the teams table structure
             $allowedFields = [
                 'name',
+                'tag',
                 'description',
-                'privacy_level',
+                'game_id',
                 'division',
-                'average_rank',
-                'team_game',
-                'tag'  // Add tag field which appears in the database schema
+                'tier',
+                'logo',
+                'banner',
+                'discord',
+                'twitter',
+                'contact_email'
             ];
 
             $updates = array_filter($requestBody, function ($key) use ($allowedFields) {
@@ -469,12 +514,12 @@ function handleTeamSettings($pdo, $method, $requestBody = null)
                 sendResponse(false, null, 'No valid fields to update', 400);
             }
 
-            // Check for valid games from database
-            if (isset($updates['team_game'])) {
+            // Check for valid games from database if game_id is being updated
+            if (isset($updates['game_id'])) {
                 try {
-                    $gameQuery = "SELECT id FROM games WHERE name = ? AND is_active = 1";
+                    $gameQuery = "SELECT id FROM games WHERE id = ? AND is_active = 1";
                     $gameStmt = $pdo->prepare($gameQuery);
-                    $gameStmt->execute([$updates['team_game']]);
+                    $gameStmt->execute([$updates['game_id']]);
                     
                     if ($gameStmt->rowCount() === 0) {
                         sendResponse(false, null, 'Invalid game selection', 400);
@@ -561,33 +606,8 @@ function handleJoinRequest($pdo, $method, $requestBody = null)
     }
 
     try {
-        // First check if user already has a pending request
-        $checkQuery = "
-            SELECT id FROM team_join_requests 
-            WHERE team_id = ? AND name = (SELECT username FROM users WHERE id = ?) 
-            AND status = 'pending'
-        ";
-        $checkStmt = $pdo->prepare($checkQuery);
-        $checkStmt->execute([$requestBody['team_id'], $requestBody['user_id']]);
-
-        if ($checkStmt->rowCount() > 0) {
-            sendResponse(false, null, 'You already have a pending request for this team', 400);
-        }
-
-        // Check if user is already a member
-        $memberCheckQuery = "
-            SELECT id FROM team_members 
-            WHERE team_id = ? AND name = (SELECT username FROM users WHERE id = ?)
-        ";
-        $memberCheckStmt = $pdo->prepare($memberCheckQuery);
-        $memberCheckStmt->execute([$requestBody['team_id'], $requestBody['user_id']]);
-
-        if ($memberCheckStmt->rowCount() > 0) {
-            sendResponse(false, null, 'You are already a member of this team', 400);
-        }
-
         // Get user details
-        $userQuery = "SELECT username, avatar, bio as experience FROM users WHERE id = ?";
+        $userQuery = "SELECT id, username, avatar, bio as experience FROM users WHERE id = ?";
         $userStmt = $pdo->prepare($userQuery);
         $userStmt->execute([$requestBody['user_id']]);
         $user = $userStmt->fetch(PDO::FETCH_ASSOC);
@@ -596,33 +616,75 @@ function handleJoinRequest($pdo, $method, $requestBody = null)
             sendResponse(false, null, 'User not found', 404);
         }
 
-        // Insert join request with corrected parameters
+        // First check if user already has a pending request
+        $checkQuery = "
+            SELECT id FROM team_join_requests 
+            WHERE team_id = ? AND name = ? 
+            AND status = 'pending'
+        ";
+        $checkStmt = $pdo->prepare($checkQuery);
+        $checkStmt->execute([$requestBody['team_id'], $user['username']]);
+
+        if ($checkStmt->rowCount() > 0) {
+            sendResponse(false, null, 'You already have a pending request for this team', 400);
+        }
+
+        // Check if user is already a member
+        $memberCheckQuery = "
+            SELECT id FROM team_members 
+            WHERE team_id = ? AND user_id = ?
+        ";
+        $memberCheckStmt = $pdo->prepare($memberCheckQuery);
+        $memberCheckStmt->execute([$requestBody['team_id'], $user['id']]);
+
+        if ($memberCheckStmt->rowCount() > 0) {
+            sendResponse(false, null, 'You are already a member of this team', 400);
+        }
+
+        // Insert join request with parameters matching the team_join_requests table structure
         $insertQuery = "
             INSERT INTO team_join_requests (
                 team_id, 
-                name, 
-                avatar_url,
+                name,
                 role, 
-                `rank`, 
+                rank, 
                 experience,
                 status, 
+                avatar_url,
                 created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, 'pending', NOW())
+            ) VALUES (?, ?, ?, ?, ?, 'pending', ?, NOW())
         ";
 
         $stmt = $pdo->prepare($insertQuery);
         $result = $stmt->execute([
             $requestBody['team_id'],
             $user['username'],
-            $user['avatar'],
             $requestBody['role'] ?? 'Mid',
             $requestBody['rank'] ?? 'Unranked',
-            $user['experience'] ?? 'No experience listed'
+            $user['experience'] ?? 'No experience listed',
+            $user['avatar']
         ]);
 
         if (!$result) {
             throw new Exception('Failed to insert join request');
         }
+
+        // Log the request in activity_log
+        $logQuery = "
+            INSERT INTO activity_log (
+                user_id, 
+                action, 
+                details, 
+                ip_address
+            ) VALUES (?, 'Team Join Request', ?, ?)
+        ";
+        
+        $logStmt = $pdo->prepare($logQuery);
+        $logStmt->execute([
+            $user['id'],
+            'Requested to join team ID: ' . $requestBody['team_id'],
+            $_SERVER['REMOTE_ADDR'] ?? '::1'
+        ]);
 
         sendResponse(true, null, 'Join request sent successfully');
     } catch (Exception $e) {

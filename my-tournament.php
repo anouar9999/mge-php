@@ -43,6 +43,9 @@ try {
     $individualQuery = "
         SELECT t.*, 
                g.name as game_name,
+               g.slug as game_slug,
+               g.image as game_image,
+               g.id as game_id,
                tr.status as registration_status,
                tr.registration_date,
                NULL as team_name,
@@ -59,6 +62,9 @@ try {
     $teamOwnerQuery = "
         SELECT t.*, 
                g.name as game_name,
+               g.slug as game_slug,
+               g.image as game_image,
+               g.id as game_id,
                tr.status as registration_status,
                tr.registration_date,
                tm.name as team_name,
@@ -140,6 +146,9 @@ try {
             $teamMemberQuery = "
                 SELECT t.*, 
                        g.name as game_name,
+                       g.slug as game_slug,
+                       g.image as game_image,
+                       g.id as game_id,
                        tr.status as registration_status,
                        tr.registration_date,
                        tm.name as team_name,
@@ -233,6 +242,9 @@ try {
                         $tournamentQuery = "
                             SELECT t.*, 
                                    g.name as game_name,
+                                   g.slug as game_slug,
+                                   g.image as game_image,
+                                   g.id as game_id,
                                    tr.status as registration_status,
                                    tr.registration_date,
                                    tm.name as team_name,
@@ -284,6 +296,14 @@ try {
         $maxSpots = isset($tournament['max_participants']) ? (int)$tournament['max_participants'] : 0;
         $registeredCount = isset($tournament['registered_count']) ? (int)$tournament['registered_count'] : 0;
 
+        // Create a game object with game-related information
+        $gameInfo = [
+            'id' => isset($tournament['game_id']) ? (int)$tournament['game_id'] : null,
+            'name' => isset($tournament['game_name']) ? $tournament['game_name'] : null,
+            'slug' => isset($tournament['game_slug']) ? $tournament['game_slug'] : null,
+            'image' => isset($tournament['game_image']) ? $tournament['game_image'] : null
+        ];
+
         $result = [
             'id' => (int)$tournament['id'],
             'registered_count' => $registeredCount,
@@ -298,12 +318,13 @@ try {
                 'is_started' => strtotime($tournament['start_date']) <= time(),
                 'is_ended' => strtotime($tournament['end_date']) < time(),
                 'days_remaining' => max(0, ceil((strtotime($tournament['end_date']) - time()) / (60 * 60 * 24)))
-            ]
+            ],
+            'game' => $gameInfo  // Added game info as a structured object
         ];
         
         // Copy all other fields directly
         foreach ($tournament as $key => $value) {
-            if (!isset($result[$key])) {
+            if (!isset($result[$key]) && $key != 'game_id' && $key != 'game_name' && $key != 'game_slug' && $key != 'game_image') {
                 $result[$key] = $value;
             }
         }

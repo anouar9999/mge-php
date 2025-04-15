@@ -67,14 +67,12 @@ try {
         exit;
     }
 
-    // Check team membership
+    // Check team membership - FIXED QUERY
     $stmt = $pdo->prepare("
-        SELECT tm.id, tm.role
-        FROM team_members tm
-        JOIN users u ON tm.name = u.username
-        WHERE tm.team_id = :team_id 
-        AND u.id = :user_id
-        AND tm.is_active = 1
+        SELECT id, role, is_captain
+        FROM team_members
+        WHERE team_id = :team_id 
+        AND user_id = :user_id
     ");
     $stmt->execute([
         'team_id' => $team_id,
@@ -83,10 +81,12 @@ try {
     $membership = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($membership) {
+        $role = $membership['is_captain'] ? 'captain' : 'member';
         echo json_encode([
             'success' => true,
             'is_involved' => true,
-            'role' => 'member'
+            'role' => $role,
+            'member_data' => $membership
         ]);
         exit;
     }

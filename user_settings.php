@@ -51,24 +51,38 @@ try {
             FROM tournament_registrations tr
             JOIN tournaments t ON tr.tournament_id = t.id
             WHERE tr.user_id = :user_id 
-            AND t.participation_type = 'participant'
+            AND t.participation_type = 'individual'
         ");
         $individualStmt->execute([':user_id' => $userId]);
         $individualCount = $individualStmt->fetch(PDO::FETCH_ASSOC)['individual_count'];
 
-        // Get team tournament participations through team membership
-        $teamStmt = $pdo->prepare("
+        // Get team tournament participations (teams the user owns)
+        $ownedTeamsStmt = $pdo->prepare("
+            SELECT COUNT(DISTINCT tr.tournament_id) as team_count
+            FROM tournament_registrations tr
+            JOIN tournaments t ON tr.tournament_id = t.id
+            JOIN teams team ON tr.team_id = team.id
+            WHERE team.owner_id = :user_id
+            AND t.participation_type = 'team'
+        ");
+        $ownedTeamsStmt->execute([':user_id' => $userId]);
+        $ownedTeamsCount = $ownedTeamsStmt->fetch(PDO::FETCH_ASSOC)['team_count'];
+
+        // Get team tournament participations (teams the user is a member of)
+        $memberTeamsStmt = $pdo->prepare("
             SELECT COUNT(DISTINCT tr.tournament_id) as team_count
             FROM tournament_registrations tr
             JOIN tournaments t ON tr.tournament_id = t.id
             JOIN teams team ON tr.team_id = team.id
             JOIN team_members tm ON team.id = tm.team_id
-            WHERE (tm.name = (SELECT username FROM users WHERE id = :user_id)
-                  OR team.owner_id = :user_id)
+            WHERE tm.user_id = :user_id
             AND t.participation_type = 'team'
         ");
-        $teamStmt->execute([':user_id' => $userId]);
-        $teamCount = $teamStmt->fetch(PDO::FETCH_ASSOC)['team_count'];
+        $memberTeamsStmt->execute([':user_id' => $userId]);
+        $memberTeamsCount = $memberTeamsStmt->fetch(PDO::FETCH_ASSOC)['team_count'];
+
+        // Calculate total team participations (avoid double counting)
+        $teamCount = $ownedTeamsCount + $memberTeamsCount;
 
         // Add tournament statistics to user data
         $user['tournament_stats'] = [
