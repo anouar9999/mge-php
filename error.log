@@ -205,3 +205,4 @@
 [08-Apr-2025 13:14:14 UTC] User table columns: id, username, password, email, type, points, rank, is_verified, verification_token, created_at, bio, avatar, failed_attempts, user_type
 [08-Apr-2025 13:14:14 UTC] User inserted successfully with ID: 0
 [08-Apr-2025 13:14:14 UTC] User created successfully
+[17-Apr-2025 15:23:40 UTC] Database Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'nom_des_qualifications' in 'field list'

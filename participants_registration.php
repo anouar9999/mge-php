@@ -46,17 +46,15 @@ try {
                 tr.registration_date,
                 tr.status,
                 t.name as team_name,
-                t.team_game,
-                t.image as team_image,
+                t.game_id as team_game,
+                t.logo as team_image,
                 t.description,
-                t.mmr,
                 t.win_rate,
                 t.division,
-                t.average_rank,
                 u.username as owner_name,
                 u.email as owner_email,
                 u.avatar as owner_avatar,
-                (SELECT COUNT(*) FROM team_members WHERE team_id = t.id AND is_active = 1) as member_count
+                t.total_members as member_count
             FROM tournament_registrations tr
             JOIN teams t ON tr.team_id = t.id
             JOIN users u ON t.owner_id = u.id
@@ -84,30 +82,26 @@ try {
             $memberQuery = "
                 SELECT 
                     tm.id as member_id,
-                    tm.name,
+                    u.username as name,
                     tm.role,
-                    tm.rank,
-                    tm.status as member_status,
-                    tm.is_substitute,
+                    u.rank,
+                    'active' as member_status,
+                    0 as is_substitute,
                     u.id as user_id,
                     u.email,
                     u.points,
-                    COALESCE(u.avatar, tm.avatar_url) as avatar,
+                    u.avatar as avatar,
                     CASE 
                         WHEN u.id = t.owner_id THEN 'Captain'
                         ELSE 'Member' 
                     END as position
                 FROM team_members tm
                 JOIN teams t ON tm.team_id = t.id
-                LEFT JOIN users u ON tm.name = u.username
+                JOIN users u ON tm.user_id = u.id
                 WHERE tm.team_id = :team_id 
-                AND tm.is_active = 1
                 ORDER BY 
-                    CASE 
-                        WHEN u.id = t.owner_id THEN 0 
-                        ELSE 1 
-                    END,
-                    tm.created_at DESC
+                    tm.is_captain DESC,
+                    tm.join_date DESC
             ";
             
             $memberStmt = $pdo->prepare($memberQuery);

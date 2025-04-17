@@ -46,6 +46,20 @@ try {
     // Get form data
     $data = $_POST;
     
+    // Fix for field names mismatch between frontend and backend
+    // Map frontend field names to expected backend field names
+    if (isset($data['name']) && !isset($data['nom_des_qualifications'])) {
+        $data['nom_des_qualifications'] = $data['name'];
+    }
+    
+    if (isset($data['description']) && !isset($data['description_des_qualifications'])) {
+        $data['description_des_qualifications'] = $data['description'];
+    }
+    
+    if (isset($data['bracket_type']) && !isset($data['format_des_qualifications'])) {
+        $data['format_des_qualifications'] = $data['bracket_type'];
+    }
+    
     // Set default value for participation_type
     if (!isset($data['participation_type']) || empty($data['participation_type'])) {
         $data['participation_type'] = 'individual';
@@ -156,9 +170,27 @@ try {
     }
 
     // Convert bracket type to new format
-    $bracket_type = 'Single Elimination';
+
     if (isset($data['format_des_qualifications'])) {
         switch ($data['format_des_qualifications']) {
+            case 'Single Elimination':
+                $bracket_type = 'Single Elimination';
+                break;
+            case 'Double Elimination':
+                $bracket_type = 'Double Elimination';
+                break;
+            case 'Round Robin':
+                $bracket_type = 'Round Robin';
+                break;
+            case 'Battle Royale':
+                $bracket_type = 'Battle Royale'; // Map to Single Elimination as Battle Royale is not in the enum
+                break;
+            default:
+                $bracket_type = 'Single Elimination';
+        }
+    } elseif (isset($data['bracket_type'])) {
+        // Use bracket_type if format_des_qualifications is not set
+        switch ($data['bracket_type']) {
             case 'Single Elimination':
                 $bracket_type = 'Single Elimination';
                 break;
@@ -222,8 +254,19 @@ try {
         }
     }
 
-    // Prepare SQL statement for the new schema
+    // Get the highest ID from the tournaments table and increment it
+    $id_query = "SELECT MAX(id) as max_id FROM tournaments";
+    $id_stmt = $pdo->query($id_query);
+    $id_result = $id_stmt->fetch(PDO::FETCH_ASSOC);
+    
+    $next_id = 1; // Default if table is empty
+    if ($id_result && $id_result['max_id'] !== null) {
+        $next_id = $id_result['max_id'] + 1;
+    }
+
+    // Prepare SQL statement for the new schema with explicit ID
     $sql = "INSERT INTO tournaments (
+        id,
         name,
         slug,
         game_id,
@@ -251,6 +294,7 @@ try {
         updated_at,
         created_by
     ) VALUES (
+        :id,
         :name,
         :slug,
         :game_id,
@@ -302,9 +346,12 @@ try {
         $data['timezone'] : 'UTC';
     
     // Match format handling
-    $match_format = isset($data['match_format']) && !empty($data['match_format']) ? 
-        $data['match_format'] : (isset($data['type_de_match']) && !empty($data['type_de_match']) ? 
-        $data['type_de_match'] : null);
+    $match_format = null;
+    if (isset($data['match_format']) && !empty($data['match_format'])) {
+        $match_format = $data['match_format'];
+    } elseif (isset($data['type_de_match']) && !empty($data['type_de_match'])) {
+        $match_format = $data['type_de_match'];
+    }
     
     // Stream URL handling
     $stream_url = isset($data['stream_url']) && !empty($data['stream_url']) ? 
@@ -312,6 +359,7 @@ try {
 
     // Execute statement with data
     $stmt->execute([
+        ':id' => $next_id,
         ':name' => $data['nom_des_qualifications'],
         ':slug' => $slug,
         ':game_id' => $game_id,
@@ -338,13 +386,11 @@ try {
         ':created_by' => $organizer_id
     ]);
 
-    $newTournamentId = $pdo->lastInsertId();
-
     // Return success response
     echo safe_json_encode([
         'success' => true,
         'message' => 'Tournoi créé avec succès',
-        'tournament_id' => $newTournamentId,
+        'tournament_id' => $next_id,
         'data' => [
             'slug' => $slug,
             'featured_image' => $featured_image,

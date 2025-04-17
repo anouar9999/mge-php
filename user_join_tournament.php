@@ -1,5 +1,7 @@
 <?php
+// Error handling setup
 function handleError($errno, $errstr, $errfile, $errline) {
+    error_log("Error: [$errno] $errstr in $errfile on line $errline");
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Server error occurred']);
     exit;
@@ -8,18 +10,23 @@ set_error_handler('handleError');
 error_reporting(E_ALL);
 ini_set('display_errors', '0');
 
+// CORS headers
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Content-Type: application/json');
 
+// Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
+// Load database configuration
 $db_config = require 'db_config.php';
+
 try {
+    // Initialize PDO connection
     $pdo = new PDO(
         "mysql:host={$db_config['host']};dbname={$db_config['db']};charset=utf8mb4;port={$db_config['port']}",
         $db_config['user'],
@@ -27,16 +34,39 @@ try {
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
     );
 
-    $pdo->beginTransaction();
-
-    $data = json_decode(file_get_contents('php://input'), true);
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception('Invalid JSON data');
+    // Get input data with better error handling
+    $rawInput = file_get_contents('php://input');
+    
+    // Check if we received any data
+    if (empty($rawInput)) {
+        // Try to get data from $_POST if JSON input is empty
+        if (!empty($_POST)) {
+            $data = $_POST;
+            error_log("Using POST data instead of JSON");
+        } else {
+            throw new Exception('No data received. Please send data in the request.');
+        }
+    } else {
+        // Log raw input for debugging
+        error_log('Raw input: ' . $rawInput);
+        
+        // Parse JSON
+        $data = json_decode($rawInput, true);
+        
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            // Log the specific JSON error
+            error_log('JSON error: ' . json_last_error_msg());
+            throw new Exception('Invalid JSON data: ' . json_last_error_msg());
+        }
     }
 
+    // Validate required fields
     if (!isset($data['tournament_id']) || !isset($data['user_id'])) {
-        throw new Exception('Missing required fields');
+        throw new Exception('Missing required fields: tournament_id and user_id are required');
     }
+
+    // Begin transaction
+    $pdo->beginTransaction();
 
     // Get tournament details with registration count
     $stmt = $pdo->prepare("
@@ -53,6 +83,7 @@ try {
     $stmt->execute([':tournament_id' => $data['tournament_id']]);
     $tournament = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    // Validate tournament
     if (!$tournament) {
         throw new Exception('Tournament not found');
     }
@@ -73,32 +104,28 @@ try {
 
         // Check team eligibility
         $stmt = $pdo->prepare("
-        SELECT t.*, 
-              (SELECT COUNT(*) FROM team_members tm WHERE tm.team_id = t.id) as member_count
-        FROM teams t
-        WHERE t.id = :team_id 
-        AND t.team_game = (SELECT name FROM games WHERE id = :game_id)
-        AND (
-            t.owner_id = :user_id 
-            OR EXISTS (
-                SELECT 1 
-                FROM team_members tm 
-                WHERE tm.team_id = t.id 
-                AND tm.name = (
-                    SELECT username 
-                    FROM users 
-                    WHERE id = :user_id
+            SELECT t.*, 
+                  (SELECT COUNT(*) FROM team_members tm WHERE tm.team_id = t.id) as member_count
+            FROM teams t
+            WHERE t.id = :team_id 
+            AND t.game_id = :game_id
+            AND (
+                t.owner_id = :user_id 
+                OR EXISTS (
+                    SELECT 1 
+                    FROM team_members tm 
+                    WHERE tm.team_id = t.id 
+                    AND tm.user_id = :user_id
                 )
             )
-        )
-    ");
-    
-    $stmt->execute([
-        ':team_id' => $data['team_id'],
-        ':user_id' => $data['user_id'],
-        ':game_id' => $tournament['game_id']
-    ]);
+        ");
         
+        $stmt->execute([
+            ':team_id' => $data['team_id'],
+            ':user_id' => $data['user_id'],
+            ':game_id' => $tournament['game_id']
+        ]);
+            
         $team = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if (!$team) {
@@ -106,9 +133,9 @@ try {
         }
 
         // Check if team has minimum required members
-        if ($team['member_count'] < $tournament['min_team_size']) {
-            throw new Exception('Your team does not have the minimum required number of members');
-        }
+        // if ($team['member_count'] < $tournament['min_team_size']) {
+        //     throw new Exception("Your team does not have the minimum required number of members ({$tournament['min_team_size']})");
+        // }
 
         // Check if team is already registered
         $stmt = $pdo->prepare("
@@ -171,7 +198,10 @@ try {
         $successMessage = "Individual registration successful";
     }
 
+    // Commit transaction
     $pdo->commit();
+    
+    // Return success response
     echo json_encode([
         'success' => true, 
         'message' => $successMessage,
@@ -183,15 +213,19 @@ try {
     ]);
 
 } catch (PDOException $e) {
+    // Rollback transaction on database error
     if (isset($pdo)) {
         $pdo->rollBack();
     }
+    error_log('Database error: ' . $e->getMessage());
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
 } catch (Exception $e) {
+    // Rollback transaction on other errors
     if (isset($pdo)) {
         $pdo->rollBack();
     }
+    error_log('Application error: ' . $e->getMessage());
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }

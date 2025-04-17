@@ -105,16 +105,13 @@ try {
                 tr.decision_date,
                 t.id as team_id,
                 t.name as team_name,
-                t.image as team_avatar,
+                t.logo as team_avatar,
                 t.description as team_bio,
                 t.division,
-                t.mmr,
                 t.win_rate,
                 t.owner_id,
                 t.total_members,
-                t.active_members,
-                t.average_rank,
-                t.team_game,
+                t.game_id as team_game,
                 'team' as type
             FROM tournament_registrations tr
             LEFT JOIN teams t ON tr.team_id = t.id
@@ -185,16 +182,13 @@ try {
             $stmt = $pdo->prepare("
                 SELECT 
                     tm.id,
-                    tm.name,
+                    tm.user_id as name,
                     tm.role,
-                    tm.rank,
-                    tm.status,
-                    tm.avatar_url,
-                    tm.is_active,
-                    tm.is_substitute
+                    tm.is_captain as is_active,
+                    tm.join_date as created_at
                 FROM team_members tm
                 WHERE tm.team_id = :team_id
-                ORDER BY tm.is_substitute ASC, tm.created_at ASC
+                ORDER BY tm.is_captain DESC, tm.join_date ASC
             ");
             $stmt->execute([':team_id' => $team['team_id']]);
             $team['members'] = $stmt->fetchAll(PDO::FETCH_ASSOC);

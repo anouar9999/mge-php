@@ -22,7 +22,7 @@ try {
     }
 
     $stmt = $pdo->prepare("
-        SELECT t.id, t.name, t.image,
+        SELECT t.id, t.name, t.logo,
         (SELECT COUNT(*) FROM team_members WHERE team_id = t.id) as member_count
         FROM teams t
         WHERE t.owner_id = :user_id
