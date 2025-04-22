@@ -108,14 +108,14 @@ try {
                   (SELECT COUNT(*) FROM team_members tm WHERE tm.team_id = t.id) as member_count
             FROM teams t
             WHERE t.id = :team_id 
-            AND t.game_id = :game_id
             AND (
-                t.owner_id = :user_id 
+                t.captain_id = :user_id 
                 OR EXISTS (
                     SELECT 1 
                     FROM team_members tm 
                     WHERE tm.team_id = t.id 
                     AND tm.user_id = :user_id
+                  
                 )
             )
         ");
@@ -129,19 +129,18 @@ try {
         $team = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if (!$team) {
-            throw new Exception('You must be a member or owner of an eligible team for this tournament');
+            throw new Exception('You must be the owner or captain of an eligible team for this tournament');
         }
 
         // Check if team has minimum required members
-        // if ($team['member_count'] < $tournament['min_team_size']) {
-        //     throw new Exception("Your team does not have the minimum required number of members ({$tournament['min_team_size']})");
-        // }
+       
 
         // Check if team is already registered
         $stmt = $pdo->prepare("
             SELECT id FROM tournament_registrations 
             WHERE tournament_id = :tournament_id 
             AND team_id = :team_id
+            AND status IN ('pending', 'accepted')
         ");
         $stmt->execute([
             ':tournament_id' => $tournament['id'],
@@ -152,14 +151,20 @@ try {
             throw new Exception('This team is already registered for the tournament');
         }
 
-        // Register the team
+        // Get next available ID for tournament_registrations
+        $stmt = $pdo->query("SELECT MAX(id) as max_id FROM tournament_registrations");
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $next_id = ($result['max_id'] !== null) ? $result['max_id'] + 1 : 1;
+
+        // Register the team with explicit ID
         $stmt = $pdo->prepare("
             INSERT INTO tournament_registrations 
-            (tournament_id, team_id, registration_date, status)
-            VALUES (:tournament_id, :team_id, NOW(), 'pending')
+            (id, tournament_id, user_id, team_id, registration_date, status)
+            VALUES (:id, :tournament_id, NULL, :team_id, NOW(), 'pending')
         ");
         
         $stmt->execute([
+            ':id' => $next_id,
             ':tournament_id' => $tournament['id'],
             ':team_id' => $team['id']
         ]);
@@ -173,6 +178,7 @@ try {
             SELECT id FROM tournament_registrations 
             WHERE tournament_id = :tournament_id 
             AND user_id = :user_id
+            AND status IN ('pending', 'accepted')
         ");
         $stmt->execute([
             ':tournament_id' => $tournament['id'],
@@ -183,20 +189,39 @@ try {
             throw new Exception('You are already registered for this tournament');
         }
 
-        // Register individual
+        // Get next available ID for tournament_registrations
+        $stmt = $pdo->query("SELECT MAX(id) as max_id FROM tournament_registrations");
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $next_id = ($result['max_id'] !== null) ? $result['max_id'] + 1 : 1;
+
+        // Register individual with explicit ID
         $stmt = $pdo->prepare("
             INSERT INTO tournament_registrations 
-            (tournament_id, user_id, registration_date, status)
-            VALUES (:tournament_id, :user_id, NOW(), 'pending')
+            (id, tournament_id, user_id, team_id, registration_date, status)
+            VALUES (:id, :tournament_id, :user_id, NULL, NOW(), 'pending')
         ");
         
         $stmt->execute([
+            ':id' => $next_id,
             ':tournament_id' => $tournament['id'],
             ':user_id' => $data['user_id']
         ]);
 
         $successMessage = "Individual registration successful";
     }
+
+    // Add entry to activity_log
+    $stmt = $pdo->prepare("
+        INSERT INTO activity_log (user_id, action, timestamp, details, ip_address)
+        VALUES (:user_id, :action, NOW(), :details, :ip_address)
+    ");
+    
+    $stmt->execute([
+        ':user_id' => $data['user_id'],
+        ':action' => 'Tournament Registration',
+        ':details' => 'Registered for tournament ID: ' . $tournament['id'] . ' - ' . $tournament['name'],
+        ':ip_address' => $_SERVER['REMOTE_ADDR'] ?? '::1'
+    ]);
 
     // Commit transaction
     $pdo->commit();

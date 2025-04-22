@@ -206,3 +206,5 @@
 [08-Apr-2025 13:14:14 UTC] User inserted successfully with ID: 0
 [08-Apr-2025 13:14:14 UTC] User created successfully
 [17-Apr-2025 15:23:40 UTC] Database Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'nom_des_qualifications' in 'field list'
+[18-Apr-2025 18:39:01 UTC] Database Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'nom_des_qualifications' in 'field list'
+[22-Apr-2025 13:18:06 UTC] Database Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'nom_des_qualifications' in 'field list'

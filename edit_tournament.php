@@ -51,9 +51,31 @@ try {
         throw new Exception('Tournament ID is required');
     }
 
-    // Generate slug if title is present
+    // Map form field names to database column names
+    $fieldMapping = [
+        'nom_des_qualifications' => 'name',
+        'description_des_qualifications' => 'description',
+        'rules' => 'rules',
+        'format_des_qualifications' => 'bracket_type',
+        'nombre_maximum' => 'max_participants',
+        'prize_pool' => 'prize_pool',
+        'type_de_match' => 'match_format',
+        'type_de_jeu' => 'game_id',
+        'image' => 'featured_image',
+        'status' => 'status'
+    ];
+
+    // Status mapping if provided
+    $statusMapping = [
+        'Ouvert aux inscriptions' => 'registration_open',
+        'En cours' => 'ongoing',
+        'Terminé' => 'completed',
+        'Annulé' => 'cancelled'
+    ];
+
+    // Generate slug if name is present
     if (isset($data['nom_des_qualifications'])) {
-        $data['slug'] = strtolower(
+        $slug = strtolower(
             trim(
                 preg_replace('/[^a-zA-Z0-9]+/', '-', 
                     $data['nom_des_qualifications']
@@ -67,28 +89,45 @@ try {
     $updateFields = [];
     $params = [':id' => $data['id']];
     
-    $allowedFields = [
-        'nom_des_qualifications',
-        'slug',
-        'start_date',
-        'end_date',
-        'status',
-        'description_des_qualifications',
-        'nombre_maximum',
-        'prize_pool',
-        'format_des_qualifications',
-        'type_de_match',
-        'type_de_jeu',
-        'image',
-        'rules'
-    ];
+    // Handle slug separately
+    if (isset($slug)) {
+        $updateFields[] = "`slug` = :slug";
+        $params[':slug'] = $slug;
+    }
+    
+    // Handle status mapping
+    if (isset($data['status']) && isset($statusMapping[$data['status']])) {
+        $updateFields[] = "`status` = :status";
+        $params[':status'] = $statusMapping[$data['status']];
+    }
 
-    foreach ($allowedFields as $field) {
-        if (isset($data[$field]) && $data[$field] !== '') {
-            $updateFields[] = "`$field` = :$field";
-            $params[":$field"] = $data[$field];
+    // Process dates
+    if (isset($data['start_date'])) {
+        $updateFields[] = "`start_date` = :start_date";
+        $params[':start_date'] = $data['start_date'];
+    }
+    
+    if (isset($data['end_date'])) {
+        $updateFields[] = "`end_date` = :end_date";
+        $params[':end_date'] = $data['end_date'];
+    }
+
+    // Process other fields using mapping
+    foreach ($fieldMapping as $formField => $dbField) {
+        if (isset($data[$formField]) && $formField != 'status') { // Status handled separately
+            $updateFields[] = "`$dbField` = :$dbField";
+            $params[":$dbField"] = $data[$formField];
         }
     }
+
+    // Handle bracket type conversion
+    if (isset($data['format_des_qualifications'])) {
+        $updateFields[] = "`bracket_type` = :bracket_type";
+        $params[':bracket_type'] = $data['format_des_qualifications'];
+    }
+
+    // Add updated_at timestamp
+    $updateFields[] = "`updated_at` = NOW()";
 
     if (empty($updateFields)) {
         throw new Exception('No fields to update');
@@ -103,12 +142,18 @@ try {
         throw new Exception('Failed to update tournament');
     }
 
+    // Get updated tournament data
+    $stmt = $pdo->prepare("SELECT * FROM tournaments WHERE id = :id");
+    $stmt->execute([':id' => $data['id']]);
+    $tournament = $stmt->fetch(PDO::FETCH_ASSOC);
+
     echo json_encode([
         'success' => true,
         'message' => 'Tournament updated successfully',
         'data' => [
             'id' => $data['id'],
-            'slug' => $data['slug'] ?? null
+            'slug' => $tournament['slug'] ?? null,
+            'name' => $tournament['name'] ?? null
         ]
     ]);
 
@@ -117,7 +162,7 @@ try {
     http_response_code(500);
     echo json_encode([
         'success' => false,
-        'message' => 'Database error occurred'
+        'message' => 'Database error occurred: ' . $e->getMessage()
     ]);
 } catch (Exception $e) {
     error_log("Error: " . $e->getMessage());
