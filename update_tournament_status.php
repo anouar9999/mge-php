@@ -44,23 +44,43 @@ try {
     $tournament_id = $data['tournament_id'];
     $new_status = $data['new_status'];
 
-    // Validate status
-    $valid_statuses = ['Ouvert aux inscriptions', 'En cours', 'Terminé', 'Annulé'];
-    if (!in_array($new_status, $valid_statuses)) {
-        throw new Exception('Invalid status');
+    // Map UI-friendly status to database enum values
+    $status_mapping = [
+        'Ouvert aux inscriptions' => 'registration_open',
+        'En cours' => 'ongoing',
+        'Terminé' => 'completed',
+        'Annulé' => 'cancelled'
+    ];
+
+    // Check if the provided status is valid
+    if (!isset($status_mapping[$new_status])) {
+        // Check if they provided the database enum value directly
+        $valid_db_statuses = ['draft', 'registration_open', 'registration_closed', 'ongoing', 'completed', 'cancelled'];
+        if (!in_array($new_status, $valid_db_statuses)) {
+            throw new Exception('Invalid status');
+        }
+        // Use the provided enum value directly
+        $db_status = $new_status;
+    } else {
+        // Map to database enum value
+        $db_status = $status_mapping[$new_status];
     }
 
     // Update the tournament status
-    $stmt = $pdo->prepare("UPDATE tournaments SET status = :status WHERE id = :id");
+    $stmt = $pdo->prepare("UPDATE tournaments SET status = :status, updated_at = NOW() WHERE id = :id");
     $result = $stmt->execute([
-        ':status' => $new_status,
+        ':status' => $db_status,
         ':id' => $tournament_id
     ]);
 
     if ($result) {
         echo json_encode([
             'success' => true,
-            'message' => 'Tournament status updated successfully'
+            'message' => 'Tournament status updated successfully',
+            'data' => [
+                'tournament_id' => $tournament_id,
+                'status' => $db_status
+            ]
         ]);
     } else {
         throw new Exception('Failed to update tournament status');

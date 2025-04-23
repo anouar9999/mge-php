@@ -208,3 +208,94 @@
 [17-Apr-2025 15:23:40 UTC] Database Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'nom_des_qualifications' in 'field list'
 [18-Apr-2025 18:39:01 UTC] Database Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'nom_des_qualifications' in 'field list'
 [22-Apr-2025 13:18:06 UTC] Database Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'nom_des_qualifications' in 'field list'
+[23-Apr-2025 01:15:33 Europe/Berlin] Processing registration request
+[23-Apr-2025 01:15:33 Europe/Berlin] Database connection established
+[23-Apr-2025 01:15:33 Europe/Berlin] Processing form POST data
+[23-Apr-2025 01:15:33 Europe/Berlin] Validating input data
+[23-Apr-2025 01:15:33 Europe/Berlin] Input validated for user: User1
+[23-Apr-2025 01:15:33 Europe/Berlin] Processing avatar upload
+[23-Apr-2025 01:15:33 Europe/Berlin] Creating upload directory: C:/xampp/htdocs/uploads/avatars/
+[23-Apr-2025 01:15:33 Europe/Berlin] Uploaded file MIME type: image/jpeg
+[23-Apr-2025 01:15:33 Europe/Berlin] Saving avatar to: C:/xampp/htdocs/uploads/avatars/avatar_680823154226b.jpg
+[23-Apr-2025 01:15:33 Europe/Berlin] Avatar uploaded: /uploads/avatars/avatar_680823154226b.jpg
+[23-Apr-2025 01:15:33 Europe/Berlin] Checking for existing user with email: user@gmail.com or username: User1
+[23-Apr-2025 01:15:33 Europe/Berlin] User uniqueness verified
+[23-Apr-2025 01:15:33 Europe/Berlin] Creating new user: User1
+[23-Apr-2025 01:15:33 Europe/Berlin] User table columns: id, username, password, email, type, points, rank, is_verified, verification_token, created_at, bio, avatar, failed_attempts, user_type
+[23-Apr-2025 01:15:33 Europe/Berlin] User inserted successfully with ID: 0
+[23-Apr-2025 01:15:33 Europe/Berlin] User created successfully
+[23-Apr-2025 02:08:30 Europe/Berlin] Database connection established
+[23-Apr-2025 02:08:30 Europe/Berlin] Modifying ID column to be auto-increment
+[23-Apr-2025 02:08:30 Europe/Berlin] Error ensuring auto-increment ID: SQLSTATE[42000]: Syntax error or access violation: 1075 Incorrect table definition; there can be only one auto column and it must be defined as a key
+[23-Apr-2025 02:08:30 Europe/Berlin] General Error: Failed to configure database schema: SQLSTATE[42000]: Syntax error or access violation: 1075 Incorrect table definition; there can be only one auto column and it must be defined as a key
+#0 C:\xampp\htdocs\api\user_register.php(32): ensureAutoIncrementId(Object(PDO))
+#1 {main}
+[23-Apr-2025 02:08:30 Europe/Berlin] Error response: [400] Failed to configure database schema: SQLSTATE[42000]: Syntax error or access violation: 1075 Incorrect table definition; there can be only one auto column and it must be defined as a key
+[23-Apr-2025 02:08:38 Europe/Berlin] Database connection established
+[23-Apr-2025 02:08:38 Europe/Berlin] Modifying ID column to be auto-increment
+[23-Apr-2025 02:08:38 Europe/Berlin] Error ensuring auto-increment ID: SQLSTATE[42000]: Syntax error or access violation: 1075 Incorrect table definition; there can be only one auto column and it must be defined as a key
+[23-Apr-2025 02:08:38 Europe/Berlin] General Error: Failed to configure database schema: SQLSTATE[42000]: Syntax error or access violation: 1075 Incorrect table definition; there can be only one auto column and it must be defined as a key
+#0 C:\xampp\htdocs\api\user_register.php(32): ensureAutoIncrementId(Object(PDO))
+#1 {main}
+[23-Apr-2025 02:08:38 Europe/Berlin] Error response: [400] Failed to configure database schema: SQLSTATE[42000]: Syntax error or access violation: 1075 Incorrect table definition; there can be only one auto column and it must be defined as a key
+[23-Apr-2025 02:10:08 Europe/Berlin] Database connection established
+[23-Apr-2025 02:10:08 Europe/Berlin] Making existing ID column primary key and auto_increment
+[23-Apr-2025 02:10:08 Europe/Berlin] Auto-increment ID column configured successfully
+[23-Apr-2025 02:10:08 Europe/Berlin] Processing registration request
+[23-Apr-2025 02:10:08 Europe/Berlin] Processing form POST data
+[23-Apr-2025 02:10:08 Europe/Berlin] Validating input data
+[23-Apr-2025 02:10:08 Europe/Berlin] Input validated for user: usser1
+[23-Apr-2025 02:10:08 Europe/Berlin] Processing avatar upload
+[23-Apr-2025 02:10:08 Europe/Berlin] Uploaded file MIME type: image/jpeg
+[23-Apr-2025 02:10:08 Europe/Berlin] Saving avatar to: C:/xampp/htdocs/uploads/avatars/avatar_68082fe0a99a6.jpg
+[23-Apr-2025 02:10:08 Europe/Berlin] Avatar uploaded: /uploads/avatars/avatar_68082fe0a99a6.jpg
+[23-Apr-2025 02:10:08 Europe/Berlin] Checking for existing user with email: user@gmail.com or username: usser1
+[23-Apr-2025 02:10:08 Europe/Berlin] User uniqueness verified
+[23-Apr-2025 02:10:08 Europe/Berlin] Creating new user: usser1
+[23-Apr-2025 02:10:08 Europe/Berlin] User inserted successfully with ID: 1
+[23-Apr-2025 02:10:08 Europe/Berlin] User created successfully
+[23-Apr-2025 02:15:37 Europe/Berlin] Database connection established
+[23-Apr-2025 02:15:38 Europe/Berlin] Table already has auto-increment column: id
+[23-Apr-2025 02:15:38 Europe/Berlin] Processing registration request
+[23-Apr-2025 02:15:38 Europe/Berlin] Processing form POST data
+[23-Apr-2025 02:15:38 Europe/Berlin] Validating input data
+[23-Apr-2025 02:15:38 Europe/Berlin] Input validated for user: user2
+[23-Apr-2025 02:15:38 Europe/Berlin] Processing avatar upload
+[23-Apr-2025 02:15:38 Europe/Berlin] Uploaded file MIME type: image/png
+[23-Apr-2025 02:15:38 Europe/Berlin] Saving avatar to: C:/xampp/htdocs/uploads/avatars/avatar_6808312a0853d.png
+[23-Apr-2025 02:15:38 Europe/Berlin] Avatar uploaded: /uploads/avatars/avatar_6808312a0853d.png
+[23-Apr-2025 02:15:38 Europe/Berlin] Checking for existing user with email: user2@gmail.com or username: user2
+[23-Apr-2025 02:15:38 Europe/Berlin] User uniqueness verified
+[23-Apr-2025 02:15:38 Europe/Berlin] Creating new user: user2
+[23-Apr-2025 02:15:38 Europe/Berlin] User inserted successfully with ID: 2
+[23-Apr-2025 02:15:38 Europe/Berlin] User created successfully
+[23-Apr-2025 02:25:18 Europe/Berlin] Database connection established
+[23-Apr-2025 02:25:18 Europe/Berlin] Table already has auto-increment column: id
+[23-Apr-2025 02:25:18 Europe/Berlin] Processing registration request
+[23-Apr-2025 02:25:18 Europe/Berlin] Processing form POST data
+[23-Apr-2025 02:25:18 Europe/Berlin] Validating input data
+[23-Apr-2025 02:25:18 Europe/Berlin] Input validated for user: user3
+[23-Apr-2025 02:25:18 Europe/Berlin] Processing avatar upload
+[23-Apr-2025 02:25:18 Europe/Berlin] Uploaded file MIME type: image/jpeg
+[23-Apr-2025 02:25:18 Europe/Berlin] Saving avatar to: C:/xampp/htdocs/uploads/avatars/avatar_6808336eb6670.jpg
+[23-Apr-2025 02:25:18 Europe/Berlin] Avatar uploaded: /uploads/avatars/avatar_6808336eb6670.jpg
+[23-Apr-2025 02:25:18 Europe/Berlin] Checking for existing user with email: user3@gmail.com or username: user3
+[23-Apr-2025 02:25:18 Europe/Berlin] User uniqueness verified
+[23-Apr-2025 02:25:18 Europe/Berlin] Creating new user: user3
+[23-Apr-2025 02:25:18 Europe/Berlin] User inserted successfully with ID: 3
+[23-Apr-2025 02:25:18 Europe/Berlin] User created successfully
+[23-Apr-2025 02:26:17 Europe/Berlin] Database connection established
+[23-Apr-2025 02:26:17 Europe/Berlin] Table already has auto-increment column: id
+[23-Apr-2025 02:26:17 Europe/Berlin] Processing registration request
+[23-Apr-2025 02:26:17 Europe/Berlin] Processing form POST data
+[23-Apr-2025 02:26:17 Europe/Berlin] Validating input data
+[23-Apr-2025 02:26:17 Europe/Berlin] Input validated for user: user4
+[23-Apr-2025 02:26:17 Europe/Berlin] Processing avatar upload
+[23-Apr-2025 02:26:17 Europe/Berlin] Uploaded file MIME type: image/png
+[23-Apr-2025 02:26:17 Europe/Berlin] Saving avatar to: C:/xampp/htdocs/uploads/avatars/avatar_680833a9654ba.png
+[23-Apr-2025 02:26:17 Europe/Berlin] Avatar uploaded: /uploads/avatars/avatar_680833a9654ba.png
+[23-Apr-2025 02:26:17 Europe/Berlin] Checking for existing user with email: user4@gmail.com or username: user4
+[23-Apr-2025 02:26:17 Europe/Berlin] User uniqueness verified
+[23-Apr-2025 02:26:17 Europe/Berlin] Creating new user: user4
+[23-Apr-2025 02:26:17 Europe/Berlin] User inserted successfully with ID: 4
+[23-Apr-2025 02:26:17 Europe/Berlin] User created successfully
