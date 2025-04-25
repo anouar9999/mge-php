@@ -390,7 +390,9 @@ try {
 }
 
 /**
- * Generate round-robin matches for a group
+ * Generate round-robin matches for a group using the Circle Method algorithm
+ * This implementation mirrors the JavaScript version from the frontend
+ * and ensures proper auto-increment of match IDs
  *
  * @param PDO $pdo Database connection
  * @param int $tournament_id Tournament ID
@@ -404,7 +406,8 @@ function generateRoundRobinMatches($pdo, $tournament_id, $group_id, $participant
     $hasBye = false;
     if ($participant_count % 2 !== 0) {
         $hasBye = true;
-        $participants[] = ['id' => null, 'name' => 'BYE'];
+        // Add a BYE participant
+        $participants[] = ['id' => 'bye', 'name' => 'BYE'];
         $participant_count++;
     }
     
@@ -421,38 +424,36 @@ function generateRoundRobinMatches($pdo, $tournament_id, $group_id, $participant
         return;
     }
     
-    // Create an array of team IDs
-    $team_ids = array_map(function($participant) {
-        return $participant['id'];
-    }, $participants);
-    
-    // Total number of rounds needed = (n-1) where n is the number of teams
+    // Number of rounds needed
     $rounds = $participant_count - 1;
+    $half = $participant_count / 2;
     
-    // Implementing the Circle Method for round-robin scheduling
-    // Team at index 0 stays fixed, others rotate
+    // Create an array of participant indices (excluding first participant)
+    $teamIndices = range(1, $participant_count - 1);
     
-    // Create fixtures for each round
+    // Generate matches for each round
     for ($round = 0; $round < $rounds; $round++) {
+        // For each round, the first team stays fixed and others rotate
+        $newIndices = array_merge([0], $teamIndices);
+        
+        // Generate matches for this round
         $fixtures = [];
-        
-        // First match: Fixed team vs rotating team
-        $fixtures[] = [$team_ids[0], $team_ids[1 + $round % ($participant_count - 1)]];
-        
-        // Other matches: Pair teams in circle method
-        for ($i = 1; $i < $participant_count / 2; $i++) {
-            $team1_idx = (1 + $round - $i + ($participant_count - 1)) % ($participant_count - 1) + 1;
-            $team2_idx = (1 + $round + $i) % ($participant_count - 1) + 1;
-            $fixtures[] = [$team_ids[$team1_idx], $team_ids[$team2_idx]];
+        for ($match = 0; $match < $half; $match++) {
+            $team1 = $participants[$newIndices[$match]];
+            $team2 = $participants[$newIndices[$participant_count - 1 - $match]];
+            
+            // Skip matches with BYE
+            if ($team1['id'] !== 'bye' && $team2['id'] !== 'bye') {
+                $fixtures[] = [
+                    'team1_id' => $team1['id'],
+                    'team2_id' => $team2['id'],
+                    'matchIndex' => $match
+                ];
+            }
         }
         
         // Insert fixtures into database
         foreach ($fixtures as $fixture) {
-            // Skip if either team is a bye
-            if ($fixture[0] === null || $fixture[1] === null) {
-                continue;
-            }
-            
             // Check if this match already exists
             $stmt = $pdo->prepare("
                 SELECT COUNT(*) FROM round_robin_matches 
@@ -463,13 +464,14 @@ function generateRoundRobinMatches($pdo, $tournament_id, $group_id, $participant
                 $tournament_id,
                 $group_id,
                 $round,
-                $fixture[0], $fixture[1],
-                $fixture[1], $fixture[0]
+                $fixture['team1_id'], $fixture['team2_id'],
+                $fixture['team2_id'], $fixture['team1_id']
             ]);
             $match_exists = (int)$stmt->fetchColumn() > 0;
             
             // Only insert if match doesn't already exist
             if (!$match_exists) {
+                // Let the database handle auto-incrementing the ID
                 $stmt = $pdo->prepare("
                     INSERT INTO round_robin_matches (
                         tournament_id, 
@@ -491,10 +493,20 @@ function generateRoundRobinMatches($pdo, $tournament_id, $group_id, $participant
                     $tournament_id,
                     $group_id,
                     $round,
-                    $fixture[0],
-                    $fixture[1]
+                    $fixture['team1_id'],
+                    $fixture['team2_id']
                 ]);
+                
+                // Get the auto-generated ID
+                $match_id = $pdo->lastInsertId();
+                
+                // Log for debugging (optional)
+                error_log("Created match ID: $match_id for round $round, matchIndex {$fixture['matchIndex']}, teams: {$fixture['team1_id']} vs {$fixture['team2_id']}");
             }
         }
+        
+        // Rotate the teams (except the first one) for the next round
+        // This is the key to the round robin algorithm
+        array_unshift($teamIndices, array_pop($teamIndices));
     }
 }

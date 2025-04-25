@@ -6,7 +6,7 @@ return [
     'db'   => 'geniusmo_inwi',
     'user' => 'root',
     'pass' => '',
-    'port'=> '3306' ,  
+    'port'=> '3335' ,  
     'debug' => true, // Set to false in production
     'smtp' => [
         'host' => 'smtp.gmail.com',

@@ -299,3 +299,19 @@
 [23-Apr-2025 02:26:17 Europe/Berlin] Creating new user: user4
 [23-Apr-2025 02:26:17 Europe/Berlin] User inserted successfully with ID: 4
 [23-Apr-2025 02:26:17 Europe/Berlin] User created successfully
+[24-Apr-2025 15:28:17 UTC] Database connection established
+[24-Apr-2025 15:28:17 UTC] Making existing ID column primary key and auto_increment
+[24-Apr-2025 15:28:17 UTC] Auto-increment ID column configured successfully
+[24-Apr-2025 15:28:17 UTC] Processing registration request
+[24-Apr-2025 15:28:17 UTC] Processing form POST data
+[24-Apr-2025 15:28:17 UTC] Validating input data
+[24-Apr-2025 15:28:17 UTC] Input validated for user: user
+[24-Apr-2025 15:28:17 UTC] Processing avatar upload
+[24-Apr-2025 15:28:17 UTC] Uploaded file MIME type: image/jpeg
+[24-Apr-2025 15:28:17 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_680a58914680a.jpg
+[24-Apr-2025 15:28:17 UTC] Avatar uploaded: /uploads/avatars/avatar_680a58914680a.jpg
+[24-Apr-2025 15:28:17 UTC] Checking for existing user with email: user@gmail.com or username: user
+[24-Apr-2025 15:28:17 UTC] User uniqueness verified
+[24-Apr-2025 15:28:17 UTC] Creating new user: user
+[24-Apr-2025 15:28:17 UTC] User inserted successfully with ID: 55
+[24-Apr-2025 15:28:17 UTC] User created successfully
