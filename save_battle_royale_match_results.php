@@ -1,5 +1,5 @@
 <?php
-// save_battle_royale_match_results.php
+// save_battle_royale_match_results.php - FIXED FOR PLACEMENT POINTS
 
 // Set CORS headers
 header('Access-Control-Allow-Origin: *');
@@ -42,8 +42,11 @@ if (!$data || !isset($data['tournament_id']) || !isset($data['results']) || empt
 }
 
 $tournament_id = intval($data['tournament_id']);
-$match_id = isset($data['match_id']) ? intval($data['match_id']) : 0;
 $results = $data['results'];
+
+// We'll use a fixed match_id of 0 for ALL battle royale results
+// This is intentional since we're not tracking individual matches
+$match_id = 0;
 
 try {
     // Database connection
@@ -59,7 +62,7 @@ try {
     $pdo->beginTransaction();
     
     // Verify tournament exists
-    $tournamentSql = "SELECT id, bracket_type FROM tournaments WHERE id = ?";
+    $tournamentSql = "SELECT id, bracket_type, participation_type FROM tournaments WHERE id = ?";
     $tournamentStmt = $pdo->prepare($tournamentSql);
     $tournamentStmt->execute([$tournament_id]);
     $tournament = $tournamentStmt->fetch();
@@ -76,18 +79,6 @@ try {
         $updateTournamentSql = "UPDATE tournaments SET bracket_type = 'Battle Royale' WHERE id = ?";
         $updateTournamentStmt = $pdo->prepare($updateTournamentSql);
         $updateTournamentStmt->execute([$tournament_id]);
-    }
-    
-    // Create new match if match_id is not provided
-    if ($match_id <= 0) {
-        $createMatchSql = "
-            INSERT INTO matches 
-            (tournament_id, tournament_round_text, start_time, state, match_state) 
-            VALUES (?, 'Battle Royale', NOW(), 'SCORE_DONE', 'completed')
-        ";
-        $createMatchStmt = $pdo->prepare($createMatchSql);
-        $createMatchStmt->execute([$tournament_id]);
-        $match_id = $pdo->lastInsertId();
     }
     
     // Get or create battle royale settings
@@ -133,68 +124,92 @@ try {
         $settings['placement_points_distribution'] = json_decode($settings['placement_points_distribution'], true);
     }
     
-    // Delete existing results for this match
-    $deleteResultsSql = "DELETE FROM battle_royale_match_results WHERE match_id = ?";
-    $deleteResultsStmt = $pdo->prepare($deleteResultsSql);
-    $deleteResultsStmt->execute([$match_id]);
+    // Make sure we have a valid match record to attach results to
+    // First check if a match with ID 0 exists for this tournament
+    $checkMatchSql = "SELECT id FROM matches WHERE id = ? AND tournament_id = ?";
+    $checkMatchStmt = $pdo->prepare($checkMatchSql);
+    $checkMatchStmt->execute([$match_id, $tournament_id]);
     
-    // Insert new results
+    if (!$checkMatchStmt->fetch()) {
+        // Create a match record with ID 0 if it doesn't exist
+        $createMatchSql = "
+            INSERT INTO matches 
+            (id, tournament_id, tournament_round_text, start_time, state, match_state) 
+            VALUES (?, ?, 'Battle Royale', NOW(), 'SCORE_DONE', 'completed')
+        ";
+        $createMatchStmt = $pdo->prepare($createMatchSql);
+        $createMatchStmt->execute([$match_id, $tournament_id]);
+        error_log("Created battle royale match record for tournament: $tournament_id");
+    }
+    
+    // Prepare to insert/update results
     $insertResultSql = "
         INSERT INTO battle_royale_match_results 
         (match_id, team_id, position, kills, placement_points) 
         VALUES (?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+        position = VALUES(position),
+        kills = VALUES(kills),
+        placement_points = VALUES(placement_points)
     ";
     $insertResultStmt = $pdo->prepare($insertResultSql);
+    
+    // Process results
+    $insertedCount = 0;
+    $skippedCount = 0;
     
     foreach ($results as $result) {
         $teamId = intval($result['team_id']);
         $position = intval($result['position']);
         $kills = intval($result['kills']);
         
-        // Skip if no position is set or team_id is invalid
+        // Skip invalid data
         if ($position <= 0 || $teamId <= 0) {
+            $skippedCount++;
+            error_log("Skipping invalid result: position=$position, team_id=$teamId");
             continue;
         }
         
-        // Calculate placement points
-        $placementPoints = 0;
-        $positionStr = (string)$position;
-        if (isset($settings['placement_points_distribution'][$positionStr])) {
-            $placementPoints = $settings['placement_points_distribution'][$positionStr];
+        // IMPORTANT FIX: Use client-provided placement_points if available
+        // otherwise calculate from position using the tournament settings
+        if (isset($result['placement_points'])) {
+            $placementPoints = intval($result['placement_points']);
+        } else {
+            $placementPoints = 0;
+            $positionStr = (string)$position;
+            if (isset($settings['placement_points_distribution'][$positionStr])) {
+                $placementPoints = $settings['placement_points_distribution'][$positionStr];
+            }
         }
         
-        // Calculate kill points (kills * points per kill)
+        // Calculate kill points based on tournament settings
         $killPoints = $kills * $settings['kill_points'];
         
-        // Insert the result
+        // Delete existing result for this team (if any)
+        $deleteExistingSql = "DELETE FROM battle_royale_match_results WHERE match_id = ? AND team_id = ?";
+        $deleteExistingStmt = $pdo->prepare($deleteExistingSql);
+        $deleteExistingStmt->execute([$match_id, $teamId]);
+        
+        // Insert the new result
         $insertResultStmt->execute([
             $match_id,
             $teamId,
             $position,
-            $killPoints, // Store calculated kill points
+            $killPoints,
             $placementPoints
         ]);
+        
+        $insertedCount++;
     }
     
     // Update match count in settings
-    $countMatchesSql = "
-        SELECT COUNT(DISTINCT m.id) as match_count
-        FROM matches m 
-        WHERE m.tournament_id = ? AND m.state = 'SCORE_DONE'
+    $updateMatchCountSql = "
+        UPDATE battle_royale_settings
+        SET match_count = 1
+        WHERE id = ?
     ";
-    $countMatchesStmt = $pdo->prepare($countMatchesSql);
-    $countMatchesStmt->execute([$tournament_id]);
-    $matchCountResult = $countMatchesStmt->fetch();
-    
-    if ($matchCountResult) {
-        $updateMatchCountSql = "
-            UPDATE battle_royale_settings
-            SET match_count = ?
-            WHERE id = ?
-        ";
-        $updateMatchCountStmt = $pdo->prepare($updateMatchCountSql);
-        $updateMatchCountStmt->execute([$matchCountResult['match_count'], $settings['id']]);
-    }
+    $updateMatchCountStmt = $pdo->prepare($updateMatchCountSql);
+    $updateMatchCountStmt->execute([$settings['id']]);
     
     // Commit transaction
     $pdo->commit();
@@ -202,8 +217,8 @@ try {
     // Return success response
     echo json_encode([
         'success' => true,
-        'message' => 'Match results saved successfully',
-        'match_id' => $match_id
+        'message' => "Battle royale results saved successfully. Inserted/updated $insertedCount results, skipped $skippedCount.",
+        'tournament_id' => $tournament_id
     ]);
 
 } catch (PDOException $e) {

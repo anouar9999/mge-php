@@ -77,14 +77,65 @@ try {
         throw new Exception('This tournament is not a Round Robin tournament');
     }
     
+    // RESET EXISTING TOURNAMENT DATA
+    // =======================================================================
+    
+    // Store the tournament_registrations with accepted status (we'll keep these)
+    $stmt = $pdo->prepare("
+        SELECT id, tournament_id, user_id, team_id, status
+        FROM tournament_registrations 
+        WHERE tournament_id = ? AND status = 'accepted'
+    ");
+    $stmt->execute([$tournament_id]);
+    $acceptedRegistrations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Log action
+    $logStmt = $pdo->prepare("
+        INSERT INTO activity_log (user_id, action, details, ip_address)
+        VALUES (?, ?, ?, ?)
+    ");
+    $logStmt->execute([
+        1,  // Default to admin ID 1
+        'Tournament Reset',
+        "Reset tournament ID: {$tournament_id} before round-robin setup",
+        $_SERVER['REMOTE_ADDR'] ?? 'Unknown'
+    ]);
+    
+    // 1. Delete round robin matches
+    $stmt = $pdo->prepare("DELETE FROM round_robin_matches WHERE tournament_id = ?");
+    $stmt->execute([$tournament_id]);
+    
+    // 2. Delete round robin standings
+    $stmt = $pdo->prepare("DELETE FROM round_robin_standings WHERE tournament_id = ?");
+    $stmt->execute([$tournament_id]);
+    
+    // 3. Delete round robin group teams
+    $stmt = $pdo->prepare("
+        DELETE rrgt FROM round_robin_group_teams rrgt
+        JOIN round_robin_groups rrg ON rrgt.group_id = rrg.id
+        WHERE rrg.tournament_id = ?
+    ");
+    $stmt->execute([$tournament_id]);
+    
+    // 4. Delete round robin groups
+    $stmt = $pdo->prepare("DELETE FROM round_robin_groups WHERE tournament_id = ?");
+    $stmt->execute([$tournament_id]);
+    
+    // We don't need to delete and restore registrations since we'll be using the acceptedRegistrations
+    // directly for participant selection
+    // =======================================================================
+    
     // Check participation type to know if we're handling teams or individuals
     $is_team_tournament = ($tournament['participation_type'] === 'team');
     
     // Get participants registered for this tournament (either teams or individual players)
     if ($is_team_tournament) {
-        // Get registered teams
+        // Get registered teams with explicit column list instead of t.*
         $stmt = $pdo->prepare("
-            SELECT t.* 
+            SELECT t.id, t.owner_id, t.name, t.tag, t.slug, t.game_id, t.description, 
+                   t.logo, t.banner, t.division, t.tier, t.wins, t.losses, t.draws, 
+                   t.win_rate, t.total_members, t.captain_id, t.discord, t.twitter, 
+                   t.contact_email, t.created_at, t.updated_at
             FROM teams t
             JOIN tournament_registrations tr ON t.id = tr.team_id
             WHERE tr.tournament_id = ? AND tr.status = 'accepted'
@@ -100,7 +151,7 @@ try {
         // For individual tournaments, we'll create temporary teams to represent players
         // Get registered individual players
         $stmt = $pdo->prepare("
-            SELECT u.id, u.username, u.avatar
+            SELECT u.id, u.username, u.avatar 
             FROM users u
             JOIN tournament_registrations tr ON u.id = tr.user_id
             WHERE tr.tournament_id = ? AND tr.status = 'accepted'
@@ -121,13 +172,13 @@ try {
                 SELECT id FROM teams 
                 WHERE owner_id = ? 
                 AND game_id = ? 
-                AND name LIKE ? 
+                AND name = ? 
                 LIMIT 1
             ");
             $stmt->execute([
                 $player['id'],
                 $tournament['game_id'],
-                $player['username'] . ' [PLAYER]'
+                $player['username']  // Look for team with exact player name without [PLAYER]
             ]);
             
             $existing_team = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -171,8 +222,8 @@ try {
                 // Generate unique slug for the player's virtual team
                 $slug = strtolower(preg_replace('/[^a-z0-9]+/', '-', $player['username'])) . '-' . uniqid();
                 
-                // Use player info but mark as a virtual team
-                $teamName = $player['username'] . ' [PLAYER]';
+                // Use player info for virtual team
+                $teamName = $player['username'];  // Removed [PLAYER] suffix
                 $teamTag = 'P' . substr(uniqid(), -4);
                 $description = 'Virtual team representing player #' . $player['id'] . ' in individual tournament #' . $tournament_id;
                 
@@ -196,20 +247,6 @@ try {
                 $stmt->execute([$tournament_id, $team_id]);
             }
             
-            // Add team member record to link the player to their team
-            $stmt = $pdo->prepare("
-                INSERT INTO team_members (team_id, user_id, role, is_captain)
-                VALUES (?, ?, 'Player', 1)
-            ");
-            $stmt->execute([$team_id, $player['id']]);
-            
-            // Register the team for the tournament
-            $stmt = $pdo->prepare("
-                INSERT INTO tournament_registrations (tournament_id, team_id, status)
-                VALUES (?, ?, 'accepted')
-            ");
-            $stmt->execute([$tournament_id, $team_id]);
-            
             // Add this team to our participants list
             $participants[] = [
                 'id' => $team_id,
@@ -221,15 +258,6 @@ try {
                 'is_virtual' => true
             ];
         }
-    }
-    
-    // Check if groups already exist for this tournament
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM round_robin_groups WHERE tournament_id = ?");
-    $stmt->execute([$tournament_id]);
-    $existing_groups = (int)$stmt->fetchColumn();
-    
-    if ($existing_groups > 0) {
-        throw new Exception('Round robin groups already exist for this tournament');
     }
     
     // Calculate optimal number of groups if not specified
@@ -307,16 +335,15 @@ try {
             ");
             $stmt->execute([$group_id, $participant['id']]);
             
-            // Check if standings already exist for this combination before inserting
-            $stmt = $pdo->prepare("
+            // First check if standings record already exists
+            $checkStmt = $pdo->prepare("
                 SELECT COUNT(*) FROM round_robin_standings 
                 WHERE tournament_id = ? AND group_id = ? AND team_id = ?
             ");
-            $stmt->execute([$tournament_id, $group_id, $participant['id']]);
-            $standings_exist = (int)$stmt->fetchColumn() > 0;
+            $checkStmt->execute([$tournament_id, $group_id, $participant['id']]);
+            $recordExists = (int)$checkStmt->fetchColumn() > 0;
             
-            // Only insert if standings don't already exist
-            if (!$standings_exist) {
+            if (!$recordExists) {
                 // Initialize standings record
                 $stmt = $pdo->prepare("
                     INSERT INTO round_robin_standings (
@@ -411,19 +438,6 @@ function generateRoundRobinMatches($pdo, $tournament_id, $group_id, $participant
         $participant_count++;
     }
     
-    // Check if matches already exist for this group
-    $stmt = $pdo->prepare("
-        SELECT COUNT(*) FROM round_robin_matches 
-        WHERE tournament_id = ? AND group_id = ?
-    ");
-    $stmt->execute([$tournament_id, $group_id]);
-    $existing_matches = (int)$stmt->fetchColumn();
-    
-    // If matches already exist, don't generate new ones
-    if ($existing_matches > 0) {
-        return;
-    }
-    
     // Number of rounds needed
     $rounds = $participant_count - 1;
     $half = $participant_count / 2;
@@ -454,55 +468,31 @@ function generateRoundRobinMatches($pdo, $tournament_id, $group_id, $participant
         
         // Insert fixtures into database
         foreach ($fixtures as $fixture) {
-            // Check if this match already exists
+            // Let the database handle auto-incrementing the ID
             $stmt = $pdo->prepare("
-                SELECT COUNT(*) FROM round_robin_matches 
-                WHERE tournament_id = ? AND group_id = ? AND round_number = ? 
-                AND ((team1_id = ? AND team2_id = ?) OR (team1_id = ? AND team2_id = ?))
+                INSERT INTO round_robin_matches (
+                    tournament_id, 
+                    group_id, 
+                    round_number, 
+                    team1_id, 
+                    team2_id, 
+                    team1_score, 
+                    team2_score, 
+                    winner_id, 
+                    match_date, 
+                    status,
+                    created_at, 
+                    updated_at
+                )
+                VALUES (?, ?, ?, ?, ?, NULL, NULL, NULL, NULL, 'scheduled', NOW(), NOW())
             ");
             $stmt->execute([
                 $tournament_id,
                 $group_id,
                 $round,
-                $fixture['team1_id'], $fixture['team2_id'],
-                $fixture['team2_id'], $fixture['team1_id']
+                $fixture['team1_id'],
+                $fixture['team2_id']
             ]);
-            $match_exists = (int)$stmt->fetchColumn() > 0;
-            
-            // Only insert if match doesn't already exist
-            if (!$match_exists) {
-                // Let the database handle auto-incrementing the ID
-                $stmt = $pdo->prepare("
-                    INSERT INTO round_robin_matches (
-                        tournament_id, 
-                        group_id, 
-                        round_number, 
-                        team1_id, 
-                        team2_id, 
-                        team1_score, 
-                        team2_score, 
-                        winner_id, 
-                        match_date, 
-                        status,
-                        created_at, 
-                        updated_at
-                    )
-                    VALUES (?, ?, ?, ?, ?, NULL, NULL, NULL, NULL, 'scheduled', NOW(), NOW())
-                ");
-                $stmt->execute([
-                    $tournament_id,
-                    $group_id,
-                    $round,
-                    $fixture['team1_id'],
-                    $fixture['team2_id']
-                ]);
-                
-                // Get the auto-generated ID
-                $match_id = $pdo->lastInsertId();
-                
-                // Log for debugging (optional)
-                error_log("Created match ID: $match_id for round $round, matchIndex {$fixture['matchIndex']}, teams: {$fixture['team1_id']} vs {$fixture['team2_id']}");
-            }
         }
         
         // Rotate the teams (except the first one) for the next round

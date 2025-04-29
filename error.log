@@ -315,3 +315,109 @@
 [24-Apr-2025 15:28:17 UTC] Creating new user: user
 [24-Apr-2025 15:28:17 UTC] User inserted successfully with ID: 55
 [24-Apr-2025 15:28:17 UTC] User created successfully
+[29-Apr-2025 01:26:34 UTC] Database connection established
+[29-Apr-2025 01:26:35 UTC] Making existing ID column primary key and auto_increment
+[29-Apr-2025 01:26:35 UTC] Auto-increment ID column configured successfully
+[29-Apr-2025 01:26:35 UTC] Processing registration request
+[29-Apr-2025 01:26:35 UTC] Processing form POST data
+[29-Apr-2025 01:26:35 UTC] Validating input data
+[29-Apr-2025 01:26:35 UTC] Input validated for user: anouar
+[29-Apr-2025 01:26:35 UTC] Processing avatar upload
+[29-Apr-2025 01:26:35 UTC] Uploaded file MIME type: image/png
+[29-Apr-2025 01:26:35 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_68102acb1782b.png
+[29-Apr-2025 01:26:35 UTC] Avatar uploaded: /uploads/avatars/avatar_68102acb1782b.png
+[29-Apr-2025 01:26:35 UTC] Checking for existing user with email: usser@gmail.com or username: anouar
+[29-Apr-2025 01:26:35 UTC] User uniqueness verified
+[29-Apr-2025 01:26:35 UTC] Creating new user: anouar
+[29-Apr-2025 01:26:35 UTC] User inserted successfully with ID: 55
+[29-Apr-2025 01:26:35 UTC] User created successfully
+[29-Apr-2025 13:41:24 UTC] Database connection established
+[29-Apr-2025 13:41:24 UTC] Table already has auto-increment column: id
+[29-Apr-2025 13:41:24 UTC] Processing registration request
+[29-Apr-2025 13:41:24 UTC] Processing form POST data
+[29-Apr-2025 13:41:24 UTC] Validating input data
+[29-Apr-2025 13:41:24 UTC] Input validated for user: user
+[29-Apr-2025 13:41:24 UTC] Processing avatar upload
+[29-Apr-2025 13:41:24 UTC] Uploaded file MIME type: image/jpeg
+[29-Apr-2025 13:41:24 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6810d70450437.jpg
+[29-Apr-2025 13:41:24 UTC] Avatar uploaded: /uploads/avatars/avatar_6810d70450437.jpg
+[29-Apr-2025 13:41:24 UTC] Checking for existing user with email: user@gmail.com or username: user
+[29-Apr-2025 13:41:24 UTC] User uniqueness verified
+[29-Apr-2025 13:41:24 UTC] Creating new user: user
+[29-Apr-2025 13:41:24 UTC] User inserted successfully with ID: 56
+[29-Apr-2025 13:41:24 UTC] User created successfully
+[29-Apr-2025 13:43:35 UTC] Database connection established
+[29-Apr-2025 13:43:35 UTC] Table already has auto-increment column: id
+[29-Apr-2025 13:43:35 UTC] Processing registration request
+[29-Apr-2025 13:43:35 UTC] Processing form POST data
+[29-Apr-2025 13:43:35 UTC] Validating input data
+[29-Apr-2025 13:43:35 UTC] Input validated for user: user2
+[29-Apr-2025 13:43:35 UTC] Processing avatar upload
+[29-Apr-2025 13:43:35 UTC] Uploaded file MIME type: image/png
+[29-Apr-2025 13:43:35 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6810d78778ace.png
+[29-Apr-2025 13:43:35 UTC] Avatar uploaded: /uploads/avatars/avatar_6810d78778ace.png
+[29-Apr-2025 13:43:35 UTC] Checking for existing user with email: user2@gmail.com or username: user2
+[29-Apr-2025 13:43:35 UTC] User uniqueness verified
+[29-Apr-2025 13:43:35 UTC] Creating new user: user2
+[29-Apr-2025 13:43:35 UTC] User inserted successfully with ID: 57
+[29-Apr-2025 13:43:35 UTC] User created successfully
+[29-Apr-2025 13:44:04 UTC] Database connection established
+[29-Apr-2025 13:44:04 UTC] Table already has auto-increment column: id
+[29-Apr-2025 13:44:04 UTC] Processing registration request
+[29-Apr-2025 13:44:04 UTC] Processing form POST data
+[29-Apr-2025 13:44:04 UTC] Validating input data
+[29-Apr-2025 13:44:04 UTC] Input validated for user: user2
+[29-Apr-2025 13:44:04 UTC] Processing avatar upload
+[29-Apr-2025 13:44:04 UTC] Uploaded file MIME type: image/png
+[29-Apr-2025 13:44:04 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6810d7a4a1788.png
+[29-Apr-2025 13:44:04 UTC] Avatar uploaded: /uploads/avatars/avatar_6810d7a4a1788.png
+[29-Apr-2025 13:44:04 UTC] Checking for existing user with email: user2@gmail.com or username: user2
+[29-Apr-2025 13:44:04 UTC] General Error: Email or username already exists
+#0 C:\xampp2\htdocs\api\user_register.php(53): checkExistingUser(Object(PDO), 'user2@gmail.com', 'user2')
+#1 {main}
+[29-Apr-2025 13:44:04 UTC] Error response: [400] Email or username already exists
+[29-Apr-2025 13:44:32 UTC] Database connection established
+[29-Apr-2025 13:44:32 UTC] Table already has auto-increment column: id
+[29-Apr-2025 13:44:32 UTC] Processing registration request
+[29-Apr-2025 13:44:32 UTC] Processing form POST data
+[29-Apr-2025 13:44:32 UTC] Validating input data
+[29-Apr-2025 13:44:32 UTC] Input validated for user: user3
+[29-Apr-2025 13:44:32 UTC] Processing avatar upload
+[29-Apr-2025 13:44:32 UTC] Uploaded file MIME type: image/jpeg
+[29-Apr-2025 13:44:32 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6810d7c0af2c9.jpg
+[29-Apr-2025 13:44:32 UTC] Avatar uploaded: /uploads/avatars/avatar_6810d7c0af2c9.jpg
+[29-Apr-2025 13:44:32 UTC] Checking for existing user with email: user3@gmail.com or username: user3
+[29-Apr-2025 13:44:32 UTC] User uniqueness verified
+[29-Apr-2025 13:44:32 UTC] Creating new user: user3
+[29-Apr-2025 13:44:32 UTC] User inserted successfully with ID: 58
+[29-Apr-2025 13:44:32 UTC] User created successfully
+[29-Apr-2025 13:44:38 UTC] Database connection established
+[29-Apr-2025 13:44:38 UTC] Table already has auto-increment column: id
+[29-Apr-2025 13:44:38 UTC] Processing registration request
+[29-Apr-2025 13:44:38 UTC] Processing form POST data
+[29-Apr-2025 13:44:38 UTC] Validating input data
+[29-Apr-2025 13:44:38 UTC] Input validated for user: user3
+[29-Apr-2025 13:44:38 UTC] Processing avatar upload
+[29-Apr-2025 13:44:38 UTC] Uploaded file MIME type: image/jpeg
+[29-Apr-2025 13:44:38 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6810d7c697dd9.jpg
+[29-Apr-2025 13:44:38 UTC] Avatar uploaded: /uploads/avatars/avatar_6810d7c697dd9.jpg
+[29-Apr-2025 13:44:38 UTC] Checking for existing user with email: user3@gmail.com or username: user3
+[29-Apr-2025 13:44:38 UTC] General Error: Email or username already exists
+#0 C:\xampp2\htdocs\api\user_register.php(53): checkExistingUser(Object(PDO), 'user3@gmail.com', 'user3')
+#1 {main}
+[29-Apr-2025 13:44:38 UTC] Error response: [400] Email or username already exists
+[29-Apr-2025 13:44:55 UTC] Database connection established
+[29-Apr-2025 13:44:55 UTC] Table already has auto-increment column: id
+[29-Apr-2025 13:44:55 UTC] Processing registration request
+[29-Apr-2025 13:44:55 UTC] Processing form POST data
+[29-Apr-2025 13:44:55 UTC] Validating input data
+[29-Apr-2025 13:44:55 UTC] Input validated for user: user4
+[29-Apr-2025 13:44:55 UTC] Processing avatar upload
+[29-Apr-2025 13:44:55 UTC] Uploaded file MIME type: image/jpeg
+[29-Apr-2025 13:44:55 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6810d7d743eea.jpg
+[29-Apr-2025 13:44:55 UTC] Avatar uploaded: /uploads/avatars/avatar_6810d7d743eea.jpg
+[29-Apr-2025 13:44:55 UTC] Checking for existing user with email: user4@gmail.com or username: user4
+[29-Apr-2025 13:44:55 UTC] User uniqueness verified
+[29-Apr-2025 13:44:55 UTC] Creating new user: user4
+[29-Apr-2025 13:44:55 UTC] User inserted successfully with ID: 59
+[29-Apr-2025 13:44:55 UTC] User created successfully

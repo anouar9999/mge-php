@@ -1,5 +1,5 @@
 <?php
-// generate_battle_royale_leaderboard.php
+// get_battle_royale_leaderboard.php
 // Enhanced endpoint that generates a comprehensive battle royale tournament leaderboard 
 // supporting both individual players and teams
 
@@ -242,14 +242,13 @@ try {
     
     // Get battle royale match results if matches exist
     if (count($matchIds) > 0) {
-        // Define the column name for participant ID based on tournament type
-        $participantIdColumn = $isTeamTournament ? 'team_id' : 'user_id';
-        
+        // IMPORTANT FIX: Always use team_id column from battle_royale_match_results table
+        // since this is how we store both team IDs and user IDs
         $placeholders = implode(',', array_fill(0, count($matchIds), '?'));
         $resultsSql = "
             SELECT 
                 br.match_id,
-                br.$participantIdColumn AS participant_id,
+                br.team_id AS participant_id,
                 br.position,
                 br.kills,
                 br.placement_points,
@@ -273,7 +272,90 @@ try {
             
             // Skip if participant not in our lookup
             if (!isset($participants[$participantId])) {
-                continue;
+                // If we're handling individual players but this participant wasn't in our initial list,
+                // we need to fetch the user data now
+                if (!$isTeamTournament) {
+                    $userSql = "
+                        SELECT 
+                            id AS participant_id,
+                            username AS participant_name,
+                            avatar AS participant_image
+                        FROM users
+                        WHERE id = ?
+                    ";
+                    $userStmt = $pdo->prepare($userSql);
+                    $userStmt->execute([$participantId]);
+                    $userData = $userStmt->fetch();
+                    
+                    if ($userData) {
+                        $participants[$participantId] = [
+                            'participant_id' => $participantId,
+                            'participant_name' => $userData['participant_name'],
+                            'participant_tag' => '',
+                            'participant_slug' => '',
+                            'participant_image' => $userData['participant_image'],
+                            'participant_banner' => null,
+                            'participant_tier' => 'amateur',
+                            'member_count' => 1,
+                            'win_rate' => 0,
+                            'total_kills' => 0,
+                            'total_placement_points' => 0,
+                            'total_points' => 0,
+                            'matches_played' => 0,
+                            'highest_position' => null,
+                            'lowest_position' => null,
+                            'avg_position' => 0,
+                            'positions' => [],
+                            'match_history' => [],
+                            'is_team' => false
+                        ];
+                    } else {
+                        // Skip if we still can't find the participant
+                        continue;
+                    }
+                } else {
+                    // For team tournaments, try to fetch the team data if missing
+                    $teamSql = "
+                        SELECT 
+                            id AS participant_id,
+                            name AS participant_name, 
+                            tag AS participant_tag,
+                            slug AS participant_slug,
+                            logo AS participant_image
+                        FROM teams
+                        WHERE id = ?
+                    ";
+                    $teamStmt = $pdo->prepare($teamSql);
+                    $teamStmt->execute([$participantId]);
+                    $teamData = $teamStmt->fetch();
+                    
+                    if ($teamData) {
+                        $participants[$participantId] = [
+                            'participant_id' => $participantId,
+                            'participant_name' => $teamData['participant_name'],
+                            'participant_tag' => $teamData['participant_tag'],
+                            'participant_slug' => $teamData['participant_slug'],
+                            'participant_image' => $teamData['participant_image'],
+                            'participant_banner' => null,
+                            'participant_tier' => 'amateur',
+                            'member_count' => 0,
+                            'win_rate' => 0,
+                            'total_kills' => 0,
+                            'total_placement_points' => 0,
+                            'total_points' => 0,
+                            'matches_played' => 0,
+                            'highest_position' => null,
+                            'lowest_position' => null,
+                            'avg_position' => 0,
+                            'positions' => [],
+                            'match_history' => [],
+                            'is_team' => true
+                        ];
+                    } else {
+                        // Skip if we still can't find the participant
+                        continue;
+                    }
+                }
             }
             
             // Add to match lookup
@@ -473,7 +555,7 @@ try {
 
 } catch (PDOException $e) {
     // Log the error
-    error_log('Database error in generate_battle_royale_leaderboard.php: ' . $e->getMessage());
+    error_log('Database error in get_battle_royale_leaderboard.php: ' . $e->getMessage());
     
     // Return error response
     http_response_code(500);
@@ -484,7 +566,7 @@ try {
     ]);
 } catch (Exception $e) {
     // Log the error
-    error_log('General error in generate_battle_royale_leaderboard.php: ' . $e->getMessage());
+    error_log('General error in get_battle_royale_leaderboard.php: ' . $e->getMessage());
     
     // Return error response
     http_response_code(400);
