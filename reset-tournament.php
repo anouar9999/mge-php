@@ -53,8 +53,8 @@ try {
     // Start transaction to ensure all operations succeed or fail together
     $conn->beginTransaction();
     
-    // Check if tournament exists
-    $stmt = $conn->prepare("SELECT id, bracket_type FROM tournaments WHERE id = ?");
+    // Check if tournament exists and get bracket type
+    $stmt = $conn->prepare("SELECT id, bracket_type, status FROM tournaments WHERE id = ?");
     $stmt->execute([$tournamentId]);
     $tournament = $stmt->fetch(PDO::FETCH_ASSOC);
     
@@ -64,7 +64,7 @@ try {
     
     // Store the tournament_registrations with accepted status (we'll keep these)
     $stmt = $conn->prepare("
-        SELECT id, tournament_id, user_id, team_id, status
+        SELECT id, tournament_id, user_id, team_id, status, registration_date
         FROM tournament_registrations 
         WHERE tournament_id = ? AND status = 'accepted'
     ");
@@ -80,7 +80,7 @@ try {
     $logStmt->execute([
         $adminId,
         'Tournament Reset',
-        "Reset tournament ID: {$tournamentId}",
+        "Reset tournament ID: {$tournamentId} - Type: {$tournament['bracket_type']}",
         $_SERVER['REMOTE_ADDR'] ?? 'Unknown'
     ]);
     
@@ -106,41 +106,46 @@ try {
     $stmt = $conn->prepare("DELETE FROM matches WHERE tournament_id = ?");
     $stmt->execute([$tournamentId]);
     
-    // 4. Delete round robin matches
-    $stmt = $conn->prepare("DELETE FROM round_robin_matches WHERE tournament_id = ?");
-    $stmt->execute([$tournamentId]);
-    
-    // 5. Delete round robin standings
-    $stmt = $conn->prepare("DELETE FROM round_robin_standings WHERE tournament_id = ?");
-    $stmt->execute([$tournamentId]);
-    
-    // 6. Delete round robin group teams (keep the groups themselves)
-    $stmt = $conn->prepare("
-        DELETE rrgt FROM round_robin_group_teams rrgt
-        JOIN round_robin_groups rrg ON rrgt.group_id = rrg.id
-        WHERE rrg.tournament_id = ?
-    ");
-    $stmt->execute([$tournamentId]);
-    
-    // 7. Reset battle royale match results
-    if ($tournament['bracket_type'] === 'Battle Royale') {
-        // First, find all match IDs for this tournament
+    // 4. Handle Round Robin specific data
+    if ($tournament['bracket_type'] === 'Round Robin') {
+        // 4.1 Delete round robin matches
+        $stmt = $conn->prepare("DELETE FROM round_robin_matches WHERE tournament_id = ?");
+        $stmt->execute([$tournamentId]);
+        
+        // 4.2 Delete round robin standings
+        $stmt = $conn->prepare("DELETE FROM round_robin_standings WHERE tournament_id = ?");
+        $stmt->execute([$tournamentId]);
+        
+        // 4.3 Delete round robin group teams but keep the groups themselves
         $stmt = $conn->prepare("
-            SELECT id FROM matches 
+            DELETE rrgt FROM round_robin_group_teams rrgt
+            JOIN round_robin_groups rrg ON rrgt.group_id = rrg.id
+            WHERE rrg.tournament_id = ?
+        ");
+        $stmt->execute([$tournamentId]);
+        
+        // 4.4 If you want to keep the groups structure but recreate participants later,
+        // you can fetch the existing groups to recreate team assignments later
+        $stmt = $conn->prepare("
+            SELECT id, name 
+            FROM round_robin_groups 
             WHERE tournament_id = ?
         ");
         $stmt->execute([$tournamentId]);
-        $matchIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $existingGroups = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    // 5. Handle Battle Royale specific data
+    if ($tournament['bracket_type'] === 'Battle Royale') {
+        // 5.1 Delete battle royale match results
+        $stmt = $conn->prepare("
+            DELETE brmr FROM battle_royale_match_results brmr
+            JOIN matches m ON brmr.match_id = m.id
+            WHERE m.tournament_id = ?
+        ");
+        $stmt->execute([$tournamentId]);
         
-        if (!empty($matchIds)) {
-            // Convert array to comma-separated string for IN clause
-            $matchIdsStr = implode(',', $matchIds);
-            
-            // Delete match results
-            $stmt = $conn->query("DELETE FROM battle_royale_match_results WHERE match_id IN ($matchIdsStr)");
-        }
-        
-        // Reset match count in battle_royale_settings
+        // 5.2 Reset match count in battle_royale_settings
         $stmt = $conn->prepare("
             UPDATE battle_royale_settings 
             SET match_count = 0 
@@ -149,33 +154,68 @@ try {
         $stmt->execute([$tournamentId]);
     }
     
-    // 8. Delete all tournament registrations (we'll restore the accepted ones later)
+    // 6. Delete all tournament registrations (we'll restore the accepted ones later)
     $stmt = $conn->prepare("DELETE FROM tournament_registrations WHERE tournament_id = ?");
     $stmt->execute([$tournamentId]);
     
-    // 9. Reset tournament state to registration_open
+    // 7. Reset tournament state to registration_open
     $stmt = $conn->prepare("
         UPDATE tournaments 
-        SET status = 'registration_open'
+        SET status = 'registration_open',
+            updated_at = CURRENT_TIMESTAMP
         WHERE id = ?
     ");
     $stmt->execute([$tournamentId]);
     
-    // 10. Restore accepted registrations
+    // 8. Restore accepted registrations
     if (!empty($acceptedRegistrations)) {
         $restoreStmt = $conn->prepare("
-            INSERT INTO tournament_registrations (tournament_id, user_id, team_id, status)
-            VALUES (?, ?, ?, 'accepted')
+            INSERT INTO tournament_registrations 
+            (tournament_id, user_id, team_id, status, registration_date)
+            VALUES (?, ?, ?, 'accepted', ?)
         ");
         
         foreach ($acceptedRegistrations as $reg) {
             $restoreStmt->execute([
                 $reg['tournament_id'],
                 $reg['user_id'],
-                $reg['team_id']
+                $reg['team_id'],
+                $reg['registration_date']
             ]);
         }
+        
+        // 9. If this is a Round Robin tournament and we have accepted registrations,
+        // recreate the group assignments
+        if ($tournament['bracket_type'] === 'Round Robin' && !empty($existingGroups)) {
+            // Get all team IDs from accepted registrations
+            $teamIds = array_column(array_filter($acceptedRegistrations, function($reg) {
+                return !is_null($reg['team_id']);
+            }), 'team_id');
+            
+            if (!empty($teamIds)) {
+                // Get the first group for simplicity (you might want a more sophisticated assignment)
+                $defaultGroupId = $existingGroups[0]['id'];
+                
+                $insertTeamStmt = $conn->prepare("
+                    INSERT INTO round_robin_group_teams (group_id, team_id)
+                    VALUES (?, ?)
+                ");
+                
+                foreach ($teamIds as $teamId) {
+                    // This will trigger the after_team_add_to_group trigger to create standings
+                    $insertTeamStmt->execute([$defaultGroupId, $teamId]);
+                }
+            }
+        }
     }
+    
+    // 10. Delete tournament rounds if they exist
+    $stmt = $conn->prepare("DELETE FROM tournament_rounds WHERE tournament_id = ?");
+    $stmt->execute([$tournamentId]);
+    
+    // 11. Delete tournament stages if they exist
+    $stmt = $conn->prepare("DELETE FROM tournament_stages WHERE tournament_id = ?");
+    $stmt->execute([$tournamentId]);
     
     // Commit all changes
     $conn->commit();
@@ -183,13 +223,14 @@ try {
     // Return success response
     echo json_encode([
         'success' => true,
-        'message' => "Tournament ID {$tournamentId} has been reset successfully. Preserved " . count($acceptedRegistrations) . " accepted registrations.",
-        'tournament_id' => $tournamentId
+        'message' => "Tournament ID {$tournamentId} ({$tournament['bracket_type']}) has been reset successfully. Preserved " . count($acceptedRegistrations) . " accepted registrations.",
+        'tournament_id' => $tournamentId,
+        'bracket_type' => $tournament['bracket_type']
     ]);
     
 } catch (PDOException $e) {
     // Roll back transaction on error
-    if ($conn->inTransaction()) {
+    if (isset($conn) && $conn->inTransaction()) {
         $conn->rollBack();
     }
     
@@ -204,7 +245,7 @@ try {
     ]);
 } catch (Exception $e) {
     // Roll back transaction on error
-    if ($conn->inTransaction()) {
+    if (isset($conn) && $conn->inTransaction()) {
         $conn->rollBack();
     }
     
@@ -212,9 +253,9 @@ try {
     error_log('Tournament reset general error: ' . $e->getMessage());
     
     // Return error response
-    http_response_code(500);
+    http_response_code(400);
     echo json_encode([
         'success' => false,
-        'error' => 'Server error: ' . $e->getMessage()
+        'error' => $e->getMessage()
     ]);
 }

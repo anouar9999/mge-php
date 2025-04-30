@@ -421,3 +421,40 @@
 [29-Apr-2025 13:44:55 UTC] Creating new user: user4
 [29-Apr-2025 13:44:55 UTC] User inserted successfully with ID: 59
 [29-Apr-2025 13:44:55 UTC] User created successfully
+[30-Apr-2025 14:57:20 UTC] Received data: Array
+(
+    [id] => 3
+    [name] => league of legend tournament2
+    [competition_type] => 8
+    [participation_type] => individual
+    [nombre_maximum] => 64
+    [start_date] => 2025-05-08
+    [end_date] => 2025-05-09
+    [status] => registration_open
+    [description_des_qualifications] => ادخل في طابور مع كامل عناصر طاقمك، أو اكتشف المدى الذي يمكنك أن تبلغه على سلم ترتيب النمط المصنف بمفردك. كل مباراة تشكل فرصة لتنفيذ ضربة المهارة المثالية، أو قلب دفة الأمور في قتال فرق مجنون، أو تحقيق القتل الخماسي الرائع.
+    [rules] => We’re in the midst of the Wild Rift tournament season! Our first Wild Rounds: CarnaWild, which was in Brazil, recently wrapped up, and we wanted to take a moment to talk more with you about Wild Rounds, and some of our other Organized Play plans for the rest of the year. When we created this initiative, our goal was to celebrate the community and support the community of dedicated fans of Wild Rift. Whether you’re someone who wants to have tournaments with your friends to see who is the best of the best, watch your favorite influencers duke it out in a high-stakes 1v1, or enter a tournament yourself to prove you’re the best in your region, this initiative was created to celebrate you and innovate ways you watch and play Wild Rift, and we’re excited to expand on that even more this year!
+    [prize_pool] => 50000.00
+    [format_des_qualifications] => Battle Royale
+    [type_de_match] => Bo1
+    [type_de_jeu] => 
+)
+
+[30-Apr-2025 14:57:20 UTC] SQL Query: UPDATE tournaments SET `slug` = :slug, `game_id` = :game_id, `start_date` = :start_date, `end_date` = :end_date, `name` = :name, `description` = :description, `rules` = :rules, `bracket_type` = :bracket_type, `max_participants` = :max_participants, `prize_pool` = :prize_pool, `match_format` = :match_format, `participation_type` = :participation_type, `status` = :status, `updated_at` = NOW() WHERE id = :id
+[30-Apr-2025 14:57:20 UTC] Params: Array
+(
+    [:id] => 3
+    [:slug] => league-of-legend-tournament2
+    [:game_id] => 8
+    [:start_date] => 2025-05-08
+    [:end_date] => 2025-05-09
+    [:name] => league of legend tournament2
+    [:description] => ادخل في طابور مع كامل عناصر طاقمك، أو اكتشف المدى الذي يمكنك أن تبلغه على سلم ترتيب النمط المصنف بمفردك. كل مباراة تشكل فرصة لتنفيذ ضربة المهارة المثالية، أو قلب دفة الأمور في قتال فرق مجنون، أو تحقيق القتل الخماسي الرائع.
+    [:rules] => We’re in the midst of the Wild Rift tournament season! Our first Wild Rounds: CarnaWild, which was in Brazil, recently wrapped up, and we wanted to take a moment to talk more with you about Wild Rounds, and some of our other Organized Play plans for the rest of the year. When we created this initiative, our goal was to celebrate the community and support the community of dedicated fans of Wild Rift. Whether you’re someone who wants to have tournaments with your friends to see who is the best of the best, watch your favorite influencers duke it out in a high-stakes 1v1, or enter a tournament yourself to prove you’re the best in your region, this initiative was created to celebrate you and innovate ways you watch and play Wild Rift, and we’re excited to expand on that even more this year!
+    [:bracket_type] => Battle Royale
+    [:max_participants] => 64
+    [:prize_pool] => 50000.00
+    [:match_format] => Bo1
+    [:participation_type] => individual
+    [:status] => registration_open
+)
+

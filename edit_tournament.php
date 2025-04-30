@@ -43,87 +43,91 @@ try {
     $data = json_decode($input, true);
 
     if (json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception('Invalid JSON input');
+        throw new Exception('Invalid JSON input: ' . json_last_error_msg());
     }
 
+    // Log received data for debugging
+    error_log("Received data: " . print_r($data, true));
+
     // Validate tournament ID
-    if (!isset($data['id'])) {
+    if (!isset($data['id']) || empty($data['id'])) {
         throw new Exception('Tournament ID is required');
     }
 
-    // Map form field names to database column names
-    $fieldMapping = [
-        'nom_des_qualifications' => 'name',
+    // Direct field mapping
+    $columnMappings = [
+        'name' => 'name',
         'description_des_qualifications' => 'description',
         'rules' => 'rules',
         'format_des_qualifications' => 'bracket_type',
         'nombre_maximum' => 'max_participants',
         'prize_pool' => 'prize_pool',
         'type_de_match' => 'match_format',
-        'type_de_jeu' => 'game_id',
-        'image' => 'featured_image',
+        'competition_type' => 'game_id',  // May need to convert string to ID
+        'participation_type' => 'participation_type',
         'status' => 'status'
     ];
-
-    // Status mapping if provided
-    $statusMapping = [
-        'Ouvert aux inscriptions' => 'registration_open',
-        'En cours' => 'ongoing',
-        'Terminé' => 'completed',
-        'Annulé' => 'cancelled'
-    ];
-
-    // Generate slug if name is present
-    if (isset($data['nom_des_qualifications'])) {
-        $slug = strtolower(
-            trim(
-                preg_replace('/[^a-zA-Z0-9]+/', '-', 
-                    $data['nom_des_qualifications']
-                ),
-                '-'
-            )
-        );
-    }
 
     // Build update query
     $updateFields = [];
     $params = [':id' => $data['id']];
-    
-    // Handle slug separately
-    if (isset($slug)) {
+
+    // Generate slug from name if name is present
+    if (isset($data['name']) && !empty($data['name'])) {
+        $slug = strtolower(
+            trim(
+                preg_replace('/[^a-zA-Z0-9]+/', '-', $data['name']),
+                '-'
+            )
+        );
         $updateFields[] = "`slug` = :slug";
         $params[':slug'] = $slug;
     }
-    
-    // Handle status mapping
-    if (isset($data['status']) && isset($statusMapping[$data['status']])) {
-        $updateFields[] = "`status` = :status";
-        $params[':status'] = $statusMapping[$data['status']];
+
+    // Process competition_type (game name) to get game_id
+    if (isset($data['competition_type']) && !empty($data['competition_type'])) {
+        // First, check if the value is numeric (already a game_id)
+        if (is_numeric($data['competition_type'])) {
+            $updateFields[] = "`game_id` = :game_id";
+            $params[':game_id'] = $data['competition_type'];
+        } else {
+            // It's a game name, lookup the ID
+            $gameStmt = $pdo->prepare("SELECT id FROM games WHERE name = :game_name");
+            $gameStmt->execute([':game_name' => $data['competition_type']]);
+            $game = $gameStmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($game) {
+                $updateFields[] = "`game_id` = :game_id";
+                $params[':game_id'] = $game['id'];
+            } else {
+                // Log that we couldn't find the game
+                error_log("Could not find game ID for: " . $data['competition_type']);
+            }
+        }
     }
 
     // Process dates
-    if (isset($data['start_date'])) {
+    if (isset($data['start_date']) && !empty($data['start_date'])) {
         $updateFields[] = "`start_date` = :start_date";
         $params[':start_date'] = $data['start_date'];
     }
     
-    if (isset($data['end_date'])) {
+    if (isset($data['end_date']) && !empty($data['end_date'])) {
         $updateFields[] = "`end_date` = :end_date";
         $params[':end_date'] = $data['end_date'];
     }
 
     // Process other fields using mapping
-    foreach ($fieldMapping as $formField => $dbField) {
-        if (isset($data[$formField]) && $formField != 'status') { // Status handled separately
+    foreach ($columnMappings as $formField => $dbField) {
+        // Skip fields that are handled separately
+        if (in_array($formField, ['competition_type'])) {
+            continue;
+        }
+        
+        if (isset($data[$formField]) && $data[$formField] !== '') {
             $updateFields[] = "`$dbField` = :$dbField";
             $params[":$dbField"] = $data[$formField];
         }
-    }
-
-    // Handle bracket type conversion
-    if (isset($data['format_des_qualifications'])) {
-        $updateFields[] = "`bracket_type` = :bracket_type";
-        $params[':bracket_type'] = $data['format_des_qualifications'];
     }
 
     // Add updated_at timestamp
@@ -135,11 +139,14 @@ try {
 
     // Execute update query
     $sql = "UPDATE tournaments SET " . implode(', ', $updateFields) . " WHERE id = :id";
+    error_log("SQL Query: " . $sql);
+    error_log("Params: " . print_r($params, true));
+    
     $stmt = $pdo->prepare($sql);
     $success = $stmt->execute($params);
 
     if (!$success) {
-        throw new Exception('Failed to update tournament');
+        throw new Exception('Failed to update tournament: ' . implode(', ', $stmt->errorInfo()));
     }
 
     // Get updated tournament data
@@ -151,9 +158,9 @@ try {
         'success' => true,
         'message' => 'Tournament updated successfully',
         'data' => [
-            'id' => $data['id'],
-            'slug' => $tournament['slug'] ?? null,
-            'name' => $tournament['name'] ?? null
+            'id' => $tournament['id'],
+            'slug' => $tournament['slug'],
+            'name' => $tournament['name']
         ]
     ]);
 
