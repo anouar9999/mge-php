@@ -38,46 +38,18 @@ try {
     $email = $data['email'];
     $password = $data['password'];
 
-    // Check login attempts first
-    $stmt = $pdo->prepare("SELECT * FROM login_attempts WHERE username = :email");
-    $stmt->execute([':email' => $email]);
-    $loginAttempt = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    // If there are too many attempts (more than 5 in the last hour)
-    if ($loginAttempt && $loginAttempt['attempts'] >= 5) {
-        $lastAttempt = new DateTime($loginAttempt['last_attempt']);
-        $now = new DateTime();
-        $diff = $now->diff($lastAttempt);
-        
-        // If last attempt was less than 1 hour ago
-        if ($diff->h < 1) {
-            throw new Exception('Too many failed login attempts. Please try again later.');
-        } else {
-            // Reset attempts after 1 hour
-            $resetStmt = $pdo->prepare("UPDATE login_attempts SET attempts = 1, last_attempt = NOW() WHERE username = :email");
-            $resetStmt->execute([':email' => $email]);
-        }
-    }
-
     // Get user data
     $stmt = $pdo->prepare("SELECT id, username, email, password, type, avatar, bio, points, is_verified FROM users WHERE email = :email");
     $stmt->execute([':email' => $email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$user) {
-        // Record login attempt for non-existent user
-        recordLoginAttempt($pdo, $email);
+        // User not found
         throw new Exception('Invalid email or password');
     }
 
     if (!password_verify($password, $user['password'])) {
-        // Record login attempt for failed password
-        recordLoginAttempt($pdo, $email);
-        
-        // Update user's failed attempts
-        $updateStmt = $pdo->prepare("UPDATE users SET failed_attempts = failed_attempts + 1 WHERE id = :id");
-        $updateStmt->execute([':id' => $user['id']]);
-        
+        // Wrong password
         throw new Exception('Invalid email or password');
     }
 
@@ -85,33 +57,57 @@ try {
         throw new Exception('Account not verified. Please check your email for verification instructions.');
     }
 
-    // Reset failed attempts on successful login
-    $updateStmt = $pdo->prepare("UPDATE users SET failed_attempts = 0 WHERE id = :id");
-    $updateStmt->execute([':id' => $user['id']]);
+    // Reset failed attempts on successful login (if this field exists)
+    try {
+        $updateStmt = $pdo->prepare("UPDATE users SET failed_attempts = 0 WHERE id = :id");
+        $updateStmt->execute([':id' => $user['id']]);
+    } catch (Exception $e) {
+        // If the column doesn't exist or there's another issue, just log it
+        error_log("Failed to reset failed_attempts: " . $e->getMessage());
+        // Continue with login process
+    }
 
-    // Clear login attempts record on successful login
-    $clearStmt = $pdo->prepare("DELETE FROM login_attempts WHERE username = :email");
-    $clearStmt->execute([':email' => $email]);
-
-    // Generate a session token (a more secure method for production)
+    // Generate a session token
     $session_token = bin2hex(random_bytes(32));
     
-    // Store remember token in database
-    $expiry = (new DateTime())->modify('+30 days');
-    $tokenStmt = $pdo->prepare("INSERT INTO remember_tokens (user_id, token, expires) VALUES (:user_id, :token, :expires)");
-    $tokenStmt->execute([
-        ':user_id' => $user['id'],
-        ':token' => $session_token,
-        ':expires' => $expiry->format('Y-m-d H:i:s')
-    ]);
+    // Store remember token in database, including the id field
+    try {
+        $expiry = (new DateTime())->modify('+30 days');
+        $maxIdQuery = $pdo->query("SELECT MAX(id) as max_id FROM remember_tokens");
+        $maxId = $maxIdQuery->fetch(PDO::FETCH_ASSOC)['max_id'];
+        $newId = $maxId !== null ? $maxId + 1 : 1;
+        
+        $tokenStmt = $pdo->prepare("INSERT INTO remember_tokens (id, user_id, token, expires) VALUES (:id, :user_id, :token, :expires)");
+        $tokenStmt->execute([
+            ':id' => $newId,
+            ':user_id' => $user['id'],
+            ':token' => $session_token,
+            ':expires' => $expiry->format('Y-m-d H:i:s')
+        ]);
+    } catch (Exception $e) {
+        // If there's an issue with remember_tokens, just log it
+        error_log("Failed to store remember token: " . $e->getMessage());
+        // Continue with login process, token will still be returned to client
+    }
 
-    // Log the successful login in activity_log table - FIXED to not use ID
-    $logStmt = $pdo->prepare("INSERT INTO activity_log (user_id, action, ip_address) VALUES (:user_id, :action, :ip_address)");
-    $logStmt->execute([
-        ':user_id' => $user['id'],
-        ':action' => 'Connexion réussie',
-        ':ip_address' => $_SERVER['REMOTE_ADDR']
-    ]);
+    // Log the successful login in activity_log table
+    try {
+        $maxIdQuery = $pdo->query("SELECT MAX(id) as max_id FROM activity_log");
+        $maxId = $maxIdQuery->fetch(PDO::FETCH_ASSOC)['max_id'];
+        $newId = $maxId !== null ? $maxId + 1 : 1;
+        
+        $logStmt = $pdo->prepare("INSERT INTO activity_log (id, user_id, action, ip_address) VALUES (:id, :user_id, :action, :ip_address)");
+        $logStmt->execute([
+            ':id' => $newId,
+            ':user_id' => $user['id'],
+            ':action' => 'Connexion réussie',
+            ':ip_address' => $_SERVER['REMOTE_ADDR']
+        ]);
+    } catch (Exception $e) {
+        // If there's an issue with activity_log, just log it
+        error_log("Failed to log activity: " . $e->getMessage());
+        // Continue with login process
+    }
 
     echo json_encode([
         'success' => true, 
@@ -126,26 +122,15 @@ try {
         'session_token' => $session_token
     ]);
 } catch (Exception $e) {
+    // Detailed error logging for debugging
+    error_log("Login error: " . $e->getMessage() . 
+              (isset($pdo) && $pdo->errorInfo()[0] !== '00000' ? 
+              " - SQL Error: " . implode(', ', $pdo->errorInfo()) : ''));
+              
     http_response_code(401);
-    echo json_encode(['success' => false, 'message' => $e->getMessage() . (isset($pdo) ? ' - SQL Error: ' . implode(', ', $pdo->errorInfo()) : '')]);
-}
-
-/**
- * Record a failed login attempt
- */
-function recordLoginAttempt($pdo, $username) {
-    $stmt = $pdo->prepare("SELECT * FROM login_attempts WHERE username = :username");
-    $stmt->execute([':username' => $username]);
-    $attempt = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    if ($attempt) {
-        // Increment existing record
-        $updateStmt = $pdo->prepare("UPDATE login_attempts SET attempts = attempts + 1, last_attempt = NOW() WHERE username = :username");
-        $updateStmt->execute([':username' => $username]);
-    } else {
-        // Create new record
-        $insertStmt = $pdo->prepare("INSERT INTO login_attempts (username, attempts, last_attempt) VALUES (:username, 1, NOW())");
-        $insertStmt->execute([':username' => $username]);
-    }
+    echo json_encode([
+        'success' => false, 
+        'message' => $e->getMessage()
+    ]);
 }
 ?>

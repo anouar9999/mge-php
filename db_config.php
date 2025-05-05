@@ -3,10 +3,10 @@
 
 return [
     'host' => 'localhost',
-    'db'   => 'geniusmo_inwi',
+    'db'   => 'geniusmo_inwi2',
     'user' => 'root',
-    'pass' => '',
-    'port'=> '3335' ,  
+    'pass' => 'admin@00',
+    'port'=> '3306' ,
     'debug' => true, // Set to false in production
     'smtp' => [
         'host' => 'smtp.gmail.com',

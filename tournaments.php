@@ -1,8 +1,7 @@
 <?php
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Origin: *");
 header('Access-Control-Allow-Methods: GET');
-
 // Prevent PHP from outputting HTML errors
 ini_set('display_errors', 0);
 error_reporting(0);

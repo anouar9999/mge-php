@@ -167,6 +167,11 @@ try {
     $roundMatches = []; // Track matches by round
     $matchIds = []; // Track match IDs to establish next_match relationships
     
+    // Get next available match ID
+    $stmt = $pdo->query("SELECT MAX(id) as max_id FROM matches");
+    $lastMatchId = (int)$stmt->fetchColumn();
+    $nextMatchId = $lastMatchId + 1;
+    
     for ($round = 0; $round < $playoffsData['rounds']; $round++) {
         $matchesInRound = $bracketSize / pow(2, $round + 1);
         $roundName = getRoundName($round, $playoffsData['rounds']);
@@ -191,17 +196,30 @@ try {
                 }
             }
             
-            // Generate a unique match ID
-            $matchId = generateMatchId($tournament_id, 'playoffs', $round, $i);
+            // Generate a numeric match ID
+            $matchId = $nextMatchId++;
             $matchIds[$round][$i] = $matchId;
             
             // Determine the next match ID (if not final)
-            $nextMatchId = null;
+            $nextRoundMatchId = null;
             if ($round < $playoffsData['rounds'] - 1) {
                 $nextRound = $round + 1;
                 $nextMatchIndex = floor($i / 2);
-                $nextMatchId = generateMatchId($tournament_id, 'playoffs', $nextRound, $nextMatchIndex);
+                // We'll set this later once we know what the next match ID will be
+                $nextRoundMatchId = null;
             }
+            
+            // Store the actual match data for response and to update next_match_id later
+            $match = [
+                'id' => $matchId,
+                'tournament_id' => $tournament_id,
+                'next_match_id' => $nextRoundMatchId,
+                'round' => $round,
+                'round_name' => $roundName,
+                'bracket_position' => $i,
+                'state' => 'SCHEDULED',
+                'participants' => []
+            ];
             
             // Create the match record in the database
             $stmt = $pdo->prepare("
@@ -217,7 +235,7 @@ try {
             $stmt->execute([
                 $matchId,
                 $tournament_id,
-                $nextMatchId,
+                null, // We'll update next_match_id later
                 $roundName,
                 $roundDays,
                 $i,
@@ -226,26 +244,12 @@ try {
             
             // Create match participants if teams are known
             if ($team1 !== null) {
-                addMatchParticipant($pdo, $matchId, $team1['team_id'], $team1['team_name'], $team1['team_logo']);
-            }
-            
-            if ($team2 !== null) {
-                addMatchParticipant($pdo, $matchId, $team2['team_id'], $team2['team_name'], $team2['team_logo']);
-            }
-            
-            // Store match data for response
-            $match = [
-                'id' => $matchId,
-                'tournament_id' => $tournament_id,
-                'next_match_id' => $nextMatchId,
-                'round' => $round,
-                'round_name' => $roundName,
-                'bracket_position' => $i,
-                'state' => 'SCHEDULED',
-                'participants' => []
-            ];
-            
-            if ($team1 !== null) {
+                // Get next participant ID
+                $stmt = $pdo->query("SELECT MAX(id) as max_id FROM match_participants");
+                $nextParticipantId = (int)$stmt->fetchColumn() + 1;
+                
+                addMatchParticipant($pdo, $nextParticipantId, $matchId, $team1['team_id'], $team1['team_name'], $team1['team_logo']);
+                
                 $match['participants'][] = [
                     'id' => $team1['team_id'],
                     'name' => $team1['team_name'],
@@ -256,6 +260,12 @@ try {
             }
             
             if ($team2 !== null) {
+                // Get next participant ID
+                $stmt = $pdo->query("SELECT MAX(id) as max_id FROM match_participants");
+                $nextParticipantId = (int)$stmt->fetchColumn() + 1;
+                
+                addMatchParticipant($pdo, $nextParticipantId, $matchId, $team2['team_id'], $team2['team_name'], $team2['team_logo']);
+                
                 $match['participants'][] = [
                     'id' => $team2['team_id'],
                     'name' => $team2['team_name'],
@@ -266,6 +276,27 @@ try {
             }
             
             $roundMatches[$round][] = $match;
+        }
+    }
+    
+    // Now update the next_match_id for all matches
+    for ($round = 0; $round < $playoffsData['rounds'] - 1; $round++) {
+        for ($i = 0; $i < count($roundMatches[$round]); $i++) {
+            $matchId = $matchIds[$round][$i];
+            $nextRound = $round + 1;
+            $nextMatchIndex = floor($i / 2);
+            $nextMatchId = $matchIds[$nextRound][$nextMatchIndex];
+            
+            // Update next_match_id in the database
+            $stmt = $pdo->prepare("
+                UPDATE matches 
+                SET next_match_id = ? 
+                WHERE id = ?
+            ");
+            $stmt->execute([$nextMatchId, $matchId]);
+            
+            // Update in our structure for the response
+            $roundMatches[$round][$i]['next_match_id'] = $nextMatchId;
         }
     }
     
@@ -332,19 +363,6 @@ try {
 }
 
 /**
- * Generate a unique match ID
- *
- * @param int $tournamentId Tournament ID
- * @param string $stage Playoff stage
- * @param int $round Round number
- * @param int $match Match number within round
- * @return string Unique match ID
- */
-function generateMatchId($tournamentId, $stage, $round, $match) {
-    return $tournamentId . '-' . $stage . '-r' . $round . '-m' . $match;
-}
-
-/**
  * Get human-readable round name
  *
  * @param int $round Round index (0-based)
@@ -367,21 +385,23 @@ function getRoundName($round, $totalRounds) {
  * Add a participant to a match
  *
  * @param PDO $pdo Database connection
- * @param string $matchId Match ID
+ * @param int $id Participant ID
+ * @param int $matchId Match ID
  * @param int $teamId Team ID
  * @param string $teamName Team name
  * @param string $teamLogo Team logo URL
  */
-function addMatchParticipant($pdo, $matchId, $teamId, $teamName, $teamLogo) {
+function addMatchParticipant($pdo, $id, $matchId, $teamId, $teamName, $teamLogo) {
     $stmt = $pdo->prepare("
         INSERT INTO match_participants (
-            match_id, participant_id, name, picture, 
+            id, match_id, participant_id, name, picture, 
             status, created_at, updated_at
         )
-        VALUES (?, ?, ?, ?, 'NOT_PLAYED', NOW(), NOW())
+        VALUES (?, ?, ?, ?, ?, 'NOT_PLAYED', NOW(), NOW())
     ");
     
     $stmt->execute([
+        $id,
         $matchId,
         $teamId,
         $teamName,

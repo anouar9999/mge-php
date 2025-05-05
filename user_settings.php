@@ -36,8 +36,8 @@ try {
 
         $userId = $_GET['id'];
 
-        // Get basic user information
-        $stmt = $pdo->prepare("SELECT id, username, email, type, points, rank, bio, avatar, user_type FROM users WHERE id = :id");
+        // Get basic user information - using backticks for column names
+        $stmt = $pdo->prepare("SELECT `id`, `username`, `email`, `type`, `points`, `rank`, `bio`, `avatar`, `user_type` FROM `users` WHERE `id` = :id");
         $stmt->execute([':id' => $userId]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -109,13 +109,13 @@ try {
         $allowedFields = ['username', 'email', 'type', 'points', 'rank', 'bio', 'avatar', 'user_type'];
         foreach ($allowedFields as $field) {
             if (isset($data[$field])) {
-                $updateFields[] = "$field = :$field";
+                $updateFields[] = "`$field` = :$field";
                 $params[":$field"] = $data[$field];
             }
         }
 
         if (isset($data['password'])) {
-            $updateFields[] = "password = :password";
+            $updateFields[] = "`password` = :password";
             $params[':password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         }
 
@@ -123,7 +123,7 @@ try {
             throw new Exception('No fields to update');
         }
 
-        $sql = "UPDATE users SET " . implode(', ', $updateFields) . " WHERE id = :id";
+        $sql = "UPDATE `users` SET " . implode(', ', $updateFields) . " WHERE `id` = :id";
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
 
@@ -132,7 +132,7 @@ try {
         }
 
         // Log the successful update
-        $logStmt = $pdo->prepare("INSERT INTO activity_log (user_id, action, ip_address) VALUES (:user_id, :action, :ip_address)");
+        $logStmt = $pdo->prepare("INSERT INTO `activity_log` (`user_id`, `action`, `ip_address`) VALUES (:user_id, :action, :ip_address)");
         $logStmt->execute([
             ':user_id' => $userId,
             ':action' => 'User settings updated',

@@ -642,28 +642,37 @@ function handleJoinRequest($pdo, $method, $requestBody = null)
         }
 
         // Insert join request with parameters matching the team_join_requests table structure
-        $insertQuery = "
-            INSERT INTO team_join_requests (
-                team_id, 
-                name,
-                role, 
-                rank, 
-                experience,
-                status, 
-                avatar_url,
-                created_at
-            ) VALUES (?, ?, ?, ?, ?, 'pending', ?, NOW())
-        ";
+      // First, get a unique ID (this could be a simple approach)
+$maxIdQuery = "SELECT MAX(id) FROM team_join_requests";
+$maxIdStmt = $pdo->prepare($maxIdQuery);
+$maxIdStmt->execute();
+$newId = ($maxIdStmt->fetchColumn() ?? 0) + 1;
 
-        $stmt = $pdo->prepare($insertQuery);
-        $result = $stmt->execute([
-            $requestBody['team_id'],
-            $user['username'],
-            $requestBody['role'] ?? 'Mid',
-            $requestBody['rank'] ?? 'Unranked',
-            $user['experience'] ?? 'No experience listed',
-            $user['avatar']
-        ]);
+// Then update your insert query
+$insertQuery = "
+    INSERT INTO team_join_requests (
+        id,
+        team_id, 
+        name,
+        role, 
+        `rank`, 
+        experience,
+        status, 
+        avatar_url,
+        created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, NOW())
+";
+
+$stmt = $pdo->prepare($insertQuery);
+$result = $stmt->execute([
+    $newId,                               // Add this line for ID
+    $requestBody['team_id'],
+    $user['username'],
+    $requestBody['role'] ?? 'Mid',
+    $requestBody['rank'] ?? 'Unranked',
+    substr($user['experience'] ?? 'No experience listed', 0, 100),
+    $user['avatar']
+]);
 
         if (!$result) {
             throw new Exception('Failed to insert join request');

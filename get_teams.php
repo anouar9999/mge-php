@@ -93,13 +93,13 @@ try {
         $memberStmt->execute([$teamId]);
         $team['members'] = $memberStmt->fetchAll();
         
-        // Get pending join requests
+        // Get pending join requests - FIXED: Added backticks around reserved keyword 'rank'
         $requestSql = "
             SELECT 
                 id,
                 name,
                 role,
-                rank,
+                `rank`,
                 experience,
                 status,
                 avatar_url,

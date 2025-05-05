@@ -89,12 +89,17 @@ try {
     $stmt->execute([$tournament_id]);
     $acceptedRegistrations = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
+    // Get next activity_log ID
+    $stmt = $pdo->query("SELECT MAX(id) as max_id FROM activity_log");
+    $activityLogId = (int)$stmt->fetchColumn() + 1;
+    
     // Log action
     $logStmt = $pdo->prepare("
-        INSERT INTO activity_log (user_id, action, details, ip_address)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO activity_log (id, user_id, action, details, ip_address)
+        VALUES (?, ?, ?, ?, ?)
     ");
     $logStmt->execute([
+        $activityLogId,
         1,  // Default to admin ID 1
         'Tournament Reset',
         "Reset tournament ID: {$tournament_id} before round-robin setup",
@@ -196,17 +201,26 @@ try {
                 $is_registered = (int)$stmt->fetchColumn() > 0;
                 
                 if (!$is_registered) {
+                    // Get next tournament_registrations ID
+                    $stmt = $pdo->query("SELECT MAX(id) as max_id FROM tournament_registrations");
+                    $regId = (int)$stmt->fetchColumn() + 1;
+                    
                     // Register the team for the tournament
                     $stmt = $pdo->prepare("
-                        INSERT INTO tournament_registrations (tournament_id, team_id, status)
-                        VALUES (?, ?, 'accepted')
+                        INSERT INTO tournament_registrations (id, tournament_id, team_id, status)
+                        VALUES (?, ?, ?, 'accepted')
                     ");
-                    $stmt->execute([$tournament_id, $team_id]);
+                    $stmt->execute([$regId, $tournament_id, $team_id]);
                 }
             } else {
+                // Get next team ID
+                $stmt = $pdo->query("SELECT MAX(id) as max_id FROM teams");
+                $team_id = (int)$stmt->fetchColumn() + 1;
+                
                 // Create a new temporary team record for the player
                 $stmt = $pdo->prepare("
                     INSERT INTO teams (
+                        id,
                         owner_id, 
                         name, 
                         tag, 
@@ -216,7 +230,7 @@ try {
                         tier, 
                         logo
                     )
-                    VALUES (?, ?, ?, ?, ?, ?, 'amateur', ?)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, 'amateur', ?)
                 ");
                 
                 // Generate unique slug for the player's virtual team
@@ -228,6 +242,7 @@ try {
                 $description = 'Virtual team representing player #' . $player['id'] . ' in individual tournament #' . $tournament_id;
                 
                 $stmt->execute([
+                    $team_id,
                     $player['id'], // Owner ID is the player
                     $teamName,
                     $teamTag,
@@ -237,14 +252,16 @@ try {
                     $player['avatar'] // Use player avatar as team logo
                 ]);
                 
-                $team_id = $pdo->lastInsertId();
+                // Get next tournament_registrations ID
+                $stmt = $pdo->query("SELECT MAX(id) as max_id FROM tournament_registrations");
+                $regId = (int)$stmt->fetchColumn() + 1;
                 
                 // Register the team for the tournament
                 $stmt = $pdo->prepare("
-                    INSERT INTO tournament_registrations (tournament_id, team_id, status)
-                    VALUES (?, ?, 'accepted')
+                    INSERT INTO tournament_registrations (id, tournament_id, team_id, status)
+                    VALUES (?, ?, ?, 'accepted')
                 ");
-                $stmt->execute([$tournament_id, $team_id]);
+                $stmt->execute([$regId, $tournament_id, $team_id]);
             }
             
             // Add this team to our participants list
@@ -313,15 +330,18 @@ try {
         $group_name = "Group " . chr(65 + $i); // A, B, C, etc.
         $is_primary = ($num_groups === 1) ? 1 : 0;
         
+        // Get next round_robin_groups ID
+        $stmt = $pdo->query("SELECT MAX(id) as max_id FROM round_robin_groups");
+        $groupId = (int)$stmt->fetchColumn() + 1;
+        
         $stmt = $pdo->prepare("
-            INSERT INTO round_robin_groups (tournament_id, name, is_primary, created_at, updated_at)
-            VALUES (?, ?, ?, NOW(), NOW())
+            INSERT INTO round_robin_groups (id, tournament_id, name, is_primary, created_at, updated_at)
+            VALUES (?, ?, ?, ?, NOW(), NOW())
         ");
-        $stmt->execute([$tournament_id, $group_name, $is_primary]);
-        $group_id = $pdo->lastInsertId();
+        $stmt->execute([$groupId, $tournament_id, $group_name, $is_primary]);
         
         $groups[] = [
-            'id' => $group_id,
+            'id' => $groupId,
             'name' => $group_name,
             'is_primary' => $is_primary,
             'participants' => $group_participants[$i]
@@ -329,24 +349,33 @@ try {
         
         // Add teams to the group
         foreach ($group_participants[$i] as $participant) {
+            // Get next round_robin_group_teams ID
+            $stmt = $pdo->query("SELECT MAX(id) as max_id FROM round_robin_group_teams");
+            $groupTeamId = (int)$stmt->fetchColumn() + 1;
+            
             $stmt = $pdo->prepare("
-                INSERT INTO round_robin_group_teams (group_id, team_id, created_at)
-                VALUES (?, ?, NOW())
+                INSERT INTO round_robin_group_teams (id, group_id, team_id, created_at)
+                VALUES (?, ?, ?, NOW())
             ");
-            $stmt->execute([$group_id, $participant['id']]);
+            $stmt->execute([$groupTeamId, $groupId, $participant['id']]);
             
             // First check if standings record already exists
             $checkStmt = $pdo->prepare("
                 SELECT COUNT(*) FROM round_robin_standings 
                 WHERE tournament_id = ? AND group_id = ? AND team_id = ?
             ");
-            $checkStmt->execute([$tournament_id, $group_id, $participant['id']]);
+            $checkStmt->execute([$tournament_id, $groupId, $participant['id']]);
             $recordExists = (int)$checkStmt->fetchColumn() > 0;
             
             if (!$recordExists) {
+                // Get next round_robin_standings ID
+                $stmt = $pdo->query("SELECT MAX(id) as max_id FROM round_robin_standings");
+                $standingsId = (int)$stmt->fetchColumn() + 1;
+                
                 // Initialize standings record
                 $stmt = $pdo->prepare("
                     INSERT INTO round_robin_standings (
+                        id,
                         tournament_id, 
                         group_id, 
                         team_id, 
@@ -358,14 +387,14 @@ try {
                         goals_against, 
                         points
                     )
-                    VALUES (?, ?, ?, 0, 0, 0, 0, 0, 0, 0)
+                    VALUES (?, ?, ?, ?, 0, 0, 0, 0, 0, 0, 0)
                 ");
-                $stmt->execute([$tournament_id, $group_id, $participant['id']]);
+                $stmt->execute([$standingsId, $tournament_id, $groupId, $participant['id']]);
             }
         }
         
         // Generate round-robin matches for this group
-        generateRoundRobinMatches($pdo, $tournament_id, $group_id, $group_participants[$i]);
+        generateRoundRobinMatches($pdo, $tournament_id, $groupId, $group_participants[$i]);
     }
     
     // Update tournament status if needed
@@ -468,9 +497,14 @@ function generateRoundRobinMatches($pdo, $tournament_id, $group_id, $participant
         
         // Insert fixtures into database
         foreach ($fixtures as $fixture) {
+            // Get next round_robin_matches ID
+            $stmt = $pdo->query("SELECT MAX(id) as max_id FROM round_robin_matches");
+            $matchId = (int)$stmt->fetchColumn() + 1;
+            
             // Let the database handle auto-incrementing the ID
             $stmt = $pdo->prepare("
                 INSERT INTO round_robin_matches (
+                    id,
                     tournament_id, 
                     group_id, 
                     round_number, 
@@ -484,9 +518,10 @@ function generateRoundRobinMatches($pdo, $tournament_id, $group_id, $participant
                     created_at, 
                     updated_at
                 )
-                VALUES (?, ?, ?, ?, ?, NULL, NULL, NULL, NULL, 'scheduled', NOW(), NOW())
+                VALUES (?, ?, ?, ?, ?, ?, NULL, NULL, NULL, NULL, 'scheduled', NOW(), NOW())
             ");
             $stmt->execute([
+                $matchId,
                 $tournament_id,
                 $group_id,
                 $round,

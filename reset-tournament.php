@@ -53,6 +53,7 @@ try {
     // Start transaction to ensure all operations succeed or fail together
     $conn->beginTransaction();
     
+    error_log("Step 1: Checking if tournament exists");
     // Check if tournament exists and get bracket type
     $stmt = $conn->prepare("SELECT id, bracket_type, status FROM tournaments WHERE id = ?");
     $stmt->execute([$tournamentId]);
@@ -62,6 +63,7 @@ try {
         throw new Exception("Tournament with ID {$tournamentId} not found.");
     }
     
+    error_log("Step 2: Storing accepted registrations");
     // Store the tournament_registrations with accepted status (we'll keep these)
     $stmt = $conn->prepare("
         SELECT id, tournament_id, user_id, team_id, status, registration_date
@@ -71,6 +73,9 @@ try {
     $stmt->execute([$tournamentId]);
     $acceptedRegistrations = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
+    error_log("Found " . count($acceptedRegistrations) . " accepted registrations");
+    
+    error_log("Step 3: Logging action");
     // Log action
     $adminId = isset($data['admin_id']) ? (int)$data['admin_id'] : 1; // Default to admin ID 1 if not provided
     $logStmt = $conn->prepare("
@@ -86,6 +91,7 @@ try {
     
     // ====== RESET TOURNAMENT DATA ======
     
+    error_log("Step 4: Deleting match participants");
     // 1. Delete match participants
     $stmt = $conn->prepare("
         DELETE mp FROM match_participants mp
@@ -94,6 +100,7 @@ try {
     ");
     $stmt->execute([$tournamentId]);
     
+    error_log("Step 5: Deleting match state history");
     // 2. Delete match state history
     $stmt = $conn->prepare("
         DELETE msh FROM match_state_history msh
@@ -102,12 +109,14 @@ try {
     ");
     $stmt->execute([$tournamentId]);
     
+    error_log("Step 6: Deleting matches");
     // 3. Delete matches
     $stmt = $conn->prepare("DELETE FROM matches WHERE tournament_id = ?");
     $stmt->execute([$tournamentId]);
     
     // 4. Handle Round Robin specific data
     if ($tournament['bracket_type'] === 'Round Robin') {
+        error_log("Step 7: Processing Round Robin specific data");
         // 4.1 Delete round robin matches
         $stmt = $conn->prepare("DELETE FROM round_robin_matches WHERE tournament_id = ?");
         $stmt->execute([$tournamentId]);
@@ -133,10 +142,12 @@ try {
         ");
         $stmt->execute([$tournamentId]);
         $existingGroups = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        error_log("Found " . count($existingGroups) . " existing groups");
     }
     
     // 5. Handle Battle Royale specific data
     if ($tournament['bracket_type'] === 'Battle Royale') {
+        error_log("Step 8: Processing Battle Royale specific data");
         // 5.1 Delete battle royale match results
         $stmt = $conn->prepare("
             DELETE brmr FROM battle_royale_match_results brmr
@@ -154,10 +165,12 @@ try {
         $stmt->execute([$tournamentId]);
     }
     
+    error_log("Step 9: Deleting tournament registrations");
     // 6. Delete all tournament registrations (we'll restore the accepted ones later)
     $stmt = $conn->prepare("DELETE FROM tournament_registrations WHERE tournament_id = ?");
     $stmt->execute([$tournamentId]);
     
+    error_log("Step 10: Resetting tournament state");
     // 7. Reset tournament state to registration_open
     $stmt = $conn->prepare("
         UPDATE tournaments 
@@ -167,23 +180,40 @@ try {
     ");
     $stmt->execute([$tournamentId]);
     
-    // 8. Restore accepted registrations
+    error_log("Step 11: Restoring accepted registrations");
+    // 8. Restore accepted registrations - including the id field to fix the error
     if (!empty($acceptedRegistrations)) {
-        $restoreStmt = $conn->prepare("
-            INSERT INTO tournament_registrations 
-            (tournament_id, user_id, team_id, status, registration_date)
-            VALUES (?, ?, ?, 'accepted', ?)
-        ");
+        // Check if any accepted registrations exist
+        error_log("Found " . count($acceptedRegistrations) . " accepted registrations to restore");
         
-        foreach ($acceptedRegistrations as $reg) {
-            $restoreStmt->execute([
-                $reg['tournament_id'],
-                $reg['user_id'],
-                $reg['team_id'],
-                $reg['registration_date']
-            ]);
+        // Check structure of first registration
+        if (!empty($acceptedRegistrations[0])) {
+            error_log("First registration structure: " . json_encode($acceptedRegistrations[0]));
         }
         
+        $restoreStmt = $conn->prepare("
+            INSERT INTO tournament_registrations 
+            (id, tournament_id, user_id, team_id, status, registration_date)
+            VALUES (?, ?, ?, ?, 'accepted', ?)
+        ");
+        
+        foreach ($acceptedRegistrations as $index => $reg) {
+            error_log("Restoring registration " . ($index+1) . " of " . count($acceptedRegistrations) . ": ID=" . $reg['id']);
+            try {
+                $restoreStmt->execute([
+                    $reg['id'],
+                    $reg['tournament_id'],
+                    $reg['user_id'],
+                    $reg['team_id'],
+                    $reg['registration_date']
+                ]);
+            } catch (Exception $e) {
+                error_log("Error restoring registration ID " . $reg['id'] . ": " . $e->getMessage());
+                throw $e; // Re-throw to be caught by outer catch
+            }
+        }
+        
+        error_log("Step 12: Recreating group assignments for Round Robin");
         // 9. If this is a Round Robin tournament and we have accepted registrations,
         // recreate the group assignments
         if ($tournament['bracket_type'] === 'Round Robin' && !empty($existingGroups)) {
@@ -192,34 +222,92 @@ try {
                 return !is_null($reg['team_id']);
             }), 'team_id');
             
+            error_log("Found " . count($teamIds) . " team IDs to assign to groups");
+            
             if (!empty($teamIds)) {
                 // Get the first group for simplicity (you might want a more sophisticated assignment)
                 $defaultGroupId = $existingGroups[0]['id'];
+                error_log("Using default group ID: " . $defaultGroupId);
                 
-                $insertTeamStmt = $conn->prepare("
-                    INSERT INTO round_robin_group_teams (group_id, team_id)
-                    VALUES (?, ?)
-                ");
+                // Get the structure of round_robin_group_teams table to check if it has an ID column
+                $tableInfoQuery = $conn->prepare("DESCRIBE round_robin_group_teams");
+                $tableInfoQuery->execute();
+                $tableColumns = $tableInfoQuery->fetchAll(PDO::FETCH_ASSOC);
+                $hasIdColumn = false;
+                $idAutoIncrement = false;
                 
-                foreach ($teamIds as $teamId) {
-                    // This will trigger the after_team_add_to_group trigger to create standings
-                    $insertTeamStmt->execute([$defaultGroupId, $teamId]);
+                foreach ($tableColumns as $column) {
+                    error_log("Column: " . json_encode($column));
+                    if ($column['Field'] === 'id') {
+                        $hasIdColumn = true;
+                        if (strpos(strtoupper($column['Extra']), 'AUTO_INCREMENT') !== false) {
+                            $idAutoIncrement = true;
+                        }
+                    }
+                }
+                
+                error_log("round_robin_group_teams has ID column: " . ($hasIdColumn ? "Yes" : "No") . 
+                         ", Auto Increment: " . ($idAutoIncrement ? "Yes" : "No"));
+                
+                if ($hasIdColumn && !$idAutoIncrement) {
+                    // We need to manage IDs ourselves
+                    // First, get the max ID to continue from there
+                    $maxIdQuery = $conn->prepare("SELECT MAX(id) FROM round_robin_group_teams");
+                    $maxIdQuery->execute();
+                    $maxId = $maxIdQuery->fetchColumn() ?: 0;
+                    error_log("Current max ID in round_robin_group_teams: " . $maxId);
+                    
+                    $insertTeamStmt = $conn->prepare("
+                        INSERT INTO round_robin_group_teams (id, group_id, team_id)
+                        VALUES (?, ?, ?)
+                    ");
+                    
+                    foreach ($teamIds as $index => $teamId) {
+                        $newId = $maxId + $index + 1;
+                        error_log("Inserting team " . $teamId . " with ID " . $newId);
+                        try {
+                            $insertTeamStmt->execute([$newId, $defaultGroupId, $teamId]);
+                        } catch (Exception $e) {
+                            error_log("Error inserting team " . $teamId . ": " . $e->getMessage());
+                            throw $e;
+                        }
+                    }
+                } else {
+                    // ID column is auto-increment or doesn't exist
+                    $insertTeamStmt = $conn->prepare("
+                        INSERT INTO round_robin_group_teams (group_id, team_id)
+                        VALUES (?, ?)
+                    ");
+                    
+                    foreach ($teamIds as $teamId) {
+                        error_log("Inserting team " . $teamId);
+                        try {
+                            $insertTeamStmt->execute([$defaultGroupId, $teamId]);
+                        } catch (Exception $e) {
+                            error_log("Error inserting team " . $teamId . ": " . $e->getMessage());
+                            throw $e;
+                        }
+                    }
                 }
             }
         }
     }
     
+    error_log("Step 13: Deleting tournament rounds");
     // 10. Delete tournament rounds if they exist
     $stmt = $conn->prepare("DELETE FROM tournament_rounds WHERE tournament_id = ?");
     $stmt->execute([$tournamentId]);
     
+    error_log("Step 14: Deleting tournament stages");
     // 11. Delete tournament stages if they exist
     $stmt = $conn->prepare("DELETE FROM tournament_stages WHERE tournament_id = ?");
     $stmt->execute([$tournamentId]);
     
+    error_log("Step 15: Committing transaction");
     // Commit all changes
     $conn->commit();
     
+    error_log("Tournament reset completed successfully");
     // Return success response
     echo json_encode([
         'success' => true,
@@ -236,6 +324,7 @@ try {
     
     // Log the error for server-side debugging
     error_log('Tournament reset PDO error: ' . $e->getMessage());
+    error_log('Stack trace: ' . $e->getTraceAsString());
     
     // Return error response
     http_response_code(500);
@@ -251,6 +340,7 @@ try {
     
     // Handle any other exceptions
     error_log('Tournament reset general error: ' . $e->getMessage());
+    error_log('Stack trace: ' . $e->getTraceAsString());
     
     // Return error response
     http_response_code(400);
