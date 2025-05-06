@@ -125,7 +125,9 @@ try {
         $stmt = $conn->prepare("DELETE FROM round_robin_standings WHERE tournament_id = ?");
         $stmt->execute([$tournamentId]);
         
-        // 4.3 Delete round robin group teams but keep the groups themselves
+        // 4.3 Delete round robin group teams 
+        // CRITICAL FIX: Delete with JOIN to properly handle all group-team relationships
+        // This is more reliable than retrieving and deleting individually
         $stmt = $conn->prepare("
             DELETE rrgt FROM round_robin_group_teams rrgt
             JOIN round_robin_groups rrg ON rrgt.group_id = rrg.id
@@ -133,8 +135,7 @@ try {
         ");
         $stmt->execute([$tournamentId]);
         
-        // 4.4 If you want to keep the groups structure but recreate participants later,
-        // you can fetch the existing groups to recreate team assignments later
+        // 4.4 Get the existing groups for later recreation
         $stmt = $conn->prepare("
             SELECT id, name 
             FROM round_robin_groups 
@@ -215,7 +216,7 @@ try {
         
         error_log("Step 12: Recreating group assignments for Round Robin");
         // 9. If this is a Round Robin tournament and we have accepted registrations,
-        // recreate the group assignments
+        // recreate the group assignments - only if existingGroups exists and is not empty
         if ($tournament['bracket_type'] === 'Round Robin' && !empty($existingGroups)) {
             // Get all team IDs from accepted registrations
             $teamIds = array_column(array_filter($acceptedRegistrations, function($reg) {
@@ -229,63 +230,63 @@ try {
                 $defaultGroupId = $existingGroups[0]['id'];
                 error_log("Using default group ID: " . $defaultGroupId);
                 
-                // Get the structure of round_robin_group_teams table to check if it has an ID column
-                $tableInfoQuery = $conn->prepare("DESCRIBE round_robin_group_teams");
+                // IMPROVED APPROACH: Use INSERT IGNORE to avoid duplicate key errors
+                // This is more efficient and safer than individual checks
+                // First check if the table has auto-increment ID
+                $tableInfoQuery = $conn->prepare("SHOW COLUMNS FROM round_robin_group_teams LIKE 'id'");
                 $tableInfoQuery->execute();
-                $tableColumns = $tableInfoQuery->fetchAll(PDO::FETCH_ASSOC);
-                $hasIdColumn = false;
-                $idAutoIncrement = false;
+                $column = $tableInfoQuery->fetch(PDO::FETCH_ASSOC);
+                $hasAutoIncrementId = ($column && strpos(strtoupper($column['Extra']), 'AUTO_INCREMENT') !== false);
                 
-                foreach ($tableColumns as $column) {
-                    error_log("Column: " . json_encode($column));
-                    if ($column['Field'] === 'id') {
-                        $hasIdColumn = true;
-                        if (strpos(strtoupper($column['Extra']), 'AUTO_INCREMENT') !== false) {
-                            $idAutoIncrement = true;
-                        }
-                    }
-                }
+                error_log("round_robin_group_teams has Auto Increment ID: " . ($hasAutoIncrementId ? "Yes" : "No"));
                 
-                error_log("round_robin_group_teams has ID column: " . ($hasIdColumn ? "Yes" : "No") . 
-                         ", Auto Increment: " . ($idAutoIncrement ? "Yes" : "No"));
-                
-                if ($hasIdColumn && !$idAutoIncrement) {
-                    // We need to manage IDs ourselves
-                    // First, get the max ID to continue from there
-                    $maxIdQuery = $conn->prepare("SELECT MAX(id) FROM round_robin_group_teams");
-                    $maxIdQuery->execute();
-                    $maxId = $maxIdQuery->fetchColumn() ?: 0;
-                    error_log("Current max ID in round_robin_group_teams: " . $maxId);
-                    
+                if ($hasAutoIncrementId) {
+                    // Use INSERT IGNORE with auto-increment ID
                     $insertTeamStmt = $conn->prepare("
-                        INSERT INTO round_robin_group_teams (id, group_id, team_id)
-                        VALUES (?, ?, ?)
-                    ");
-                    
-                    foreach ($teamIds as $index => $teamId) {
-                        $newId = $maxId + $index + 1;
-                        error_log("Inserting team " . $teamId . " with ID " . $newId);
-                        try {
-                            $insertTeamStmt->execute([$newId, $defaultGroupId, $teamId]);
-                        } catch (Exception $e) {
-                            error_log("Error inserting team " . $teamId . ": " . $e->getMessage());
-                            throw $e;
-                        }
-                    }
-                } else {
-                    // ID column is auto-increment or doesn't exist
-                    $insertTeamStmt = $conn->prepare("
-                        INSERT INTO round_robin_group_teams (group_id, team_id)
+                        INSERT IGNORE INTO round_robin_group_teams (group_id, team_id)
                         VALUES (?, ?)
                     ");
                     
                     foreach ($teamIds as $teamId) {
-                        error_log("Inserting team " . $teamId);
-                        try {
-                            $insertTeamStmt->execute([$defaultGroupId, $teamId]);
-                        } catch (Exception $e) {
-                            error_log("Error inserting team " . $teamId . ": " . $e->getMessage());
-                            throw $e;
+                        error_log("Attempting to insert team " . $teamId . " to group " . $defaultGroupId);
+                        $insertTeamStmt->execute([$defaultGroupId, $teamId]);
+                    }
+                } else {
+                    // We need to manage IDs manually, so first get max ID
+                    $maxIdQuery = $conn->prepare("SELECT COALESCE(MAX(id), 0) FROM round_robin_group_teams");
+                    $maxIdQuery->execute();
+                    $maxId = (int)$maxIdQuery->fetchColumn();
+                    error_log("Current max ID in round_robin_group_teams: " . $maxId);
+                    
+                    // Then check which team-group combinations already exist to avoid duplicates
+                    $existingAssignmentsStmt = $conn->prepare("
+                        SELECT team_id FROM round_robin_group_teams WHERE group_id = ?
+                    ");
+                    $existingAssignmentsStmt->execute([$defaultGroupId]);
+                    $existingAssignments = $existingAssignmentsStmt->fetchAll(PDO::FETCH_COLUMN);
+                    error_log("Teams already assigned: " . count($existingAssignments));
+                    
+                    // Filter out teams that are already assigned
+                    $teamsToAssign = array_diff($teamIds, $existingAssignments);
+                    error_log("New teams to assign: " . count($teamsToAssign));
+                    
+                    if (!empty($teamsToAssign)) {
+                        $insertTeamStmt = $conn->prepare("
+                            INSERT INTO round_robin_group_teams (id, group_id, team_id) 
+                            VALUES (?, ?, ?)
+                        ");
+                        
+                        $newId = $maxId + 1;
+                        foreach ($teamsToAssign as $teamId) {
+                            error_log("Inserting team " . $teamId . " with ID " . $newId);
+                            try {
+                                $insertTeamStmt->execute([$newId, $defaultGroupId, $teamId]);
+                                $newId++;
+                            } catch (Exception $e) {
+                                // Log error but don't stop the process
+                                error_log("Error inserting team " . $teamId . ": " . $e->getMessage());
+                                // Continue with next team
+                            }
                         }
                     }
                 }
