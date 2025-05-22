@@ -57,11 +57,22 @@ try {
         createUser($pdo, $input, $avatarPath);
         error_log("User created successfully");
 
+        // Send welcome email via Brevo API
+        $emailResult = sendWelcomeEmail($input['email'], $input['username']);
+        
+        if ($emailResult['success']) {
+            error_log("Welcome email sent successfully to: " . $input['email']);
+        } else {
+            error_log("Failed to send welcome email: " . $emailResult['message']);
+            // Don't fail registration if email fails - just log it
+        }
+
         // Return success response
         echo json_encode([
             'success' => true,
             'message' => 'Registration successful',
-            'avatar' => $avatarPath
+            'avatar' => $avatarPath,
+            'email_sent' => $emailResult['success']
         ]);
     } else {
         http_response_code(405);
@@ -74,6 +85,291 @@ try {
 } catch (Exception $e) {
     error_log("General Error: " . $e->getMessage() . "\n" . $e->getTraceAsString());
     handleError($e->getMessage(), 400);
+}
+
+/**
+ * Send welcome email using Brevo API
+ */
+function sendWelcomeEmail($userEmail, $username) {
+    // Brevo API configuration
+    $brevo_config = [
+        'api_key' => 'YOUR_BREVO_API_KEY', // Replace with your actual API key
+        'sender_email' => 'noreply@yourdomain.com', // Replace with your verified sender email
+        'sender_name' => 'Your Platform Name' // Replace with your platform name
+    ];
+    
+    $url = 'https://api.brevo.com/v3/smtp/email';
+    
+    // Prepare email data
+    $data = [
+        'sender' => [
+            'name' => $brevo_config['sender_name'],
+            'email' => $brevo_config['sender_email']
+        ],
+        'to' => [
+            [
+                'email' => $userEmail,
+                'name' => $username
+            ]
+        ],
+        'subject' => 'Welcome to Our Platform!',
+        'htmlContent' => createWelcomeEmailTemplate($username),
+        'textContent' => createWelcomeEmailText($username)
+    ];
+    
+    // Prepare headers
+    $headers = [
+        'Accept: application/json',
+        'Content-Type: application/json',
+        'api-key: ' . $brevo_config['api_key']
+    ];
+    
+    // Send API request
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    
+    $response = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curl_error = curl_error($ch);
+    
+    curl_close($ch);
+    
+    // Log the response for debugging
+    error_log("Brevo API Response - HTTP Code: $http_code, Response: $response");
+    
+    if ($curl_error) {
+        error_log("Curl error: " . $curl_error);
+        return [
+            'success' => false,
+            'message' => 'Failed to connect to email service: ' . $curl_error
+        ];
+    }
+    
+    if ($http_code >= 200 && $http_code < 300) {
+        return [
+            'success' => true,
+            'message' => 'Welcome email sent successfully',
+            'response' => $response
+        ];
+    } else {
+        return [
+            'success' => false,
+            'message' => 'Failed to send email - HTTP ' . $http_code . ': ' . $response
+        ];
+    }
+}
+
+/**
+ * Create HTML email template for welcome email
+ */
+function createWelcomeEmailTemplate($username) {
+    return '
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Welcome to Our Platform</title>
+        <style>
+            body { 
+                font-family: Arial, sans-serif; 
+                line-height: 1.6; 
+                color: #333; 
+                max-width: 600px; 
+                margin: 0 auto; 
+                padding: 20px; 
+            }
+            .header { 
+                background-color: #4CAF50; 
+                color: white; 
+                text-align: center; 
+                padding: 20px; 
+                border-radius: 10px 10px 0 0; 
+            }
+            .content { 
+                background-color: #f9f9f9; 
+                padding: 30px; 
+                border-radius: 0 0 10px 10px; 
+            }
+            .button { 
+                display: inline-block; 
+                background-color: #4CAF50; 
+                color: white; 
+                padding: 12px 24px; 
+                text-decoration: none; 
+                border-radius: 5px; 
+                margin: 20px 0; 
+            }
+            .footer { 
+                text-align: center; 
+                color: #666; 
+                font-size: 12px; 
+                margin-top: 20px; 
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Welcome to Our Platform!</h1>
+        </div>
+        <div class="content">
+            <h2>Hello ' . htmlspecialchars($username) . '!</h2>
+            
+            <p>Thank you for joining our platform. We\'re excited to have you as part of our community!</p>
+            
+            <p>Your account has been successfully created and you can now:</p>
+            <ul>
+                <li>Access all platform features</li>
+                <li>Connect with other users</li>
+                <li>Participate in events and activities</li>
+                <li>Customize your profile</li>
+            </ul>
+            
+            <p>To get started, click the button below to access your dashboard:</p>
+            
+            <a href="https://yourdomain.com/dashboard" class="button">Go to Dashboard</a>
+            
+            <p>If you have any questions or need assistance, feel free to contact our support team.</p>
+            
+            <p>Best regards,<br>The Platform Team</p>
+        </div>
+        <div class="footer">
+            <p>© 2024 Your Platform Name. All rights reserved.</p>
+            <p>If you didn\'t create this account, please ignore this email.</p>
+        </div>
+    </body>
+    </html>';
+}
+
+/**
+ * Create plain text version of welcome email
+ */
+function createWelcomeEmailText($username) {
+    return "
+Welcome to Our Platform!
+
+Hello " . $username . "!
+
+Thank you for joining our platform. We're excited to have you as part of our community!
+
+Your account has been successfully created and you can now:
+- Access all platform features
+- Connect with other users
+- Participate in events and activities
+- Customize your profile
+
+To get started, visit: https://yourdomain.com/dashboard
+
+If you have any questions or need assistance, feel free to contact our support team.
+
+Best regards,
+The Platform Team
+
+---
+© 2024 Your Platform Name. All rights reserved.
+If you didn't create this account, please ignore this email.
+    ";
+}
+
+/**
+ * Send notification email to admin about new registration
+ */
+function sendAdminNotification($userEmail, $username) {
+    // Admin notification configuration
+    $admin_config = [
+        'api_key' => 'YOUR_BREVO_API_KEY', // Same as above
+        'sender_email' => 'noreply@yourdomain.com', // Same as above
+        'sender_name' => 'Registration System',
+        'admin_email' => 'admin@yourdomain.com' // Replace with admin email
+    ];
+    
+    $url = 'https://api.brevo.com/v3/smtp/email';
+    
+    // Prepare email data
+    $data = [
+        'sender' => [
+            'name' => $admin_config['sender_name'],
+            'email' => $admin_config['sender_email']
+        ],
+        'to' => [
+            [
+                'email' => $admin_config['admin_email'],
+                'name' => 'Administrator'
+            ]
+        ],
+        'subject' => 'New User Registration: ' . $username,
+        'htmlContent' => createAdminNotificationTemplate($userEmail, $username),
+        'textContent' => "New user registered:\nUsername: $username\nEmail: $userEmail\nTime: " . date('Y-m-d H:i:s')
+    ];
+    
+    // Prepare headers
+    $headers = [
+        'Accept: application/json',
+        'Content-Type: application/json',
+        'api-key: ' . $admin_config['api_key']
+    ];
+    
+    // Send API request
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    
+    $response = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    
+    return ($http_code >= 200 && $http_code < 300);
+}
+
+/**
+ * Create admin notification email template
+ */
+function createAdminNotificationTemplate($userEmail, $username) {
+    return '
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>New User Registration</title>
+        <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background-color: #2196F3; color: white; padding: 15px; border-radius: 5px; }
+            .content { padding: 20px; background-color: #f9f9f9; margin-top: 10px; border-radius: 5px; }
+            .info-row { margin: 10px 0; }
+            .label { font-weight: bold; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h2>New User Registration</h2>
+            </div>
+            <div class="content">
+                <p>A new user has registered on the platform:</p>
+                
+                <div class="info-row">
+                    <span class="label">Username:</span> ' . htmlspecialchars($username) . '
+                </div>
+                <div class="info-row">
+                    <span class="label">Email:</span> ' . htmlspecialchars($userEmail) . '
+                </div>
+                <div class="info-row">
+                    <span class="label">Registration Time:</span> ' . date('Y-m-d H:i:s') . '
+                </div>
+                
+                <p>Please review the new user account in the admin panel.</p>
+            </div>
+        </div>
+    </body>
+    </html>';
 }
 
 /**
