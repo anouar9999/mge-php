@@ -458,3 +458,177 @@
     [:status] => registration_open
 )
 
+[22-May-2025 14:14:09 Europe/Berlin] PDO Error: SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: YES)
+#0 C:\xampp\htdocs\api\user_register.php(22): PDO->__construct('mysql:host=loca...', 'root', Object(SensitiveParameterValue), Array)
+#1 {main}
+[22-May-2025 14:14:09 Europe/Berlin] Error response: [500] Database error occurred: SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: YES)
+[22-May-2025 14:15:37 Europe/Berlin] Database connection established
+[22-May-2025 14:15:37 Europe/Berlin] Table already has auto-increment column: id
+[22-May-2025 14:15:37 Europe/Berlin] Processing registration request
+[22-May-2025 14:15:37 Europe/Berlin] Processing form POST data
+[22-May-2025 14:15:37 Europe/Berlin] Validating input data
+[22-May-2025 14:15:37 Europe/Berlin] Input validated for user: pinokio
+[22-May-2025 14:15:37 Europe/Berlin] Processing avatar upload
+[22-May-2025 14:15:37 Europe/Berlin] Uploaded file MIME type: image/jpeg
+[22-May-2025 14:15:37 Europe/Berlin] Saving avatar to: C:/xampp/htdocs/uploads/avatars/avatar_682f15698309a.jpg
+[22-May-2025 14:15:37 Europe/Berlin] Avatar uploaded: /uploads/avatars/avatar_682f15698309a.jpg
+[22-May-2025 14:15:37 Europe/Berlin] Checking for existing user with email: sabiranouar00@gmail.com or username: pinokio
+[22-May-2025 14:15:37 Europe/Berlin] User uniqueness verified
+[22-May-2025 14:15:37 Europe/Berlin] Creating new user: pinokio
+[22-May-2025 14:15:37 Europe/Berlin] User inserted successfully with ID: 6
+[22-May-2025 14:15:37 Europe/Berlin] User created successfully
+[22-May-2025 14:15:38 Europe/Berlin] Brevo API Response - HTTP Code: 401, Response: {"message":"Key not found","code":"unauthorized"}
+
+[22-May-2025 14:15:38 Europe/Berlin] Failed to send welcome email: Failed to send email - HTTP 401: {"message":"Key not found","code":"unauthorized"}
+
+[22-May-2025 14:20:03 Europe/Berlin] Database connection established
+[22-May-2025 14:20:03 Europe/Berlin] Table already has auto-increment column: id
+[22-May-2025 14:20:03 Europe/Berlin] Processing registration request
+[22-May-2025 14:20:03 Europe/Berlin] Processing form POST data
+[22-May-2025 14:20:03 Europe/Berlin] Validating input data
+[22-May-2025 14:20:03 Europe/Berlin] Input validated for user: mcatee
+[22-May-2025 14:20:03 Europe/Berlin] Processing avatar upload
+[22-May-2025 14:20:03 Europe/Berlin] Uploaded file MIME type: image/jpeg
+[22-May-2025 14:20:03 Europe/Berlin] Saving avatar to: C:/xampp/htdocs/uploads/avatars/avatar_682f1673f2237.jpg
+[22-May-2025 14:20:03 Europe/Berlin] Avatar uploaded: /uploads/avatars/avatar_682f1673f2237.jpg
+[22-May-2025 14:20:03 Europe/Berlin] Checking for existing user with email: sabiranouar99@gmail.com or username: mcatee
+[22-May-2025 14:20:03 Europe/Berlin] User uniqueness verified
+[22-May-2025 14:20:03 Europe/Berlin] Creating new user: mcatee
+[22-May-2025 14:20:04 Europe/Berlin] User inserted successfully with ID: 7
+[22-May-2025 14:20:04 Europe/Berlin] User created successfully
+[22-May-2025 14:20:04 Europe/Berlin] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505221119.61331333895@smtp-relay.mailin.fr>"}
+
+[22-May-2025 14:20:04 Europe/Berlin] Welcome email sent successfully to: sabiranouar99@gmail.com
+[22-May-2025 14:48:27 Europe/Berlin] Database connection established
+[22-May-2025 14:48:27 Europe/Berlin] Table already has auto-increment column: id
+[22-May-2025 14:48:27 Europe/Berlin] Processing registration request
+[22-May-2025 14:48:27 Europe/Berlin] Processing form POST data
+[22-May-2025 14:48:27 Europe/Berlin] Validating input data
+[22-May-2025 14:48:27 Europe/Berlin] Input validated for user: user
+[22-May-2025 14:48:27 Europe/Berlin] Processing avatar upload
+[22-May-2025 14:48:27 Europe/Berlin] Uploaded file MIME type: image/jpeg
+[22-May-2025 14:48:27 Europe/Berlin] Saving avatar to: C:/xampp/htdocs/uploads/avatars/avatar_682f1d1b6a359.jpg
+[22-May-2025 14:48:27 Europe/Berlin] Avatar uploaded: /uploads/avatars/avatar_682f1d1b6a359.jpg
+[22-May-2025 14:48:27 Europe/Berlin] Checking for existing user with email: sabiranouar99@gmail.com or username: user
+[22-May-2025 14:48:27 Europe/Berlin] User uniqueness verified
+[22-May-2025 14:48:27 Europe/Berlin] Creating new user: user
+[22-May-2025 14:48:27 Europe/Berlin] User inserted successfully with ID: 8
+[22-May-2025 14:48:27 Europe/Berlin] User created successfully
+[22-May-2025 14:48:28 Europe/Berlin] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505221148.52347217799@smtp-relay.mailin.fr>"}
+
+[22-May-2025 14:48:28 Europe/Berlin] Welcome email sent successfully to: sabiranouar99@gmail.com
+[22-May-2025 15:21:20 Europe/Berlin] Database connection established
+[22-May-2025 15:21:20 Europe/Berlin] Table already has auto-increment column: id
+[22-May-2025 15:21:20 Europe/Berlin] Processing registration request
+[22-May-2025 15:21:20 Europe/Berlin] Processing form POST data
+[22-May-2025 15:21:20 Europe/Berlin] Validating input data
+[22-May-2025 15:21:20 Europe/Berlin] Input validated for user: maadona
+[22-May-2025 15:21:20 Europe/Berlin] Processing avatar upload
+[22-May-2025 15:21:20 Europe/Berlin] Uploaded file MIME type: image/png
+[22-May-2025 15:21:20 Europe/Berlin] Saving avatar to: C:/xampp/htdocs/uploads/avatars/avatar_682f24d0ecbb1.png
+[22-May-2025 15:21:20 Europe/Berlin] Avatar uploaded: /uploads/avatars/avatar_682f24d0ecbb1.png
+[22-May-2025 15:21:20 Europe/Berlin] Checking for existing user with email: sabiranouar00@gmail.com or username: maadona
+[22-May-2025 15:21:20 Europe/Berlin] User uniqueness verified
+[22-May-2025 15:21:20 Europe/Berlin] Creating new user: maadona
+[22-May-2025 15:21:21 Europe/Berlin] User inserted successfully with ID: 9
+[22-May-2025 15:21:21 Europe/Berlin] User created successfully
+[22-May-2025 15:21:21 Europe/Berlin] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505221221.44936240389@smtp-relay.mailin.fr>"}
+
+[22-May-2025 15:21:21 Europe/Berlin] Welcome email sent successfully to: sabiranouar00@gmail.com
+[22-May-2025 15:24:32 Europe/Berlin] Database connection established
+[22-May-2025 15:24:32 Europe/Berlin] Table already has auto-increment column: id
+[22-May-2025 15:24:32 Europe/Berlin] Processing registration request
+[22-May-2025 15:24:32 Europe/Berlin] Processing form POST data
+[22-May-2025 15:24:32 Europe/Berlin] Validating input data
+[22-May-2025 15:24:32 Europe/Berlin] Input validated for user: user000
+[22-May-2025 15:24:32 Europe/Berlin] Processing avatar upload
+[22-May-2025 15:24:32 Europe/Berlin] Uploaded file MIME type: image/jpeg
+[22-May-2025 15:24:32 Europe/Berlin] Saving avatar to: C:/xampp/htdocs/uploads/avatars/avatar_682f25903e218.jpg
+[22-May-2025 15:24:32 Europe/Berlin] Avatar uploaded: /uploads/avatars/avatar_682f25903e218.jpg
+[22-May-2025 15:24:32 Europe/Berlin] Checking for existing user with email: sabiranouar99@gmail.com or username: user000
+[22-May-2025 15:24:32 Europe/Berlin] User uniqueness verified
+[22-May-2025 15:24:32 Europe/Berlin] Creating new user: user000
+[22-May-2025 15:24:32 Europe/Berlin] User inserted successfully with ID: 10
+[22-May-2025 15:24:32 Europe/Berlin] User created successfully
+[22-May-2025 15:24:33 Europe/Berlin] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505221224.94157676475@smtp-relay.mailin.fr>"}
+
+[22-May-2025 15:24:33 Europe/Berlin] Welcome email sent successfully to: sabiranouar99@gmail.com
+[22-May-2025 15:36:20 Europe/Berlin] Database connection established
+[22-May-2025 15:36:20 Europe/Berlin] Processing registration request
+[22-May-2025 15:36:20 Europe/Berlin] Processing form POST data
+[22-May-2025 15:36:20 Europe/Berlin] Validating input data
+[22-May-2025 15:36:20 Europe/Berlin] Input validated for user: szsddzsdcccvv
+[22-May-2025 15:36:20 Europe/Berlin] Processing avatar upload
+[22-May-2025 15:36:20 Europe/Berlin] Uploaded file MIME type: image/png
+[22-May-2025 15:36:20 Europe/Berlin] Saving avatar to: C:/xampp/htdocs/uploads/avatars/avatar_682f285455b9d.png
+[22-May-2025 15:36:20 Europe/Berlin] Avatar uploaded: /uploads/avatars/avatar_682f285455b9d.png
+[22-May-2025 15:36:20 Europe/Berlin] Checking for existing user with email: sabiranouar99@gmail.com or username: szsddzsdcccvv
+[22-May-2025 15:36:20 Europe/Berlin] User uniqueness verified
+[22-May-2025 15:36:20 Europe/Berlin] Creating new user: szsddzsdcccvv
+[22-May-2025 15:36:20 Europe/Berlin] User inserted successfully with ID: 11
+[22-May-2025 15:36:20 Europe/Berlin] User created successfully with ID: 11
+[22-May-2025 15:36:21 Europe/Berlin] Brevo API Response - HTTP Code: 401, Response: {"message":"Key not found","code":"unauthorized"}
+
+[22-May-2025 15:36:21 Europe/Berlin] Failed to send verification email: Failed to send email - HTTP 401: {"message":"Key not found","code":"unauthorized"}
+
+[22-May-2025 15:38:16 Europe/Berlin] Database connection established
+[22-May-2025 15:38:16 Europe/Berlin] Processing registration request
+[22-May-2025 15:38:16 Europe/Berlin] Processing form POST data
+[22-May-2025 15:38:16 Europe/Berlin] Validating input data
+[22-May-2025 15:38:16 Europe/Berlin] Input validated for user: ANOUUUAR
+[22-May-2025 15:38:16 Europe/Berlin] Processing avatar upload
+[22-May-2025 15:38:16 Europe/Berlin] Uploaded file MIME type: image/png
+[22-May-2025 15:38:16 Europe/Berlin] Saving avatar to: C:/xampp/htdocs/uploads/avatars/avatar_682f28c80b3d6.png
+[22-May-2025 15:38:16 Europe/Berlin] Avatar uploaded: /uploads/avatars/avatar_682f28c80b3d6.png
+[22-May-2025 15:38:16 Europe/Berlin] Checking for existing user with email: sabiranouar00@gmail.com or username: ANOUUUAR
+[22-May-2025 15:38:16 Europe/Berlin] User uniqueness verified
+[22-May-2025 15:38:16 Europe/Berlin] Creating new user: ANOUUUAR
+[22-May-2025 15:38:16 Europe/Berlin] User inserted successfully with ID: 12
+[22-May-2025 15:38:16 Europe/Berlin] User created successfully with ID: 12
+[22-May-2025 15:38:16 Europe/Berlin] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505221237.87957566199@smtp-relay.mailin.fr>"}
+
+[22-May-2025 15:38:16 Europe/Berlin] Verification email sent successfully to: sabiranouar00@gmail.com
+[22-May-2025 15:41:36 Europe/Berlin] Database connection established
+[22-May-2025 15:41:36 Europe/Berlin] Processing registration request
+[22-May-2025 15:41:36 Europe/Berlin] Processing form POST data
+[22-May-2025 15:41:36 Europe/Berlin] Validating input data
+[22-May-2025 15:41:36 Europe/Berlin] Input validated for user: userRRR
+[22-May-2025 15:41:36 Europe/Berlin] Processing avatar upload
+[22-May-2025 15:41:36 Europe/Berlin] Uploaded file MIME type: image/png
+[22-May-2025 15:41:36 Europe/Berlin] Saving avatar to: C:/xampp/htdocs/uploads/avatars/avatar_682f2990d68c4.png
+[22-May-2025 15:41:36 Europe/Berlin] Avatar uploaded: /uploads/avatars/avatar_682f2990d68c4.png
+[22-May-2025 15:41:36 Europe/Berlin] Checking for existing user with email: sabiranouar99@gmail.com or username: userRRR
+[22-May-2025 15:41:36 Europe/Berlin] User uniqueness verified
+[22-May-2025 15:41:36 Europe/Berlin] Creating new user: userRRR
+[22-May-2025 15:41:37 Europe/Berlin] User inserted successfully with ID: 13
+[22-May-2025 15:41:37 Europe/Berlin] User created successfully with ID: 13
+[22-May-2025 15:41:37 Europe/Berlin] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505221241.92914157998@smtp-relay.mailin.fr>"}
+
+[22-May-2025 15:41:37 Europe/Berlin] Verification email sent successfully to: sabiranouar99@gmail.com
+[22-May-2025 15:41:51 Europe/Berlin] Processing verification for token: 438970864b...
+[22-May-2025 15:41:51 Europe/Berlin] User verified successfully: userRRR (ID: 13)
+[22-May-2025 15:56:39 Europe/Berlin] Database connection established
+[22-May-2025 15:56:39 Europe/Berlin] Processing registration request
+[22-May-2025 15:56:39 Europe/Berlin] Processing form POST data
+[22-May-2025 15:56:39 Europe/Berlin] Validating input data
+[22-May-2025 15:56:39 Europe/Berlin] Input validated for user: raspotin
+[22-May-2025 15:56:39 Europe/Berlin] Processing avatar upload
+[22-May-2025 15:56:39 Europe/Berlin] Uploaded file MIME type: image/jpeg
+[22-May-2025 15:56:39 Europe/Berlin] Saving avatar to: C:/xampp/htdocs/uploads/avatars/avatar_682f2d177ee49.jpg
+[22-May-2025 15:56:39 Europe/Berlin] Avatar uploaded: /uploads/avatars/avatar_682f2d177ee49.jpg
+[22-May-2025 15:56:39 Europe/Berlin] Checking for existing user with email: sabiranouar00@gmail.com or username: raspotin
+[22-May-2025 15:56:39 Europe/Berlin] User uniqueness verified
+[22-May-2025 15:56:39 Europe/Berlin] Creating new user: raspotin
+[22-May-2025 15:56:39 Europe/Berlin] User inserted successfully with ID: 14
+[22-May-2025 15:56:39 Europe/Berlin] User created successfully with ID: 14
+[22-May-2025 15:56:39 Europe/Berlin] PHP Warning:  Undefined variable $brevo_config in C:\xampp\htdocs\api\user_register.php on line 625
+[22-May-2025 15:56:39 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\api\user_register.php on line 625
+[22-May-2025 15:56:39 Europe/Berlin] PHP Warning:  Undefined variable $brevo_config in C:\xampp\htdocs\api\user_register.php on line 676
+[22-May-2025 15:56:39 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\api\user_register.php on line 676
+[22-May-2025 15:56:40 Europe/Berlin] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505221256.20961272977@smtp-relay.mailin.fr>"}
+
+[22-May-2025 15:56:40 Europe/Berlin] Verification email sent successfully to: sabiranouar00@gmail.com
+[22-May-2025 15:57:04 Europe/Berlin] Processing verification for token: 666b475915...
+[22-May-2025 15:57:04 Europe/Berlin] User verified successfully: raspotin (ID: 14)
+[22-May-2025 20:07:51 Europe/Berlin] Processing verification for token: 666b475915...
+[22-May-2025 20:07:51 Europe/Berlin] Verification error: Invalid or expired verification link. Please register again or contact support.

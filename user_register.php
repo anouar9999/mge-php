@@ -1,5 +1,12 @@
+
+
+
+
 <?php
-// Error handling and logging setup
+
+/**
+ * REGISTRATION.PHP - Complete rewritten file
+ */
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 error_reporting(E_ALL);
@@ -27,13 +34,8 @@ try {
     );
     
     error_log("Database connection established");
-    
-    // Check and update the table structure if needed
-    ensureAutoIncrementId($pdo);
 
-    // For POST requests, process registration
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Log incoming request for debugging
         error_log("Processing registration request");
         
         // Get and validate input
@@ -53,27 +55,33 @@ try {
         checkExistingUser($pdo, $input['email'], $input['username']);
         error_log("User uniqueness verified");
 
-        // Create new user
-        createUser($pdo, $input, $avatarPath);
-        error_log("User created successfully");
+        // Create new user with verification token
+        $userResult = createUser($pdo, $input, $avatarPath);
+        error_log("User created successfully with ID: " . $userResult['user_id']);
 
-        // Send welcome email via Brevo API
-        $emailResult = sendWelcomeEmail($input['email'], $input['username']);
+        // Send verification email
+        $emailResult = sendVerificationEmail(
+            $input['email'], 
+            $input['username'], 
+            $userResult['verification_token']
+        );
         
         if ($emailResult['success']) {
-            error_log("Welcome email sent successfully to: " . $input['email']);
+            error_log("Verification email sent successfully to: " . $input['email']);
         } else {
-            error_log("Failed to send welcome email: " . $emailResult['message']);
-            // Don't fail registration if email fails - just log it
+            error_log("Failed to send verification email: " . $emailResult['message']);
         }
 
         // Return success response
         echo json_encode([
             'success' => true,
-            'message' => 'Registration successful',
+            'message' => 'Registration successful! Please check your email to verify your account.',
+            'user_id' => $userResult['user_id'],
             'avatar' => $avatarPath,
-            'email_sent' => $emailResult['success']
+            'email_sent' => $emailResult['success'],
+            'requires_verification' => true
         ]);
+
     } else {
         http_response_code(405);
         die(json_encode(['success' => false, 'message' => 'Method not allowed']));
@@ -87,388 +95,26 @@ try {
     handleError($e->getMessage(), 400);
 }
 
+// =============================================================================
+// HELPER FUNCTIONS
+// =============================================================================
+
 /**
- * Send welcome email using Brevo API
+ * Generate secure verification token
  */
-function sendWelcomeEmail($userEmail, $username) {
-    // Brevo API configuration
-    $brevo_config = [
-        'api_key' => 'YOUR_BREVO_API_KEY', // Replace with your actual API key
-        'sender_email' => 'noreply@yourdomain.com', // Replace with your verified sender email
-        'sender_name' => 'Your Platform Name' // Replace with your platform name
-    ];
-    
-    $url = 'https://api.brevo.com/v3/smtp/email';
-    
-    // Prepare email data
-    $data = [
-        'sender' => [
-            'name' => $brevo_config['sender_name'],
-            'email' => $brevo_config['sender_email']
-        ],
-        'to' => [
-            [
-                'email' => $userEmail,
-                'name' => $username
-            ]
-        ],
-        'subject' => 'Welcome to Our Platform!',
-        'htmlContent' => createWelcomeEmailTemplate($username),
-        'textContent' => createWelcomeEmailText($username)
-    ];
-    
-    // Prepare headers
-    $headers = [
-        'Accept: application/json',
-        'Content-Type: application/json',
-        'api-key: ' . $brevo_config['api_key']
-    ];
-    
-    // Send API request
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-    
-    $response = curl_exec($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $curl_error = curl_error($ch);
-    
-    curl_close($ch);
-    
-    // Log the response for debugging
-    error_log("Brevo API Response - HTTP Code: $http_code, Response: $response");
-    
-    if ($curl_error) {
-        error_log("Curl error: " . $curl_error);
-        return [
-            'success' => false,
-            'message' => 'Failed to connect to email service: ' . $curl_error
-        ];
-    }
-    
-    if ($http_code >= 200 && $http_code < 300) {
-        return [
-            'success' => true,
-            'message' => 'Welcome email sent successfully',
-            'response' => $response
-        ];
-    } else {
-        return [
-            'success' => false,
-            'message' => 'Failed to send email - HTTP ' . $http_code . ': ' . $response
-        ];
-    }
+function generateVerificationToken() {
+    return bin2hex(random_bytes(32)); // 64 character secure token
 }
 
 /**
- * Create HTML email template for welcome email
+ * Handle input from POST or JSON
  */
-function createWelcomeEmailTemplate($username) {
-    return '
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Welcome to Our Platform</title>
-        <style>
-            body { 
-                font-family: Arial, sans-serif; 
-                line-height: 1.6; 
-                color: #333; 
-                max-width: 600px; 
-                margin: 0 auto; 
-                padding: 20px; 
-            }
-            .header { 
-                background-color: #4CAF50; 
-                color: white; 
-                text-align: center; 
-                padding: 20px; 
-                border-radius: 10px 10px 0 0; 
-            }
-            .content { 
-                background-color: #f9f9f9; 
-                padding: 30px; 
-                border-radius: 0 0 10px 10px; 
-            }
-            .button { 
-                display: inline-block; 
-                background-color: #4CAF50; 
-                color: white; 
-                padding: 12px 24px; 
-                text-decoration: none; 
-                border-radius: 5px; 
-                margin: 20px 0; 
-            }
-            .footer { 
-                text-align: center; 
-                color: #666; 
-                font-size: 12px; 
-                margin-top: 20px; 
-            }
-        </style>
-    </head>
-    <body>
-        <div class="header">
-            <h1>Welcome to Our Platform!</h1>
-        </div>
-        <div class="content">
-            <h2>Hello ' . htmlspecialchars($username) . '!</h2>
-            
-            <p>Thank you for joining our platform. We\'re excited to have you as part of our community!</p>
-            
-            <p>Your account has been successfully created and you can now:</p>
-            <ul>
-                <li>Access all platform features</li>
-                <li>Connect with other users</li>
-                <li>Participate in events and activities</li>
-                <li>Customize your profile</li>
-            </ul>
-            
-            <p>To get started, click the button below to access your dashboard:</p>
-            
-            <a href="https://yourdomain.com/dashboard" class="button">Go to Dashboard</a>
-            
-            <p>If you have any questions or need assistance, feel free to contact our support team.</p>
-            
-            <p>Best regards,<br>The Platform Team</p>
-        </div>
-        <div class="footer">
-            <p>© 2024 Your Platform Name. All rights reserved.</p>
-            <p>If you didn\'t create this account, please ignore this email.</p>
-        </div>
-    </body>
-    </html>';
-}
-
-/**
- * Create plain text version of welcome email
- */
-function createWelcomeEmailText($username) {
-    return "
-Welcome to Our Platform!
-
-Hello " . $username . "!
-
-Thank you for joining our platform. We're excited to have you as part of our community!
-
-Your account has been successfully created and you can now:
-- Access all platform features
-- Connect with other users
-- Participate in events and activities
-- Customize your profile
-
-To get started, visit: https://yourdomain.com/dashboard
-
-If you have any questions or need assistance, feel free to contact our support team.
-
-Best regards,
-The Platform Team
-
----
-© 2024 Your Platform Name. All rights reserved.
-If you didn't create this account, please ignore this email.
-    ";
-}
-
-/**
- * Send notification email to admin about new registration
- */
-function sendAdminNotification($userEmail, $username) {
-    // Admin notification configuration
-    $admin_config = [
-        'api_key' => 'YOUR_BREVO_API_KEY', // Same as above
-        'sender_email' => 'noreply@yourdomain.com', // Same as above
-        'sender_name' => 'Registration System',
-        'admin_email' => 'admin@yourdomain.com' // Replace with admin email
-    ];
-    
-    $url = 'https://api.brevo.com/v3/smtp/email';
-    
-    // Prepare email data
-    $data = [
-        'sender' => [
-            'name' => $admin_config['sender_name'],
-            'email' => $admin_config['sender_email']
-        ],
-        'to' => [
-            [
-                'email' => $admin_config['admin_email'],
-                'name' => 'Administrator'
-            ]
-        ],
-        'subject' => 'New User Registration: ' . $username,
-        'htmlContent' => createAdminNotificationTemplate($userEmail, $username),
-        'textContent' => "New user registered:\nUsername: $username\nEmail: $userEmail\nTime: " . date('Y-m-d H:i:s')
-    ];
-    
-    // Prepare headers
-    $headers = [
-        'Accept: application/json',
-        'Content-Type: application/json',
-        'api-key: ' . $admin_config['api_key']
-    ];
-    
-    // Send API request
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-    
-    $response = curl_exec($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    
-    return ($http_code >= 200 && $http_code < 300);
-}
-
-/**
- * Create admin notification email template
- */
-function createAdminNotificationTemplate($userEmail, $username) {
-    return '
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>New User Registration</title>
-        <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background-color: #2196F3; color: white; padding: 15px; border-radius: 5px; }
-            .content { padding: 20px; background-color: #f9f9f9; margin-top: 10px; border-radius: 5px; }
-            .info-row { margin: 10px 0; }
-            .label { font-weight: bold; }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                <h2>New User Registration</h2>
-            </div>
-            <div class="content">
-                <p>A new user has registered on the platform:</p>
-                
-                <div class="info-row">
-                    <span class="label">Username:</span> ' . htmlspecialchars($username) . '
-                </div>
-                <div class="info-row">
-                    <span class="label">Email:</span> ' . htmlspecialchars($userEmail) . '
-                </div>
-                <div class="info-row">
-                    <span class="label">Registration Time:</span> ' . date('Y-m-d H:i:s') . '
-                </div>
-                
-                <p>Please review the new user account in the admin panel.</p>
-            </div>
-        </div>
-    </body>
-    </html>';
-}
-
-/**
- * Ensures the users table has an auto-increment ID column
- */
-function ensureAutoIncrementId($pdo) {
-    try {
-        // First, check if the table already has any auto_increment column
-        $stmt = $pdo->query("SHOW COLUMNS FROM users");
-        $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $existingAutoIncrement = false;
-        
-        foreach ($columns as $column) {
-            if (strpos(strtoupper($column['Extra']), 'AUTO_INCREMENT') !== false) {
-                error_log("Table already has auto-increment column: " . $column['Field']);
-                $existingAutoIncrement = true;
-                break;
-            }
-        }
-        
-        if ($existingAutoIncrement) {
-            // Table already has an auto-increment column, no action needed
-            return;
-        }
-        
-        // Check for primary key
-        $stmt = $pdo->query("SHOW KEYS FROM users WHERE Key_name = 'PRIMARY'");
-        $primaryKey = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Check if the ID column exists
-        $hasIdColumn = false;
-        foreach ($columns as $column) {
-            if ($column['Field'] === 'id') {
-                $hasIdColumn = true;
-                break;
-            }
-        }
-        
-        // Implement the changes based on current structure
-        if (!empty($primaryKey)) {
-            // There's already a primary key
-            error_log("Table already has primary key: " . json_encode($primaryKey));
-            
-            if ($hasIdColumn) {
-                // ID exists but isn't auto_increment, try to modify it
-                error_log("Attempting to modify existing ID column to auto_increment");
-                
-                // Check if ID is part of the primary key
-                $isIdPrimary = false;
-                foreach ($primaryKey as $key) {
-                    if ($key['Column_name'] === 'id') {
-                        $isIdPrimary = true;
-                        break;
-                    }
-                }
-                
-                if ($isIdPrimary) {
-                    // ID is the primary key, just add auto_increment
-                    $pdo->exec("ALTER TABLE users MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT");
-                } else {
-                    // ID exists but isn't primary key - complex situation, drop constraints
-                    // This is risky and might require dropping the primary key first
-                    error_log("Complex table structure - dropping primary key first");
-                    $pdo->exec("ALTER TABLE users DROP PRIMARY KEY");
-                    $pdo->exec("ALTER TABLE users MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT PRIMARY KEY");
-                }
-            } else {
-                // No ID column and already has primary key - add ID as separate key
-                error_log("Adding ID column with separate auto_increment constraint");
-                $pdo->exec("ALTER TABLE users ADD COLUMN id INT NOT NULL AUTO_INCREMENT UNIQUE KEY");
-            }
-        } else {
-            // No primary key exists
-            if ($hasIdColumn) {
-                // ID exists but isn't primary or auto_increment
-                error_log("Making existing ID column primary key and auto_increment");
-                $pdo->exec("ALTER TABLE users MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT PRIMARY KEY");
-            } else {
-                // No ID column and no primary key - simplest case
-                error_log("Adding new ID column as primary key with auto_increment");
-                $pdo->exec("ALTER TABLE users ADD COLUMN id INT NOT NULL AUTO_INCREMENT PRIMARY KEY");
-            }
-        }
-        
-        error_log("Auto-increment ID column configured successfully");
-    } catch (PDOException $e) {
-        error_log("Error ensuring auto-increment ID: " . $e->getMessage());
-        throw new Exception("Failed to configure database schema: " . $e->getMessage());
-    }
-}
-
 function handleInput() {
-    // Try to get POST data
     if (!empty($_POST)) {
         error_log("Processing form POST data");
         return $_POST;
     }
     
-    // Try to get JSON data
     $rawInput = file_get_contents('php://input');
     error_log("Raw input: " . substr($rawInput, 0, 100) . "...");
     
@@ -481,11 +127,14 @@ function handleInput() {
     throw new Exception('Invalid input format: no valid POST or JSON data received');
 }
 
+/**
+ * Validate user input
+ */
 function validateInput($input) {
     error_log("Validating input data");
     
     if (empty($input['email']) || empty($input['password']) || empty($input['username'])) {
-        throw new Exception('Missing required fields');
+        throw new Exception('Missing required fields: email, password, and username are required');
     }
 
     if (!filter_var($input['email'], FILTER_VALIDATE_EMAIL)) {
@@ -493,22 +142,27 @@ function validateInput($input) {
     }
 
     if (strlen($input['password']) < 8) {
-        throw new Exception('Password must be at least 8 characters');
+        throw new Exception('Password must be at least 8 characters long');
     }
 
     if (strlen($input['username']) < 3 || strlen($input['username']) > 30) {
         throw new Exception('Username must be between 3 and 30 characters');
     }
+
+    if (!preg_match('/^[a-zA-Z0-9_]+$/', $input['username'])) {
+        throw new Exception('Username can only contain letters, numbers, and underscores');
+    }
 }
 
+/**
+ * Handle avatar file upload
+ */
 function handleAvatarUpload($file) {
     error_log("Processing avatar upload");
     
-    // Define paths
     $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/uploads/avatars/';
     $webPath = '/uploads/avatars/';
     
-    // Create directory if it doesn't exist
     if (!file_exists($uploadDir)) {
         error_log("Creating upload directory: " . $uploadDir);
         if (!mkdir($uploadDir, 0755, true)) {
@@ -528,6 +182,11 @@ function handleAvatarUpload($file) {
         throw new Exception('Invalid file type. Only JPG, PNG, and GIF are allowed.');
     }
 
+    // Check file size (max 5MB)
+    if ($file['size'] > 5 * 1024 * 1024) {
+        throw new Exception('File too large. Maximum size is 5MB.');
+    }
+
     // Generate unique filename
     $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
     $filename = uniqid('avatar_') . '.' . $extension;
@@ -535,33 +194,44 @@ function handleAvatarUpload($file) {
     
     error_log("Saving avatar to: " . $fullPath);
 
-    // Move and process file
     if (!move_uploaded_file($file['tmp_name'], $fullPath)) {
         throw new Exception('Failed to save avatar file');
     }
 
-    // Set proper permissions
     chmod($fullPath, 0644);
-
-    // Return web-accessible path
     return $webPath . $filename;
 }
 
+/**
+ * Check if user already exists
+ */
 function checkExistingUser($pdo, $email, $username) {
     error_log("Checking for existing user with email: " . $email . " or username: " . $username);
     
-    $stmt = $pdo->prepare('SELECT email FROM users WHERE email = ? OR username = ?');
+    $stmt = $pdo->prepare('SELECT email, username FROM users WHERE email = ? OR username = ?');
     $stmt->execute([$email, $username]);
+    $existingUser = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    if ($stmt->fetch()) {
-        throw new Exception('Email or username already exists');
+    if ($existingUser) {
+        if ($existingUser['email'] === $email) {
+            throw new Exception('Email address is already registered');
+        }
+        if ($existingUser['username'] === $username) {
+            throw new Exception('Username is already taken');
+        }
     }
 }
 
+/**
+ * Create new user with verification token
+ */
 function createUser($pdo, $input, $avatarPath) {
     error_log("Creating new user: " . $input['username']);
     
     try {
+        // Generate verification token
+        $verificationToken = generateVerificationToken();
+        
         // Prepare SQL with all required fields
         $stmt = $pdo->prepare('
             INSERT INTO users (
@@ -572,9 +242,13 @@ function createUser($pdo, $input, $avatarPath) {
                 bio,
                 type,
                 user_type,
-                created_at,
-                is_verified
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)
+                points,
+                rank,
+                is_verified,
+                verification_token,
+                failed_attempts,
+                created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
         ');
 
         $result = $stmt->execute([
@@ -582,31 +256,491 @@ function createUser($pdo, $input, $avatarPath) {
             $input['email'],
             password_hash($input['password'], PASSWORD_DEFAULT),
             $avatarPath,
-            $input['bio'] ?? null,
-            "participant",
-            "", // Empty string for user_type
-            0  // Not verified by default
+            $input['bio'] ?? '',
+            'participant',
+            '',
+            0, // points
+            null, // rank
+            0, // not verified
+            $verificationToken,
+            0 // failed attempts
         ]);
         
         if (!$result) {
             error_log("Insert failed: " . implode(", ", $stmt->errorInfo()));
-            throw new Exception("Failed to insert user");
+            throw new Exception("Failed to create user account");
         }
         
-        error_log("User inserted successfully with ID: " . $pdo->lastInsertId());
-        return $result;
+        $userId = $pdo->lastInsertId();
+        error_log("User inserted successfully with ID: " . $userId);
+        
+        return [
+            'success' => true,
+            'user_id' => $userId,
+            'verification_token' => $verificationToken
+        ];
+        
     } catch (PDOException $e) {
         error_log("SQL Error: " . $e->getMessage());
-        error_log("SQL State: " . $e->getCode());
-        throw $e;
+        throw new Exception("Database error: " . $e->getMessage());
     }
 }
 
+/**
+ * Send verification email using Brevo API
+ */
+function sendVerificationEmail($userEmail, $username, $verificationToken) {
+    // Brevo API configuration
+    $brevo_config = [
+        'api_key' => '', // Replace with your actual API key
+        'sender_email' => 'anouar.sabir@genius-morocco.com', // Replace with your verified sender email
+        'sender_name' => 'Genius Team',
+        'Company'=> 'Gamius'
+    ];
+    
+    $url = 'https://api.brevo.com/v3/smtp/email';
+    
+    // Prepare email data
+    $data = [
+        'sender' => [
+            'name' => $brevo_config['sender_name'],
+            'email' => $brevo_config['sender_email']
+        ],
+        'to' => [
+            [
+                'email' => $userEmail,
+                'name' => $username
+            ]
+        ],
+        'subject' => 'Verify Your Email Address - Welcome to '.$brevo_config['Company'].'!',
+        'htmlContent' => createVerificationEmailTemplate($username, $verificationToken),
+        'textContent' => createVerificationEmailText($username, $verificationToken)
+    ];
+    
+    // Prepare headers
+    $headers = [
+        'Accept: application/json',
+        'Content-Type: application/json',
+        'api-key: ' . $brevo_config['api_key']
+    ];
+    
+    // Send API request
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+    
+    $response = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curl_error = curl_error($ch);
+    
+    curl_close($ch);
+    
+    // Log the response for debugging
+    error_log("Brevo API Response - HTTP Code: $http_code, Response: " . substr($response, 0, 200));
+    
+    if ($curl_error) {
+        error_log("Curl error: " . $curl_error);
+        return [
+            'success' => false,
+            'message' => 'Failed to connect to email service: ' . $curl_error
+        ];
+    }
+    
+    if ($http_code >= 200 && $http_code < 300) {
+        return [
+            'success' => true,
+            'message' => 'Verification email sent successfully'
+        ];
+    } else {
+        return [
+            'success' => false,
+            'message' => 'Failed to send email - HTTP ' . $http_code . ': ' . $response
+        ];
+    }
+}
+
+/**
+ * Create HTML verification email template
+ */
+function createVerificationEmailTemplate($username, $verificationToken) {
+    $verificationUrl = "http://localhost/api/verify-email.php?token=" . urlencode($verificationToken);
+    
+    return '
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Verify Your Email Address</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body { 
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                line-height: 1.6; 
+                color: #333; 
+                background-color: #f5f5f5;
+                padding: 20px 0;
+            }
+            .email-wrapper {
+                max-width: 600px;
+                margin: 0 auto;
+                background-color: #ffffff;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                border-radius: 8px;
+                overflow: hidden;
+            }
+            .header { 
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white; 
+                text-align: center; 
+                padding: 40px 20px;
+                position: relative;
+            }
+            .header::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-image: 
+                    radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 2px, transparent 2px),
+                    radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 2px, transparent 2px);
+                background-size: 30px 30px;
+            }
+            .email-icon {
+                width: 80px;
+                height: 80px;
+                margin: 0 auto 20px;
+                background-color: rgba(255, 255, 255, 0.2);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                z-index: 2;
+            }
+            .email-icon svg {
+                width: 40px;
+                height: 40px;
+                fill: white;
+            }
+            .header h1 {
+                font-size: 28px;
+                font-weight: 600;
+                position: relative;
+                z-index: 2;
+                margin: 0;
+            }
+            .content { 
+                padding: 40px 30px;
+                text-align: center;
+            }
+            .welcome-message {
+                font-size: 18px;
+                color: #4a5568;
+                margin-bottom: 30px;
+                line-height: 1.7;
+            }
+            .verification-box {
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                padding: 30px;
+                border-radius: 12px;
+                margin: 30px 0;
+                border: 1px solid #dee2e6;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            }
+            .user-greeting {
+                font-weight: 600;
+                color: #2d3748;
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+            .verification-text {
+                color: #4a5568;
+                margin-bottom: 25px;
+                font-size: 16px;
+            }
+            .verify-button { 
+                display: inline-block; 
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white !important;
+                padding: 16px 32px; 
+                text-decoration: none; 
+                border-radius: 8px; 
+                font-weight: 600;
+                font-size: 16px;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+                border: none;
+                cursor: pointer;
+            }
+            .verify-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+            }
+            .backup-link {
+                margin-top: 25px;
+                padding: 20px;
+                background-color: #fff3cd;
+                border: 1px solid #ffeaa7;
+                border-radius: 8px;
+                font-size: 14px;
+                color: #856404;
+            }
+            .backup-link strong {
+                display: block;
+                margin-bottom: 8px;
+            }
+            .backup-link a {
+                color: #667eea;
+                text-decoration: none;
+                word-break: break-all;
+                font-family: monospace;
+                font-size: 12px;
+            }
+            .features-section {
+                margin: 30px 0;
+                text-align: left;
+            }
+            .features-title {
+                text-align: center;
+                color: #2d3748;
+                font-size: 18px;
+                font-weight: 600;
+                margin-bottom: 20px;
+            }
+            .features-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+                margin-top: 15px;
+            }
+            .feature-item {
+                display: flex;
+                align-items: center;
+                padding: 12px;
+                background-color: #f8f9fa;
+                border-radius: 6px;
+                font-size: 14px;
+            }
+            .feature-icon {
+                width: 20px;
+                height: 20px;
+                background-color: #667eea;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 10px;
+                color: white;
+                font-size: 12px;
+                font-weight: bold;
+                flex-shrink: 0;
+            }
+            .security-note {
+                background-color: #e3f2fd;
+                border: 1px solid #bbdefb;
+                border-radius: 8px;
+                padding: 20px;
+                margin: 25px 0;
+                font-size: 14px;
+                color: #1565c0;
+            }
+            .footer { 
+                background-color: #2d3748;
+                color: #a0aec0;
+                text-align: center; 
+                padding: 30px 20px;
+                font-size: 14px;
+            }
+            .footer a {
+                color: #667eea;
+                text-decoration: none;
+            }
+            .footer a:hover {
+                text-decoration: underline;
+            }
+            .footer-brand {
+                font-weight: 600;
+                color: #fff;
+                margin-bottom: 15px;
+            }
+            .footer-links {
+                margin: 15px 0;
+            }
+            .footer-links a {
+                margin: 0 10px;
+            }
+            .footer-copyright {
+                font-size: 12px;
+                opacity: 0.8;
+                margin-top: 15px;
+            }
+            @media only screen and (max-width: 600px) {
+                .content {
+                    padding: 25px 20px;
+                }
+                .header {
+                    padding: 30px 20px;
+                }
+                .verification-box {
+                    padding: 25px 20px;
+                    margin: 20px 0;
+                }
+                .verify-button {
+                    padding: 14px 28px;
+                    font-size: 15px;
+                }
+                .features-grid {
+                    grid-template-columns: 1fr;
+                }
+                .email-wrapper {
+                    margin: 0 10px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="email-wrapper">
+            <div class="header">
+                <div class="email-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                </div>
+                <h1>Verify Your Email Address</h1>
+            </div>
+            
+            <div class="content">
+                <div class="welcome-message">
+                    Welcome to <strong>'.$brevo_config['Company'].'</strong>! We\'re excited to have you join our gaming community.
+                </div>
+                
+                <div class="verification-box">
+                    <div class="user-greeting">
+                        Hello ' . htmlspecialchars($username) . '! 👋
+                    </div>
+                    <div class="verification-text">
+                        To complete your registration and activate your account, please verify your email address by clicking the button below:
+                    </div>
+                    
+                    <a href="' . $verificationUrl . '" class="verify-button">
+                        ✓ Verify My Email
+                    </a>
+                    
+                    <div class="backup-link">
+                        <strong>Button not working?</strong>
+                        Copy and paste this link into your browser:<br>
+                        <a href="' . $verificationUrl . '">' . $verificationUrl . '</a>
+                    </div>
+                </div>
+                
+                <div class="features-section">
+                    <div class="features-title">🎮 What you can do once verified:</div>
+                    <div class="features-grid">
+                        <div class="feature-item">
+                            <div class="feature-icon">🏆</div>
+                            <span>Participate in tournaments</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">👥</div>
+                            <span>Connect with gamers</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">📊</div>
+                            <span>Track your progress</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">🎯</div>
+                            <span>Earn points & rewards</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="security-note">
+                    <strong>🔐 Security Note:</strong> This verification link will expire in 24 hours for your security. 
+                    If you didn\'t create this account, you can safely ignore this email.
+                </div>
+            </div>
+            
+            <div class="footer">
+                <div class="footer-brand">'.$brevo_config[''].' Gaming Platform</div>
+                <p>Need help? Contact our support team at 
+                   <a href="mailto:support@gbarena.com">support@gbarena.com</a>
+                </p>
+                <div class="footer-links">
+                    <a href="https://gbarena.com/privacy">Privacy Policy</a> |
+                    <a href="https://gbarena.com/terms">Terms of Service</a> |
+                    <a href="https://gbarena.com/help">Help Center</a>
+                </div>
+                <div class="footer-copyright">
+                    © 2024 GBarena. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>';
+}
+
+/**
+ * Create plain text version of verification email
+ */
+function createVerificationEmailText($username, $verificationToken) {
+    $verificationUrl = "https://yourdomain.com/verify-email.php?token=" . urlencode($verificationToken);
+    
+    return "
+VERIFY YOUR EMAIL ADDRESS - GBARENA
+
+Welcome to GBarena Gaming Platform!
+
+Hello " . $username . "!
+
+Thank you for joining our gaming community. To complete your registration and activate your account, please verify your email address.
+
+VERIFICATION LINK:
+" . $verificationUrl . "
+
+What you can do once verified:
+• Participate in gaming tournaments
+• Connect with other gamers
+• Track your gaming progress
+• Earn points and rewards
+• Access exclusive features
+
+SECURITY NOTE:
+This verification link will expire in 24 hours for your security.
+If you didn't create this account, you can safely ignore this email.
+
+Need help? Contact our support team at support@gbarena.com
+
+Best regards,
+The GBarena Team
+
+---
+© 2024 GBarena. All rights reserved.
+Privacy Policy: https://gbarena.com/privacy
+Terms of Service: https://gbarena.com/terms
+    ";
+}
+
+/**
+ * Handle errors and send JSON response
+ */
 function handleError($message, $code = 400) {
     error_log("Error response: [$code] $message");
     http_response_code($code);
     die(json_encode([
         'success' => false,
-        'message' => $message
+        'message' => $message,
+        'error_code' => $code
     ]));
 }

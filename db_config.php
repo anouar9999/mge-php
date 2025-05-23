@@ -3,9 +3,9 @@
 
 return [
     'host' => 'localhost',
-    'db'   => 'geniusmo_inwi2',
+    'db'   => 'geniusmo_inwi',
     'user' => 'root',
-    'pass' => 'admin@00',
+    'pass' => '',
     'port'=> '3306' ,
     'debug' => true, // Set to false in production
     'smtp' => [
