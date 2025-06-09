@@ -1,0 +1,163 @@
+[19-May-2025 16:46:12 UTC] Running in DEVELOPMENT mode
+[19-May-2025 16:46:12 UTC] Database connection established
+[19-May-2025 16:46:12 UTC] Table already has auto-increment column: id
+[19-May-2025 16:46:12 UTC] Verification columns configured successfully
+[19-May-2025 16:46:12 UTC] Processing registration request
+[19-May-2025 16:46:12 UTC] Processing form POST data
+[19-May-2025 16:46:12 UTC] Validating input data
+[19-May-2025 16:46:12 UTC] Input validated for user: resend
+[19-May-2025 16:46:12 UTC] Processing avatar upload
+[19-May-2025 16:46:12 UTC] Uploaded file MIME type: image/jpeg
+[19-May-2025 16:46:12 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_682b6054224e0.jpeg
+[19-May-2025 16:46:12 UTC] Avatar uploaded: /uploads/avatars/avatar_682b6054224e0.jpeg
+[19-May-2025 16:46:12 UTC] Checking for existing user with email: user7@gmail.com or username: resend
+[19-May-2025 16:46:12 UTC] User uniqueness verified
+[19-May-2025 16:46:12 UTC] Transaction started
+[19-May-2025 16:46:12 UTC] Verification token generated
+[19-May-2025 16:46:12 UTC] Creating new user: resend
+[19-May-2025 16:46:12 UTC] User created successfully with ID: 77
+[19-May-2025 16:46:12 UTC] DEVELOPMENT MODE: Email sending bypassed for non-verified email: user7@gmail.com
+[19-May-2025 16:46:12 UTC] VERIFICATION LINK: http://localhost/api/verify.php?token=b2c490497ee65dad496ca6f8767a68c6842772ecbe5bc9ad63ff928e9b131a3b
+[19-May-2025 16:46:12 UTC] Transaction committed
+[19-May-2025 16:52:59 UTC] Running in DEVELOPMENT mode
+[19-May-2025 16:52:59 UTC] Database connection established
+[19-May-2025 16:52:59 UTC] Table already has auto-increment column: id
+[19-May-2025 16:52:59 UTC] Verification columns configured successfully
+[19-May-2025 16:52:59 UTC] Processing registration request
+[19-May-2025 16:52:59 UTC] Processing form POST data
+[19-May-2025 16:52:59 UTC] Validating input data
+[19-May-2025 16:52:59 UTC] Input validated for user: turtle
+[19-May-2025 16:52:59 UTC] Processing avatar upload
+[19-May-2025 16:52:59 UTC] Uploaded file MIME type: image/png
+[19-May-2025 16:52:59 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_682b61eb8c675.png
+[19-May-2025 16:52:59 UTC] Avatar uploaded: /uploads/avatars/avatar_682b61eb8c675.png
+[19-May-2025 16:52:59 UTC] Checking for existing user with email: mariland@gmail.com or username: turtle
+[19-May-2025 16:52:59 UTC] User uniqueness verified
+[19-May-2025 16:52:59 UTC] Verification token generated
+[19-May-2025 16:52:59 UTC] DEVELOPMENT MODE: Email sending bypassed for non-verified email: mariland@gmail.com
+[19-May-2025 16:52:59 UTC] VERIFICATION LINK: http://localhost/your-project-path/verify.php?token=d486cf7a48e18d2c8ac49d1b550d362951faad3085a33f95592f9a3dbd98eb05
+[19-May-2025 16:52:59 UTC] Creating new user: turtle
+[19-May-2025 16:52:59 UTC] User created successfully with ID: 78
+[19-May-2025 16:52:59 UTC] Transaction committed
+[19-May-2025 17:02:36 UTC] Running in DEVELOPMENT mode
+[19-May-2025 17:02:36 UTC] Database connection established
+[19-May-2025 17:02:36 UTC] Table already has auto-increment column: id
+[19-May-2025 17:02:36 UTC] Verification columns configured successfully
+[19-May-2025 17:02:36 UTC] Processing registration request
+[19-May-2025 17:02:36 UTC] Processing form POST data
+[19-May-2025 17:02:36 UTC] Validating input data
+[19-May-2025 17:02:36 UTC] Input validated for user: vsfwdbfd
+[19-May-2025 17:02:36 UTC] Processing avatar upload
+[19-May-2025 17:02:36 UTC] Uploaded file MIME type: image/png
+[19-May-2025 17:02:36 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_682b642c5ec9a.png
+[19-May-2025 17:02:36 UTC] Avatar uploaded: /uploads/avatars/avatar_682b642c5ec9a.png
+[19-May-2025 17:02:36 UTC] Checking for existing user with email: mariland@gmail.com or username: vsfwdbfd
+[19-May-2025 17:02:36 UTC] General Error: Email or username already exists
+#0 C:\xampp2\htdocs\api\user_register.php(61): checkExistingUser(Object(PDO), 'mariland@gmail....', 'vsfwdbfd')
+#1 {main}
+[19-May-2025 17:02:36 UTC] Error response: [400] Email or username already exists
+[19-May-2025 17:02:46 UTC] Running in DEVELOPMENT mode
+[19-May-2025 17:02:46 UTC] Database connection established
+[19-May-2025 17:02:47 UTC] Table already has auto-increment column: id
+[19-May-2025 17:02:47 UTC] Verification columns configured successfully
+[19-May-2025 17:02:47 UTC] Processing registration request
+[19-May-2025 17:02:47 UTC] Processing form POST data
+[19-May-2025 17:02:47 UTC] Validating input data
+[19-May-2025 17:02:47 UTC] Input validated for user: vsfwdbfd
+[19-May-2025 17:02:47 UTC] Processing avatar upload
+[19-May-2025 17:02:47 UTC] Uploaded file MIME type: image/png
+[19-May-2025 17:02:47 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_682b6437063a1.png
+[19-May-2025 17:02:47 UTC] Avatar uploaded: /uploads/avatars/avatar_682b6437063a1.png
+[19-May-2025 17:02:47 UTC] Checking for existing user with email: mariland666@gmail.com or username: vsfwdbfd
+[19-May-2025 17:02:47 UTC] User uniqueness verified
+[19-May-2025 17:02:47 UTC] Verification token generated
+[19-May-2025 17:02:47 UTC] DEVELOPMENT MODE: Email sending bypassed for non-verified email: mariland666@gmail.com
+[19-May-2025 17:02:47 UTC] VERIFICATION LINK: http://localhost/your-project-path/verify.php?token=8e0f8b106ddf4f5117ce6b9dcbf313b307ed9a2945e97ee79d45088d96993f09
+[19-May-2025 17:02:47 UTC] Creating new user: vsfwdbfd
+[19-May-2025 17:02:47 UTC] User created successfully with ID: 79
+[19-May-2025 17:02:47 UTC] Transaction committed
+[19-May-2025 17:04:11 UTC] Running in DEVELOPMENT mode
+[19-May-2025 17:04:11 UTC] Database connection established
+[19-May-2025 17:04:11 UTC] Table already has auto-increment column: id
+[19-May-2025 17:04:11 UTC] Verification columns configured successfully
+[19-May-2025 17:04:11 UTC] Processing registration request
+[19-May-2025 17:04:11 UTC] Processing form POST data
+[19-May-2025 17:04:11 UTC] Validating input data
+[19-May-2025 17:04:11 UTC] Input validated for user: vsfwdbfd
+[19-May-2025 17:04:11 UTC] Processing avatar upload
+[19-May-2025 17:04:11 UTC] Uploaded file MIME type: image/png
+[19-May-2025 17:04:11 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_682b648baa6bb.png
+[19-May-2025 17:04:11 UTC] Avatar uploaded: /uploads/avatars/avatar_682b648baa6bb.png
+[19-May-2025 17:04:11 UTC] Checking for existing user with email: mariland666@gmail.com or username: vsfwdbfd
+[19-May-2025 17:04:11 UTC] General Error: Email or username already exists
+#0 C:\xampp2\htdocs\api\user_register.php(61): checkExistingUser(Object(PDO), 'mariland666@gma...', 'vsfwdbfd')
+#1 {main}
+[19-May-2025 17:04:11 UTC] Error response: [400] Email or username already exists
+[19-May-2025 17:05:11 UTC] Running in DEVELOPMENT mode
+[19-May-2025 17:05:11 UTC] Database connection established
+[19-May-2025 17:05:11 UTC] Table already has auto-increment column: id
+[19-May-2025 17:05:11 UTC] Verification columns configured successfully
+[19-May-2025 17:05:11 UTC] Processing registration request
+[19-May-2025 17:05:11 UTC] Processing form POST data
+[19-May-2025 17:05:11 UTC] Validating input data
+[19-May-2025 17:05:11 UTC] Input validated for user: qeff
+[19-May-2025 17:05:11 UTC] Processing avatar upload
+[19-May-2025 17:05:11 UTC] Uploaded file MIME type: image/png
+[19-May-2025 17:05:11 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_682b64c76a66f.png
+[19-May-2025 17:05:11 UTC] Avatar uploaded: /uploads/avatars/avatar_682b64c76a66f.png
+[19-May-2025 17:05:11 UTC] Checking for existing user with email: sasan@genius.com or username: qeff
+[19-May-2025 17:05:11 UTC] User uniqueness verified
+[19-May-2025 17:05:11 UTC] Transaction started
+[19-May-2025 17:05:11 UTC] Verification token generated
+[19-May-2025 17:05:11 UTC] Creating new user: qeff
+[19-May-2025 17:05:11 UTC] User created successfully with ID: 80
+[19-May-2025 17:05:11 UTC] DEVELOPMENT MODE: Email sending bypassed for non-verified email: sasan@genius.com
+[19-May-2025 17:05:11 UTC] VERIFICATION LINK: http://localhost/api/verify.php?token=c234d24825775eabc370ef0c95699243e486a2deed10dd653046e63d9e03501e
+[19-May-2025 17:05:11 UTC] Transaction committed
+[19-May-2025 23:28:41 UTC] Running in DEVELOPMENT mode
+[19-May-2025 23:28:41 UTC] Database connection established
+[19-May-2025 23:28:41 UTC] Table already has auto-increment column: id
+[19-May-2025 23:28:41 UTC] Verification columns configured successfully
+[19-May-2025 23:28:41 UTC] Processing registration request
+[19-May-2025 23:28:41 UTC] Processing form POST data
+[19-May-2025 23:28:41 UTC] Validating input data
+[19-May-2025 23:28:41 UTC] Input validated for user: poopi
+[19-May-2025 23:28:41 UTC] Processing avatar upload
+[19-May-2025 23:28:41 UTC] Uploaded file MIME type: image/jpeg
+[19-May-2025 23:28:41 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_682bbea9ae393.jpg
+[19-May-2025 23:28:41 UTC] Avatar uploaded: /uploads/avatars/avatar_682bbea9ae393.jpg
+[19-May-2025 23:28:41 UTC] Checking for existing user with email: mariland000021@gmail.com or username: poopi
+[19-May-2025 23:28:41 UTC] User uniqueness verified
+[19-May-2025 23:28:41 UTC] Verification token generated
+[19-May-2025 23:28:41 UTC] Sending verification email to: mariland000021@gmail.com
+[19-May-2025 23:28:41 UTC] Resend API Request: {"from":"Your Company <onboarding@resend.dev>","to":["sabiranouar99@gmail.com"],"subject":"Verify Your Account","html":"\r\n    <html>\r\n    <head>\r\n        <title>Account Verification<\/title>\r\n        <style>\r\n            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; }\r\n            .container { padding: 20px; border: 1px solid #ddd; border-radius: 5px; }\r\n            .button { display: inline-block; background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }\r\n            .footer { margin-top: 20px; font-size: 12px; color: #777; }\r\n        <\/style>\r\n    <\/head>\r\n    <body>\r\n        <div class='container'>\r\n            <h2>Welcome to Our Site, poopi!<\/h2>\r\n            <p>Thank you for registering. Please click the button below to verify your account:<\/p>\r\n            <p><a href='http:\/\/localhost\/your-project-path\/verify.php?token=9928159a34ba3b7a986d3cb41e7c94a8d627771e1597bc78699d9e29ae72bf0c' class='button'>Verify Your Account<\/a><\/p>\r\n            <p>Or copy and paste this URL into your browser:<\/p>\r\n            <p>http:\/\/localhost\/your-project-path\/verify.php?token=9928159a34ba3b7a986d3cb41e7c94a8d627771e1597bc78699d9e29ae72bf0c<\/p>\r\n            <p>This link will expire in 24 hours.<\/p>\r\n            <p>If you did not create an account, please ignore this email.<\/p>\r\n            <div class='footer'>\r\n                <p>\u00a9 2025 Your Company Name. All rights reserved.<\/p>\r\n            <\/div>\r\n        <\/div>\r\n    <\/body>\r\n    <\/html>\r\n    ","text":"Welcome to Our Site, poopi!\n\nThank you for registering. Please visit the following URL to verify your account:\n\nhttp:\/\/localhost\/your-project-path\/verify.php?token=9928159a34ba3b7a986d3cb41e7c94a8d627771e1597bc78699d9e29ae72bf0c\n\nThis link will expire in 24 hours.\n\nIf you did not create an account, please ignore this email."}
+[19-May-2025 23:28:41 UTC] WARNING: SSL verification disabled for development environment
+[19-May-2025 23:28:42 UTC] Resend API Response Code: 403
+[19-May-2025 23:28:42 UTC] Resend API Response: {"statusCode":403,"message":"You can only send testing emails to your own email address (sabiranouar00@gmail.com). To send emails to other recipients, please verify a domain at resend.com/domains, and change the `from` address to an email using this domain.","name":"validation_error"}
+[19-May-2025 23:28:42 UTC] Resend API Error Details: HTTP Status Code: 403
+[19-May-2025 23:28:42 UTC] Email sending failed: Email sending failed due to Resend account restrictions. Please upgrade from sandbox mode to production mode to send to any email address.
+[19-May-2025 23:28:42 UTC] DEVELOPMENT MODE: Providing verification link despite email failure
+[19-May-2025 23:30:28 UTC] Running in DEVELOPMENT mode
+[19-May-2025 23:30:28 UTC] Database connection established
+[19-May-2025 23:30:28 UTC] Table already has auto-increment column: id
+[19-May-2025 23:30:28 UTC] Verification columns configured successfully
+[19-May-2025 23:30:28 UTC] Processing registration request
+[19-May-2025 23:30:28 UTC] Processing form POST data
+[19-May-2025 23:30:28 UTC] Validating input data
+[19-May-2025 23:30:28 UTC] Input validated for user: poopi
+[19-May-2025 23:30:28 UTC] Processing avatar upload
+[19-May-2025 23:30:28 UTC] Uploaded file MIME type: image/jpeg
+[19-May-2025 23:30:28 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_682bbf1495b3f.jpg
+[19-May-2025 23:30:28 UTC] Avatar uploaded: /uploads/avatars/avatar_682bbf1495b3f.jpg
+[19-May-2025 23:30:28 UTC] Checking for existing user with email: mariland000021@gmail.com or username: poopi
+[19-May-2025 23:30:28 UTC] User uniqueness verified
+[19-May-2025 23:30:28 UTC] Verification token generated
+[19-May-2025 23:30:28 UTC] Sending verification email to: mariland000021@gmail.com
+[19-May-2025 23:30:28 UTC] Resend API Request: {"from":"Your Company <onboarding@resend.dev>","to":["sabiranouar00@gmail.com"],"subject":"Verify Your Account","html":"\r\n    <html>\r\n    <head>\r\n        <title>Account Verification<\/title>\r\n        <style>\r\n            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; }\r\n            .container { padding: 20px; border: 1px solid #ddd; border-radius: 5px; }\r\n            .button { display: inline-block; background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }\r\n            .footer { margin-top: 20px; font-size: 12px; color: #777; }\r\n        <\/style>\r\n    <\/head>\r\n    <body>\r\n        <div class='container'>\r\n            <h2>Welcome to Our Site, poopi!<\/h2>\r\n            <p>Thank you for registering. Please click the button below to verify your account:<\/p>\r\n            <p><a href='http:\/\/localhost\/your-project-path\/verify.php?token=e9f4de4d533ad0067b0280c57e87587c8d1f02539b82083f3392017ddf2f42f5' class='button'>Verify Your Account<\/a><\/p>\r\n            <p>Or copy and paste this URL into your browser:<\/p>\r\n            <p>http:\/\/localhost\/your-project-path\/verify.php?token=e9f4de4d533ad0067b0280c57e87587c8d1f02539b82083f3392017ddf2f42f5<\/p>\r\n            <p>This link will expire in 24 hours.<\/p>\r\n            <p>If you did not create an account, please ignore this email.<\/p>\r\n            <div class='footer'>\r\n                <p>\u00a9 2025 Your Company Name. All rights reserved.<\/p>\r\n            <\/div>\r\n        <\/div>\r\n    <\/body>\r\n    <\/html>\r\n    ","text":"Welcome to Our Site, poopi!\n\nThank you for registering. Please visit the following URL to verify your account:\n\nhttp:\/\/localhost\/your-project-path\/verify.php?token=e9f4de4d533ad0067b0280c57e87587c8d1f02539b82083f3392017ddf2f42f5\n\nThis link will expire in 24 hours.\n\nIf you did not create an account, please ignore this email."}
+[19-May-2025 23:30:28 UTC] WARNING: SSL verification disabled for development environment
+[19-May-2025 23:30:29 UTC] Resend API Response Code: 200
+[19-May-2025 23:30:29 UTC] Resend API Response: {"id":"6c790957-d2c4-41e8-affa-58ad87120d85"}
+[19-May-2025 23:30:29 UTC] Verification email sent successfully to: mariland000021@gmail.com
+[19-May-2025 23:30:29 UTC] Creating new user: poopi
+[19-May-2025 23:30:29 UTC] User created successfully with ID: 83
+[19-May-2025 23:30:29 UTC] Transaction committed

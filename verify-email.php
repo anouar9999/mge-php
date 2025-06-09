@@ -110,7 +110,7 @@ function generateSuccessPage($username) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Email Verified Successfully - GBarena</title>
+        <title>Email Verified Successfully - GAMIUS</title>
         <style>
             * {
                 margin: 0;
@@ -283,7 +283,7 @@ function generateSuccessPage($username) {
             <h1 class="success-title">Email Verified! 🎉</h1>
             
             <p class="success-subtitle">
-                Welcome to GBarena, <span class="username-highlight">' . htmlspecialchars($username) . '</span>!<br>
+                Welcome to GAMIUS, <span class="username-highlight">' . htmlspecialchars($username) . '</span>!<br>
                 Your email has been successfully verified and your account is now active.
             </p>
             
@@ -329,7 +329,7 @@ function generateErrorPage($message) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Verification Error - GBarena</title>
+        <title>Verification Error - GAMIUS</title>
         <style>
             * {
                 margin: 0;
@@ -496,7 +496,7 @@ function generateErrorPage($message) {
                 <a href="https://yourdomain.com/register" class="btn-primary">
                     🔄 Try Registering Again
                 </a>
-                <a href="mailto:support@gbarena.com" class="btn-secondary">
+                <a href="mailto:support@gamius.com" class="btn-secondary">
                     📧 Contact Support
                 </a>
             </div>

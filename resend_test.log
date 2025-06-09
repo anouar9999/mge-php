@@ -1,0 +1,127 @@
+=== Resend API Test 2025-05-19 15:55:49 ===
+Starting Resend API test...
+API key loaded from config: re_CT***9TN
+Environment detected as: Development
+Test email will be sent to: sabiranouar99@gmail.com
+Prepared email payload:
+{
+    "from": "Test User <onboarding@resend.dev>",
+    "to": [
+        "sabiranouar99@gmail.com"
+    ],
+    "subject": "Resend API Test 2025-05-19 15:55:49",
+    "html": "<h1>Resend Test Email<\/h1><p>This is a test email sent from the Resend API test script.<\/p><p>If you receive this, your Resend API integration is working!<\/p><p>Time: 2025-05-19 15:55:49<\/p>",
+    "text": "Resend Test Email\n\nThis is a test email sent from the Resend API test script.\n\nIf you receive this, your Resend API integration is working!\n\nTime: 2025-05-19 15:55:49"
+}
+WARNING: Disabling SSL verification for development environment
+Sending request to Resend API...
+HTTP Response Code: 403
+Response: {"statusCode":403,"message":"You can only send testing emails to your own email address (sabiranouar00@gmail.com). To send emails to other recipients, please verify a domain at resend.com/domains, and change the `from` address to an email using this domain.","name":"validation_error"}
+ERROR: Failed to send email
+
+Detailed cURL Information:
+{
+    "url": "https:\/\/api.resend.com\/emails",
+    "content_type": "application\/json; charset=utf-8",
+    "http_code": 403,
+    "header_size": 380,
+    "request_size": 171,
+    "filetime": -1,
+    "ssl_verify_result": 20,
+    "redirect_count": 0,
+    "total_time": 0.486182,
+    "namelookup_time": 0.121964,
+    "connect_time": 0.212559,
+    "pretransfer_time": 0.285338,
+    "size_upload": 511,
+    "size_download": 285,
+    "speed_download": 586,
+    "speed_upload": 1051,
+    "download_content_length": 285,
+    "upload_content_length": 511,
+    "starttransfer_time": 0.285354,
+    "redirect_time": 0,
+    "redirect_url": "",
+    "primary_ip": "172.67.31.142",
+    "certinfo": [],
+    "primary_port": 443,
+    "local_ip": "192.168.11.104",
+    "local_port": 56665,
+    "http_version": 3,
+    "protocol": 2,
+    "ssl_verifyresult": 0,
+    "scheme": "HTTPS",
+    "appconnect_time_us": 283554,
+    "connect_time_us": 212559,
+    "namelookup_time_us": 121964,
+    "pretransfer_time_us": 285338,
+    "redirect_time_us": 0,
+    "starttransfer_time_us": 285354,
+    "total_time_us": 486182
+}
+
+Test completed. Check your email inbox and this log for results.
+=== Resend API Test 2025-05-19 15:57:06 ===
+Starting Resend API test...
+API key loaded from config: re_CT***9TN
+Environment detected as: Development
+Test email will be sent to: sabiranouar00@gmail.com
+Prepared email payload:
+{
+    "from": "Test User <onboarding@resend.dev>",
+    "to": [
+        "sabiranouar00@gmail.com"
+    ],
+    "subject": "Resend API Test 2025-05-19 15:57:06",
+    "html": "<h1>Resend Test Email<\/h1><p>This is a test email sent from the Resend API test script.<\/p><p>If you receive this, your Resend API integration is working!<\/p><p>Time: 2025-05-19 15:57:06<\/p>",
+    "text": "Resend Test Email\n\nThis is a test email sent from the Resend API test script.\n\nIf you receive this, your Resend API integration is working!\n\nTime: 2025-05-19 15:57:06"
+}
+WARNING: Disabling SSL verification for development environment
+Sending request to Resend API...
+HTTP Response Code: 200
+Response: {"id":"4f5922db-442e-423c-9d21-5fdc27d46c27"}
+SUCCESS! Email was sent successfully
+Email ID: 4f5922db-442e-423c-9d21-5fdc27d46c27
+
+Detailed cURL Information:
+{
+    "url": "https:\/\/api.resend.com\/emails",
+    "content_type": "application\/json; charset=utf-8",
+    "http_code": 200,
+    "header_size": 378,
+    "request_size": 171,
+    "filetime": -1,
+    "ssl_verify_result": 20,
+    "redirect_count": 0,
+    "total_time": 0.808683,
+    "namelookup_time": 0.001215,
+    "connect_time": 0.076156,
+    "pretransfer_time": 0.161197,
+    "size_upload": 511,
+    "size_download": 45,
+    "speed_download": 55,
+    "speed_upload": 631,
+    "download_content_length": 45,
+    "upload_content_length": 511,
+    "starttransfer_time": 0.16122,
+    "redirect_time": 0,
+    "redirect_url": "",
+    "primary_ip": "172.67.31.142",
+    "certinfo": [],
+    "primary_port": 443,
+    "local_ip": "192.168.11.104",
+    "local_port": 56710,
+    "http_version": 3,
+    "protocol": 2,
+    "ssl_verifyresult": 0,
+    "scheme": "HTTPS",
+    "appconnect_time_us": 160693,
+    "connect_time_us": 76156,
+    "namelookup_time_us": 1215,
+    "pretransfer_time_us": 161197,
+    "redirect_time_us": 0,
+    "starttransfer_time_us": 161220,
+    "total_time_us": 808683
+}
+
+Test completed. Check your email inbox and this log for results.

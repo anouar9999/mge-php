@@ -632,3 +632,554 @@
 [22-May-2025 15:57:04 Europe/Berlin] User verified successfully: raspotin (ID: 14)
 [22-May-2025 20:07:51 Europe/Berlin] Processing verification for token: 666b475915...
 [22-May-2025 20:07:51 Europe/Berlin] Verification error: Invalid or expired verification link. Please register again or contact support.
+[26-May-2025 21:26:02 UTC] Database connection established
+[26-May-2025 21:26:02 UTC] Processing registration request
+[26-May-2025 21:26:02 UTC] Processing form POST data
+[26-May-2025 21:26:02 UTC] Validating input data
+[26-May-2025 21:26:02 UTC] Input validated for user: anouar0078
+[26-May-2025 21:26:02 UTC] Processing avatar upload
+[26-May-2025 21:26:02 UTC] Uploaded file MIME type: image/png
+[26-May-2025 21:26:02 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6834dc6a6493a.png
+[26-May-2025 21:26:02 UTC] Avatar uploaded: /uploads/avatars/avatar_6834dc6a6493a.png
+[26-May-2025 21:26:02 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: anouar0078
+[26-May-2025 21:26:02 UTC] User uniqueness verified
+[26-May-2025 21:26:02 UTC] Creating new user: anouar0078
+[26-May-2025 21:26:02 UTC] User inserted successfully with ID: 88
+[26-May-2025 21:26:02 UTC] User created successfully with ID: 88
+[26-May-2025 21:26:02 UTC] Brevo API Response - HTTP Code: 0, Response: 
+[26-May-2025 21:26:02 UTC] Curl error: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 21:26:02 UTC] Failed to send verification email: Failed to connect to email service: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 21:29:38 UTC] Database connection established
+[26-May-2025 21:29:38 UTC] Processing registration request
+[26-May-2025 21:29:38 UTC] Processing form POST data
+[26-May-2025 21:29:38 UTC] Validating input data
+[26-May-2025 21:29:38 UTC] Input validated for user: inwi001
+[26-May-2025 21:29:38 UTC] Processing avatar upload
+[26-May-2025 21:29:38 UTC] Uploaded file MIME type: image/png
+[26-May-2025 21:29:38 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6834dd42afb4f.png
+[26-May-2025 21:29:38 UTC] Avatar uploaded: /uploads/avatars/avatar_6834dd42afb4f.png
+[26-May-2025 21:29:38 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: inwi001
+[26-May-2025 21:29:38 UTC] User uniqueness verified
+[26-May-2025 21:29:38 UTC] Creating new user: inwi001
+[26-May-2025 21:29:38 UTC] User inserted successfully with ID: 89
+[26-May-2025 21:29:38 UTC] User created successfully with ID: 89
+[26-May-2025 21:29:39 UTC] Brevo API Response - HTTP Code: 0, Response: 
+[26-May-2025 21:29:39 UTC] Curl error: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 21:29:39 UTC] Failed to send verification email: Failed to connect to email service: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 21:32:16 UTC] Database connection established
+[26-May-2025 21:32:16 UTC] Processing registration request
+[26-May-2025 21:32:16 UTC] Processing form POST data
+[26-May-2025 21:32:16 UTC] Validating input data
+[26-May-2025 21:32:16 UTC] Input validated for user: Vaamos
+[26-May-2025 21:32:16 UTC] Processing avatar upload
+[26-May-2025 21:32:16 UTC] Uploaded file MIME type: image/png
+[26-May-2025 21:32:16 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6834dde0dace0.png
+[26-May-2025 21:32:16 UTC] Avatar uploaded: /uploads/avatars/avatar_6834dde0dace0.png
+[26-May-2025 21:32:16 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: Vaamos
+[26-May-2025 21:32:16 UTC] User uniqueness verified
+[26-May-2025 21:32:16 UTC] Creating new user: Vaamos
+[26-May-2025 21:32:16 UTC] User inserted successfully with ID: 90
+[26-May-2025 21:32:16 UTC] User created successfully with ID: 90
+[26-May-2025 21:32:17 UTC] Brevo API Response - HTTP Code: 0, Response: 
+[26-May-2025 21:32:17 UTC] Curl error: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 21:32:17 UTC] Failed to send verification email: Failed to connect to email service: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 21:33:29 UTC] Database connection established
+[26-May-2025 21:33:29 UTC] Processing registration request
+[26-May-2025 21:33:29 UTC] Processing form POST data
+[26-May-2025 21:33:29 UTC] Validating input data
+[26-May-2025 21:33:29 UTC] Input validated for user: anouar007
+[26-May-2025 21:33:29 UTC] Processing avatar upload
+[26-May-2025 21:33:29 UTC] Uploaded file MIME type: image/png
+[26-May-2025 21:33:29 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6834de29571e6.png
+[26-May-2025 21:33:29 UTC] Avatar uploaded: /uploads/avatars/avatar_6834de29571e6.png
+[26-May-2025 21:33:29 UTC] Checking for existing user with email: sabiranouar99@gmail.com or username: anouar007
+[26-May-2025 21:33:29 UTC] User uniqueness verified
+[26-May-2025 21:33:29 UTC] Creating new user: anouar007
+[26-May-2025 21:33:29 UTC] User inserted successfully with ID: 91
+[26-May-2025 21:33:29 UTC] User created successfully with ID: 91
+[26-May-2025 21:33:29 UTC] PHP Warning:  Undefined variable $brevo_config in C:\xampp2\htdocs\api\user_register.php on line 625
+[26-May-2025 21:33:29 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\user_register.php on line 625
+[26-May-2025 21:33:29 UTC] PHP Warning:  Undefined variable $brevo_config in C:\xampp2\htdocs\api\user_register.php on line 676
+[26-May-2025 21:33:29 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\user_register.php on line 676
+[26-May-2025 21:33:29 UTC] Brevo API Response - HTTP Code: 0, Response: 
+[26-May-2025 21:33:29 UTC] Curl error: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 21:33:29 UTC] Failed to send verification email: Failed to connect to email service: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 21:35:57 UTC] Database connection established
+[26-May-2025 21:35:57 UTC] Processing registration request
+[26-May-2025 21:35:57 UTC] Processing form POST data
+[26-May-2025 21:35:57 UTC] Validating input data
+[26-May-2025 21:35:57 UTC] Input validated for user: popop
+[26-May-2025 21:35:57 UTC] Processing avatar upload
+[26-May-2025 21:35:57 UTC] Uploaded file MIME type: image/png
+[26-May-2025 21:35:57 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6834debd5ff94.png
+[26-May-2025 21:35:57 UTC] Avatar uploaded: /uploads/avatars/avatar_6834debd5ff94.png
+[26-May-2025 21:35:57 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: popop
+[26-May-2025 21:35:57 UTC] User uniqueness verified
+[26-May-2025 21:35:57 UTC] Creating new user: popop
+[26-May-2025 21:35:57 UTC] User inserted successfully with ID: 92
+[26-May-2025 21:35:57 UTC] User created successfully with ID: 92
+[26-May-2025 21:35:57 UTC] PHP Warning:  Undefined variable $brevo_config in C:\xampp2\htdocs\api\user_register.php on line 625
+[26-May-2025 21:35:57 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\user_register.php on line 625
+[26-May-2025 21:35:57 UTC] PHP Warning:  Undefined variable $brevo_config in C:\xampp2\htdocs\api\user_register.php on line 676
+[26-May-2025 21:35:57 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\user_register.php on line 676
+[26-May-2025 21:35:57 UTC] Brevo API Response - HTTP Code: 0, Response: 
+[26-May-2025 21:35:57 UTC] Curl error: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 21:35:57 UTC] Failed to send verification email: Failed to connect to email service: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 21:38:02 UTC] Database connection established
+[26-May-2025 21:38:02 UTC] Processing registration request
+[26-May-2025 21:38:02 UTC] Processing form POST data
+[26-May-2025 21:38:02 UTC] Validating input data
+[26-May-2025 21:38:02 UTC] Input validated for user: loo
+[26-May-2025 21:38:02 UTC] Processing avatar upload
+[26-May-2025 21:38:02 UTC] Uploaded file MIME type: image/png
+[26-May-2025 21:38:02 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6834df3ab26c3.png
+[26-May-2025 21:38:02 UTC] Avatar uploaded: /uploads/avatars/avatar_6834df3ab26c3.png
+[26-May-2025 21:38:02 UTC] Checking for existing user with email: sabiranouar99@gmail.com or username: loo
+[26-May-2025 21:38:02 UTC] User uniqueness verified
+[26-May-2025 21:38:02 UTC] Creating new user: loo
+[26-May-2025 21:38:02 UTC] User inserted successfully with ID: 93
+[26-May-2025 21:38:02 UTC] User created successfully with ID: 93
+[26-May-2025 21:38:02 UTC] PHP Warning:  Undefined variable $brevo_config in C:\xampp2\htdocs\api\user_register.php on line 625
+[26-May-2025 21:38:02 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\user_register.php on line 625
+[26-May-2025 21:38:02 UTC] PHP Warning:  Undefined variable $brevo_config in C:\xampp2\htdocs\api\user_register.php on line 676
+[26-May-2025 21:38:02 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\user_register.php on line 676
+[26-May-2025 21:38:03 UTC] Brevo API Response - HTTP Code: 0, Response: 
+[26-May-2025 21:38:03 UTC] Curl error: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 21:38:03 UTC] Failed to send verification email: Failed to connect to email service: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 21:43:47 UTC] Database connection established
+[26-May-2025 21:43:47 UTC] Processing registration request
+[26-May-2025 21:43:47 UTC] Processing form POST data
+[26-May-2025 21:43:47 UTC] Validating input data
+[26-May-2025 21:43:47 UTC] Input validated for user: inwi444
+[26-May-2025 21:43:47 UTC] Processing avatar upload
+[26-May-2025 21:43:49 UTC] Uploaded file MIME type: image/png
+[26-May-2025 21:43:49 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6834e0959a8a8.png
+[26-May-2025 21:43:49 UTC] Avatar uploaded: /uploads/avatars/avatar_6834e0959a8a8.png
+[26-May-2025 21:43:49 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: inwi444
+[26-May-2025 21:43:50 UTC] User uniqueness verified
+[26-May-2025 21:43:50 UTC] Creating new user: inwi444
+[26-May-2025 21:43:50 UTC] User inserted successfully with ID: 94
+[26-May-2025 21:43:50 UTC] User created successfully with ID: 94
+[26-May-2025 21:43:50 UTC] PHP Warning:  Undefined variable $brevo_config in C:\xampp2\htdocs\api\user_register.php on line 625
+[26-May-2025 21:43:50 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\user_register.php on line 625
+[26-May-2025 21:43:50 UTC] PHP Warning:  Undefined variable $brevo_config in C:\xampp2\htdocs\api\user_register.php on line 676
+[26-May-2025 21:43:50 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\user_register.php on line 676
+[26-May-2025 21:43:50 UTC] Brevo API Response - HTTP Code: 0, Response: 
+[26-May-2025 21:43:50 UTC] Curl error: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 21:43:50 UTC] Failed to send verification email: Failed to connect to email service: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 21:45:50 UTC] Database connection established
+[26-May-2025 21:45:50 UTC] Processing registration request
+[26-May-2025 21:45:50 UTC] Processing form POST data
+[26-May-2025 21:45:50 UTC] Validating input data
+[26-May-2025 21:45:50 UTC] Input validated for user: anouar007
+[26-May-2025 21:45:50 UTC] Processing avatar upload
+[26-May-2025 21:45:50 UTC] Uploaded file MIME type: image/png
+[26-May-2025 21:45:50 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6834e10edeb49.png
+[26-May-2025 21:45:50 UTC] Avatar uploaded: /uploads/avatars/avatar_6834e10edeb49.png
+[26-May-2025 21:45:50 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: anouar007
+[26-May-2025 21:45:50 UTC] General Error: Email address is already registered
+#0 C:\xampp2\htdocs\api\user_register.php(55): checkExistingUser(Object(PDO), 'sabiranouar00@g...', 'anouar007')
+#1 {main}
+[26-May-2025 21:45:50 UTC] Error response: [400] Email address is already registered
+[26-May-2025 21:46:36 UTC] Database connection established
+[26-May-2025 21:46:36 UTC] Processing registration request
+[26-May-2025 21:46:36 UTC] Processing form POST data
+[26-May-2025 21:46:36 UTC] Validating input data
+[26-May-2025 21:46:36 UTC] Input validated for user: fvfv
+[26-May-2025 21:46:36 UTC] Processing avatar upload
+[26-May-2025 21:46:36 UTC] Uploaded file MIME type: image/png
+[26-May-2025 21:46:36 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6834e13c3a646.png
+[26-May-2025 21:46:36 UTC] Avatar uploaded: /uploads/avatars/avatar_6834e13c3a646.png
+[26-May-2025 21:46:36 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: fvfv
+[26-May-2025 21:46:36 UTC] User uniqueness verified
+[26-May-2025 21:46:36 UTC] Creating new user: fvfv
+[26-May-2025 21:46:36 UTC] User inserted successfully with ID: 95
+[26-May-2025 21:46:36 UTC] User created successfully with ID: 95
+[26-May-2025 21:46:36 UTC] PHP Warning:  Undefined variable $brevo_config in C:\xampp2\htdocs\api\user_register.php on line 625
+[26-May-2025 21:46:36 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\user_register.php on line 625
+[26-May-2025 21:46:36 UTC] PHP Warning:  Undefined variable $brevo_config in C:\xampp2\htdocs\api\user_register.php on line 676
+[26-May-2025 21:46:36 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\user_register.php on line 676
+[26-May-2025 21:46:36 UTC] Brevo API Response - HTTP Code: 0, Response: 
+[26-May-2025 21:46:36 UTC] Curl error: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 21:46:36 UTC] Failed to send verification email: Failed to connect to email service: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 21:50:54 UTC] Database connection established
+[26-May-2025 21:50:54 UTC] Processing registration request
+[26-May-2025 21:50:54 UTC] Processing form POST data
+[26-May-2025 21:50:54 UTC] Validating input data
+[26-May-2025 21:50:54 UTC] General Error: Username can only contain letters, numbers, and underscores
+#0 C:\xampp2\htdocs\api\user_register.php(43): validateInput(Array)
+#1 {main}
+[26-May-2025 21:50:54 UTC] Error response: [400] Username can only contain letters, numbers, and underscores
+[26-May-2025 21:52:24 UTC] Database connection established
+[26-May-2025 21:52:24 UTC] Processing registration request
+[26-May-2025 21:52:24 UTC] Processing form POST data
+[26-May-2025 21:52:24 UTC] Validating input data
+[26-May-2025 21:52:24 UTC] Input validated for user: Demo
+[26-May-2025 21:52:24 UTC] Processing avatar upload
+[26-May-2025 21:52:24 UTC] Uploaded file MIME type: image/png
+[26-May-2025 21:52:24 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6834e298d3fc4.png
+[26-May-2025 21:52:24 UTC] Avatar uploaded: /uploads/avatars/avatar_6834e298d3fc4.png
+[26-May-2025 21:52:24 UTC] Checking for existing user with email: sabiranouar99@gmail.com or username: Demo
+[26-May-2025 21:52:24 UTC] User uniqueness verified
+[26-May-2025 21:52:24 UTC] Creating new user: Demo
+[26-May-2025 21:52:24 UTC] User inserted successfully with ID: 96
+[26-May-2025 21:52:24 UTC] User created successfully with ID: 96
+[26-May-2025 21:52:25 UTC] Brevo API Response - HTTP Code: 0, Response: 
+[26-May-2025 21:52:25 UTC] Curl error: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 21:52:25 UTC] Failed to send verification email: Failed to connect to email service: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 22:08:45 UTC] Database connection established
+[26-May-2025 22:08:45 UTC] Processing registration request
+[26-May-2025 22:08:45 UTC] Processing form POST data
+[26-May-2025 22:08:45 UTC] Validating input data
+[26-May-2025 22:08:45 UTC] Input validated for user: cdcd
+[26-May-2025 22:08:45 UTC] Processing avatar upload
+[26-May-2025 22:08:45 UTC] Uploaded file MIME type: image/png
+[26-May-2025 22:08:45 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6834e66d69303.png
+[26-May-2025 22:08:45 UTC] Avatar uploaded: /uploads/avatars/avatar_6834e66d69303.png
+[26-May-2025 22:08:45 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: cdcd
+[26-May-2025 22:08:45 UTC] User uniqueness verified
+[26-May-2025 22:08:45 UTC] Creating new user: cdcd
+[26-May-2025 22:08:45 UTC] User inserted successfully with ID: 97
+[26-May-2025 22:08:45 UTC] User created successfully with ID: 97
+[26-May-2025 22:08:45 UTC] PHP Warning:  Undefined variable $brevo_config in C:\xampp2\htdocs\api\user_register.php on line 625
+[26-May-2025 22:08:45 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\user_register.php on line 625
+[26-May-2025 22:08:45 UTC] PHP Warning:  Undefined variable $brevo_config in C:\xampp2\htdocs\api\user_register.php on line 676
+[26-May-2025 22:08:45 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\user_register.php on line 676
+[26-May-2025 22:08:45 UTC] Brevo API Response - HTTP Code: 0, Response: 
+[26-May-2025 22:08:45 UTC] Curl error: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 22:08:45 UTC] Failed to send verification email: Failed to connect to email service: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 22:15:12 UTC] Database connection established
+[26-May-2025 22:15:12 UTC] Processing registration request
+[26-May-2025 22:15:12 UTC] Processing form POST data
+[26-May-2025 22:15:12 UTC] Validating input data
+[26-May-2025 22:15:12 UTC] Input validated for user: anouar007
+[26-May-2025 22:15:12 UTC] Processing avatar upload
+[26-May-2025 22:15:12 UTC] Uploaded file MIME type: image/png
+[26-May-2025 22:15:12 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6834e7f0c256d.png
+[26-May-2025 22:15:12 UTC] Avatar uploaded: /uploads/avatars/avatar_6834e7f0c256d.png
+[26-May-2025 22:15:12 UTC] Checking for existing user with email: sabiranouar99@gmail.com or username: anouar007
+[26-May-2025 22:15:12 UTC] User uniqueness verified
+[26-May-2025 22:15:12 UTC] Creating new user: anouar007
+[26-May-2025 22:15:12 UTC] User inserted successfully with ID: 98
+[26-May-2025 22:15:12 UTC] User created successfully with ID: 98
+[26-May-2025 22:15:12 UTC] PHP Warning:  Undefined variable $brevo_config in C:\xampp2\htdocs\api\user_register.php on line 625
+[26-May-2025 22:15:12 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\user_register.php on line 625
+[26-May-2025 22:15:12 UTC] PHP Warning:  Undefined variable $brevo_config in C:\xampp2\htdocs\api\user_register.php on line 676
+[26-May-2025 22:15:12 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\user_register.php on line 676
+[26-May-2025 22:15:13 UTC] Brevo API Response - HTTP Code: 0, Response: 
+[26-May-2025 22:15:13 UTC] Curl error: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 22:15:13 UTC] Failed to send verification email: Failed to connect to email service: SSL certificate problem: unable to get local issuer certificate
+[26-May-2025 22:53:26 UTC] Database connection established
+[26-May-2025 22:53:26 UTC] Processing registration request
+[26-May-2025 22:53:26 UTC] Processing form POST data
+[26-May-2025 22:53:26 UTC] Validating input data
+[26-May-2025 22:53:26 UTC] Input validated for user: xsxssqq
+[26-May-2025 22:53:26 UTC] Processing avatar upload
+[26-May-2025 22:53:26 UTC] Uploaded file MIME type: image/png
+[26-May-2025 22:53:26 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6834f0e633564.png
+[26-May-2025 22:53:26 UTC] Avatar uploaded: /uploads/avatars/avatar_6834f0e633564.png
+[26-May-2025 22:53:26 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: xsxssqq
+[26-May-2025 22:53:26 UTC] User uniqueness verified
+[26-May-2025 22:53:26 UTC] Creating new user: xsxssqq
+[26-May-2025 22:53:26 UTC] User inserted successfully with ID: 99
+[26-May-2025 22:53:26 UTC] User created successfully with ID: 99
+[26-May-2025 22:53:26 UTC] PHP Warning:  Undefined variable $brevo_config in C:\xampp2\htdocs\api\user_register.php on line 627
+[26-May-2025 22:53:26 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\user_register.php on line 627
+[26-May-2025 22:53:26 UTC] PHP Warning:  Undefined variable $brevo_config in C:\xampp2\htdocs\api\user_register.php on line 678
+[26-May-2025 22:53:26 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\user_register.php on line 678
+[26-May-2025 22:53:27 UTC] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505262153.86580212803@smtp-relay.mailin.fr>"}
+
+[26-May-2025 22:53:27 UTC] Verification email sent successfully to: sabiranouar00@gmail.com
+[26-May-2025 22:53:52 UTC] Processing verification for token: cef60df19d...
+[26-May-2025 22:53:52 UTC] User verified successfully: xsxssqq (ID: 99)
+[26-May-2025 22:53:52 UTC] Failed to log verification event: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'geniusmo_inwi.verification_logs' doesn't exist
+[26-May-2025 23:07:38 UTC] Database connection established
+[26-May-2025 23:07:38 UTC] Processing registration request
+[26-May-2025 23:07:38 UTC] Processing form POST data
+[26-May-2025 23:07:38 UTC] Validating input data
+[26-May-2025 23:07:38 UTC] Input validated for user: Demo000
+[26-May-2025 23:07:38 UTC] Processing avatar upload
+[26-May-2025 23:07:38 UTC] Uploaded file MIME type: image/png
+[26-May-2025 23:07:38 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6834f43a23a45.png
+[26-May-2025 23:07:38 UTC] Avatar uploaded: /uploads/avatars/avatar_6834f43a23a45.png
+[26-May-2025 23:07:38 UTC] Checking for existing user with email: sabiranouar99@gmail.com or username: Demo000
+[26-May-2025 23:07:38 UTC] User uniqueness verified
+[26-May-2025 23:07:38 UTC] Creating new user: Demo000
+[26-May-2025 23:07:38 UTC] User inserted successfully with ID: 100
+[26-May-2025 23:07:38 UTC] User created successfully with ID: 100
+[26-May-2025 23:07:38 UTC] PHP Warning:  Undefined variable $brevo_config in C:\xampp2\htdocs\api\user_register.php on line 632
+[26-May-2025 23:07:38 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\user_register.php on line 632
+[26-May-2025 23:07:38 UTC] PHP Warning:  Undefined variable $brevo_config in C:\xampp2\htdocs\api\user_register.php on line 683
+[26-May-2025 23:07:38 UTC] PHP Warning:  Trying to access array offset on value of type null in C:\xampp2\htdocs\api\user_register.php on line 683
+[26-May-2025 23:07:39 UTC] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505262207.29871294569@smtp-relay.mailin.fr>"}
+
+[26-May-2025 23:07:39 UTC] Verification email sent successfully to: sabiranouar99@gmail.com
+[26-May-2025 23:12:17 UTC] Database connection established
+[26-May-2025 23:12:17 UTC] Processing registration request
+[26-May-2025 23:12:17 UTC] Processing form POST data
+[26-May-2025 23:12:17 UTC] Validating input data
+[26-May-2025 23:12:17 UTC] Input validated for user: vfvf
+[26-May-2025 23:12:17 UTC] Processing avatar upload
+[26-May-2025 23:12:17 UTC] Uploaded file MIME type: image/png
+[26-May-2025 23:12:17 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6834f5515dd4a.png
+[26-May-2025 23:12:17 UTC] Avatar uploaded: /uploads/avatars/avatar_6834f5515dd4a.png
+[26-May-2025 23:12:17 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: vfvf
+[26-May-2025 23:12:17 UTC] User uniqueness verified
+[26-May-2025 23:12:17 UTC] Creating new user: vfvf
+[26-May-2025 23:12:17 UTC] User inserted successfully with ID: 101
+[26-May-2025 23:12:17 UTC] User created successfully with ID: 101
+[26-May-2025 23:12:19 UTC] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505262212.63896809608@smtp-relay.mailin.fr>"}
+
+[26-May-2025 23:12:19 UTC] Verification email sent successfully to: sabiranouar00@gmail.com
+[27-May-2025 00:39:37 UTC] Database connection established
+[27-May-2025 00:39:37 UTC] Processing registration request
+[27-May-2025 00:39:37 UTC] Processing form POST data
+[27-May-2025 00:39:37 UTC] Validating input data
+[27-May-2025 00:39:37 UTC] Input validated for user: Demo25
+[27-May-2025 00:39:37 UTC] Processing avatar upload
+[27-May-2025 00:39:37 UTC] Uploaded file MIME type: image/png
+[27-May-2025 00:39:37 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_683509c957487.png
+[27-May-2025 00:39:37 UTC] Avatar uploaded: /uploads/avatars/avatar_683509c957487.png
+[27-May-2025 00:39:37 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: Demo25
+[27-May-2025 00:39:37 UTC] User uniqueness verified
+[27-May-2025 00:39:37 UTC] Creating new user: Demo25
+[27-May-2025 00:39:37 UTC] User inserted successfully with ID: 102
+[27-May-2025 00:39:37 UTC] User created successfully with ID: 102
+[27-May-2025 00:39:39 UTC] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505262339.69052994503@smtp-relay.mailin.fr>"}
+
+[27-May-2025 00:39:39 UTC] Verification email sent successfully to: sabiranouar00@gmail.com
+[27-May-2025 00:46:36 UTC] Database connection established
+[27-May-2025 00:46:36 UTC] Processing registration request
+[27-May-2025 00:46:36 UTC] Processing form POST data
+[27-May-2025 00:46:36 UTC] Validating input data
+[27-May-2025 00:46:36 UTC] Input validated for user: Poss
+[27-May-2025 00:46:36 UTC] Processing avatar upload
+[27-May-2025 00:46:36 UTC] Uploaded file MIME type: image/png
+[27-May-2025 00:46:36 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_68350b6c43d26.png
+[27-May-2025 00:46:36 UTC] Avatar uploaded: /uploads/avatars/avatar_68350b6c43d26.png
+[27-May-2025 00:46:36 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: Poss
+[27-May-2025 00:46:36 UTC] General Error: Email address is already registered
+#0 C:\xampp2\htdocs\api\user_register.php(55): checkExistingUser(Object(PDO), 'sabiranouar00@g...', 'Poss')
+#1 {main}
+[27-May-2025 00:46:36 UTC] Error response: [400] Email address is already registered
+[27-May-2025 00:48:32 UTC] Database connection established
+[27-May-2025 00:48:32 UTC] Processing registration request
+[27-May-2025 00:48:32 UTC] Processing form POST data
+[27-May-2025 00:48:32 UTC] Validating input data
+[27-May-2025 00:48:32 UTC] General Error: Missing required fields: email, password, and username are required
+#0 C:\xampp2\htdocs\api\user_register.php(43): validateInput(Array)
+#1 {main}
+[27-May-2025 00:48:32 UTC] Error response: [400] Missing required fields: email, password, and username are required
+[27-May-2025 00:49:14 UTC] Database connection established
+[27-May-2025 00:49:14 UTC] Processing registration request
+[27-May-2025 00:49:14 UTC] Processing form POST data
+[27-May-2025 00:49:14 UTC] Validating input data
+[27-May-2025 00:49:14 UTC] Input validated for user: Demo0000
+[27-May-2025 00:49:14 UTC] Processing avatar upload
+[27-May-2025 00:49:14 UTC] Uploaded file MIME type: image/png
+[27-May-2025 00:49:14 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_68350c0ab0333.png
+[27-May-2025 00:49:14 UTC] Avatar uploaded: /uploads/avatars/avatar_68350c0ab0333.png
+[27-May-2025 00:49:14 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: Demo0000
+[27-May-2025 00:49:14 UTC] User uniqueness verified
+[27-May-2025 00:49:14 UTC] Creating new user: Demo0000
+[27-May-2025 00:49:14 UTC] User inserted successfully with ID: 103
+[27-May-2025 00:49:14 UTC] User created successfully with ID: 103
+[27-May-2025 00:49:15 UTC] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505262349.22194966787@smtp-relay.mailin.fr>"}
+
+[27-May-2025 00:49:15 UTC] Verification email sent successfully to: sabiranouar00@gmail.com
+[27-May-2025 01:03:44 UTC] Database connection established
+[27-May-2025 01:03:44 UTC] Processing registration request
+[27-May-2025 01:03:44 UTC] Processing form POST data
+[27-May-2025 01:03:44 UTC] Validating input data
+[27-May-2025 01:03:44 UTC] Input validated for user: Yoppi
+[27-May-2025 01:03:44 UTC] Processing avatar upload
+[27-May-2025 01:03:44 UTC] Uploaded file MIME type: image/png
+[27-May-2025 01:03:44 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_68350f707f874.png
+[27-May-2025 01:03:44 UTC] Avatar uploaded: /uploads/avatars/avatar_68350f707f874.png
+[27-May-2025 01:03:44 UTC] Checking for existing user with email: sabiranouar99@gmail.com or username: Yoppi
+[27-May-2025 01:03:44 UTC] User uniqueness verified
+[27-May-2025 01:03:44 UTC] Creating new user: Yoppi
+[27-May-2025 01:03:44 UTC] User inserted successfully with ID: 104
+[27-May-2025 01:03:44 UTC] User created successfully with ID: 104
+[27-May-2025 01:03:45 UTC] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505270003.58199422357@smtp-relay.mailin.fr>"}
+
+[27-May-2025 01:03:45 UTC] Verification email sent successfully to: sabiranouar99@gmail.com
+[27-May-2025 01:28:42 UTC] Processing verification for token: 136efb0754...
+[27-May-2025 01:28:42 UTC] User verified successfully: Yoppi (ID: 104)
+[27-May-2025 01:28:42 UTC] Failed to log verification event: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'geniusmo_inwi.verification_logs' doesn't exist
+[27-May-2025 01:59:36 UTC] Database connection established
+[27-May-2025 01:59:36 UTC] Processing registration request
+[27-May-2025 01:59:36 UTC] Processing form POST data
+[27-May-2025 01:59:36 UTC] Validating input data
+[27-May-2025 01:59:36 UTC] Input validated for user: Fodoo
+[27-May-2025 01:59:36 UTC] Processing avatar upload
+[27-May-2025 01:59:36 UTC] Uploaded file MIME type: image/png
+[27-May-2025 01:59:36 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_68351c88c5609.png
+[27-May-2025 01:59:36 UTC] Avatar uploaded: /uploads/avatars/avatar_68351c88c5609.png
+[27-May-2025 01:59:36 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: Fodoo
+[27-May-2025 01:59:36 UTC] User uniqueness verified
+[27-May-2025 01:59:36 UTC] Creating new user: Fodoo
+[27-May-2025 01:59:36 UTC] User inserted successfully with ID: 105
+[27-May-2025 01:59:36 UTC] User created successfully with ID: 105
+[27-May-2025 01:59:37 UTC] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505270059.98730970477@smtp-relay.mailin.fr>"}
+
+[27-May-2025 01:59:37 UTC] Verification email sent successfully to: sabiranouar00@gmail.com
+[27-May-2025 02:01:59 UTC] Database connection established
+[27-May-2025 02:01:59 UTC] Processing registration request
+[27-May-2025 02:01:59 UTC] Processing form POST data
+[27-May-2025 02:01:59 UTC] Validating input data
+[27-May-2025 02:01:59 UTC] Input validated for user: inwi
+[27-May-2025 02:01:59 UTC] Processing avatar upload
+[27-May-2025 02:01:59 UTC] Uploaded file MIME type: image/png
+[27-May-2025 02:01:59 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_68351d177d974.png
+[27-May-2025 02:01:59 UTC] Avatar uploaded: /uploads/avatars/avatar_68351d177d974.png
+[27-May-2025 02:01:59 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: inwi
+[27-May-2025 02:01:59 UTC] User uniqueness verified
+[27-May-2025 02:01:59 UTC] Creating new user: inwi
+[27-May-2025 02:01:59 UTC] User inserted successfully with ID: 106
+[27-May-2025 02:01:59 UTC] User created successfully with ID: 106
+[27-May-2025 02:02:00 UTC] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505270101.51227125711@smtp-relay.mailin.fr>"}
+
+[27-May-2025 02:02:00 UTC] Verification email sent successfully to: sabiranouar00@gmail.com
+[27-May-2025 02:03:11 UTC] Database connection established
+[27-May-2025 02:03:11 UTC] Processing registration request
+[27-May-2025 02:03:11 UTC] Processing form POST data
+[27-May-2025 02:03:11 UTC] Validating input data
+[27-May-2025 02:03:11 UTC] Input validated for user: dz000
+[27-May-2025 02:03:11 UTC] Processing avatar upload
+[27-May-2025 02:03:11 UTC] Uploaded file MIME type: image/png
+[27-May-2025 02:03:11 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_68351d5f80279.png
+[27-May-2025 02:03:11 UTC] Avatar uploaded: /uploads/avatars/avatar_68351d5f80279.png
+[27-May-2025 02:03:11 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: dz000
+[27-May-2025 02:03:11 UTC] User uniqueness verified
+[27-May-2025 02:03:11 UTC] Creating new user: dz000
+[27-May-2025 02:03:11 UTC] User inserted successfully with ID: 107
+[27-May-2025 02:03:11 UTC] User created successfully with ID: 107
+[27-May-2025 02:03:12 UTC] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505270103.51765609427@smtp-relay.mailin.fr>"}
+
+[27-May-2025 02:03:12 UTC] Verification email sent successfully to: sabiranouar00@gmail.com
+[27-May-2025 02:13:57 UTC] Database connection established
+[27-May-2025 02:13:57 UTC] Processing registration request
+[27-May-2025 02:13:57 UTC] Processing form POST data
+[27-May-2025 02:13:57 UTC] Validating input data
+[27-May-2025 02:13:57 UTC] Input validated for user: dzZZZA
+[27-May-2025 02:13:57 UTC] Processing avatar upload
+[27-May-2025 02:13:57 UTC] Uploaded file MIME type: image/png
+[27-May-2025 02:13:57 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_68351fe51edc1.png
+[27-May-2025 02:13:57 UTC] Avatar uploaded: /uploads/avatars/avatar_68351fe51edc1.png
+[27-May-2025 02:13:57 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: dzZZZA
+[27-May-2025 02:13:57 UTC] User uniqueness verified
+[27-May-2025 02:13:57 UTC] Creating new user: dzZZZA
+[27-May-2025 02:13:57 UTC] User inserted successfully with ID: 108
+[27-May-2025 02:13:57 UTC] User created successfully with ID: 108
+[27-May-2025 02:13:57 UTC] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505270113.98244671849@smtp-relay.mailin.fr>"}
+
+[27-May-2025 02:13:57 UTC] Verification email sent successfully to: sabiranouar00@gmail.com
+[27-May-2025 02:16:23 UTC] Database connection established
+[27-May-2025 02:16:23 UTC] Processing registration request
+[27-May-2025 02:16:23 UTC] Processing form POST data
+[27-May-2025 02:16:23 UTC] Validating input data
+[27-May-2025 02:16:23 UTC] Input validated for user: anouar007
+[27-May-2025 02:16:23 UTC] Processing avatar upload
+[27-May-2025 02:16:23 UTC] Uploaded file MIME type: image/png
+[27-May-2025 02:16:23 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_68352077b669b.png
+[27-May-2025 02:16:23 UTC] Avatar uploaded: /uploads/avatars/avatar_68352077b669b.png
+[27-May-2025 02:16:23 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: anouar007
+[27-May-2025 02:16:23 UTC] User uniqueness verified
+[27-May-2025 02:16:23 UTC] Creating new user: anouar007
+[27-May-2025 02:16:23 UTC] User inserted successfully with ID: 109
+[27-May-2025 02:16:23 UTC] User created successfully with ID: 109
+[27-May-2025 02:16:24 UTC] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505270116.86951555461@smtp-relay.mailin.fr>"}
+
+[27-May-2025 02:16:24 UTC] Verification email sent successfully to: sabiranouar00@gmail.com
+[27-May-2025 02:19:50 UTC] Database connection established
+[27-May-2025 02:19:50 UTC] Processing registration request
+[27-May-2025 02:19:50 UTC] Processing form POST data
+[27-May-2025 02:19:50 UTC] Validating input data
+[27-May-2025 02:19:50 UTC] Input validated for user: anouar007
+[27-May-2025 02:19:50 UTC] Processing avatar upload
+[27-May-2025 02:19:50 UTC] Uploaded file MIME type: image/png
+[27-May-2025 02:19:50 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_683521461b163.png
+[27-May-2025 02:19:50 UTC] Avatar uploaded: /uploads/avatars/avatar_683521461b163.png
+[27-May-2025 02:19:50 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: anouar007
+[27-May-2025 02:19:50 UTC] User uniqueness verified
+[27-May-2025 02:19:50 UTC] Creating new user: anouar007
+[27-May-2025 02:19:50 UTC] User inserted successfully with ID: 110
+[27-May-2025 02:19:50 UTC] User created successfully with ID: 110
+[27-May-2025 02:19:50 UTC] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505270119.29365880147@smtp-relay.mailin.fr>"}
+
+[27-May-2025 02:19:50 UTC] Verification email sent successfully to: sabiranouar00@gmail.com
+[27-May-2025 03:06:24 UTC] Database connection established
+[27-May-2025 03:06:24 UTC] Processing registration request
+[27-May-2025 03:06:24 UTC] Processing form POST data
+[27-May-2025 03:06:24 UTC] Validating input data
+[27-May-2025 03:06:24 UTC] Input validated for user: Demon10
+[27-May-2025 03:06:24 UTC] Processing avatar upload
+[27-May-2025 03:06:25 UTC] Uploaded file MIME type: image/png
+[27-May-2025 03:06:25 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_68352c31051ce.png
+[27-May-2025 03:06:25 UTC] Avatar uploaded: /uploads/avatars/avatar_68352c31051ce.png
+[27-May-2025 03:06:25 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: Demon10
+[27-May-2025 03:06:25 UTC] User uniqueness verified
+[27-May-2025 03:06:25 UTC] Creating new user: Demon10
+[27-May-2025 03:06:25 UTC] User inserted successfully with ID: 111
+[27-May-2025 03:06:25 UTC] User created successfully with ID: 111
+[27-May-2025 03:06:25 UTC] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505270206.88185527051@smtp-relay.mailin.fr>"}
+
+[27-May-2025 03:06:25 UTC] Verification email sent successfully to: sabiranouar00@gmail.com
+[27-May-2025 03:06:53 UTC] Processing verification for token: 5c762c501b...
+[27-May-2025 03:06:53 UTC] User verified successfully: Demon10 (ID: 111)
+[27-May-2025 03:06:53 UTC] Failed to log verification event: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'geniusmo_inwi.verification_logs' doesn't exist
+[27-May-2025 03:30:37 UTC] Database connection established
+[27-May-2025 03:30:37 UTC] Processing registration request
+[27-May-2025 03:30:37 UTC] Processing form POST data
+[27-May-2025 03:30:37 UTC] Validating input data
+[27-May-2025 03:30:37 UTC] Input validated for user: anonyme2
+[27-May-2025 03:30:37 UTC] Processing avatar upload
+[27-May-2025 03:30:37 UTC] Uploaded file MIME type: image/png
+[27-May-2025 03:30:37 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_683531dde47b6.png
+[27-May-2025 03:30:37 UTC] Avatar uploaded: /uploads/avatars/avatar_683531dde47b6.png
+[27-May-2025 03:30:37 UTC] Checking for existing user with email: sabirabdelhadi46@gmail.com or username: anonyme2
+[27-May-2025 03:30:37 UTC] User uniqueness verified
+[27-May-2025 03:30:37 UTC] Creating new user: anonyme2
+[27-May-2025 03:30:38 UTC] User inserted successfully with ID: 112
+[27-May-2025 03:30:38 UTC] User created successfully with ID: 112
+[27-May-2025 03:30:39 UTC] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505270230.95494002814@smtp-relay.mailin.fr>"}
+
+[27-May-2025 03:30:39 UTC] Verification email sent successfully to: sabirabdelhadi46@gmail.com
+[27-May-2025 03:32:42 UTC] Database connection established
+[27-May-2025 03:32:42 UTC] Processing registration request
+[27-May-2025 03:32:42 UTC] Processing form POST data
+[27-May-2025 03:32:42 UTC] Validating input data
+[27-May-2025 03:32:42 UTC] Input validated for user: dinozo
+[27-May-2025 03:32:42 UTC] Processing avatar upload
+[27-May-2025 03:32:42 UTC] Uploaded file MIME type: image/png
+[27-May-2025 03:32:42 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_6835325a1e117.png
+[27-May-2025 03:32:42 UTC] Avatar uploaded: /uploads/avatars/avatar_6835325a1e117.png
+[27-May-2025 03:32:42 UTC] Checking for existing user with email: sabiranouar00@gmail.com or username: dinozo
+[27-May-2025 03:32:42 UTC] User uniqueness verified
+[27-May-2025 03:32:42 UTC] Creating new user: dinozo
+[27-May-2025 03:32:42 UTC] User inserted successfully with ID: 113
+[27-May-2025 03:32:42 UTC] User created successfully with ID: 113
+[27-May-2025 03:32:42 UTC] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505270232.34289114276@smtp-relay.mailin.fr>"}
+
+[27-May-2025 03:32:42 UTC] Verification email sent successfully to: sabiranouar00@gmail.com
+[27-May-2025 10:57:11 UTC] Database connection established
+[27-May-2025 10:57:11 UTC] Processing registration request
+[27-May-2025 10:57:11 UTC] Processing form POST data
+[27-May-2025 10:57:11 UTC] Validating input data
+[27-May-2025 10:57:11 UTC] Input validated for user: user34
+[27-May-2025 10:57:11 UTC] Processing avatar upload
+[27-May-2025 10:57:11 UTC] Uploaded file MIME type: image/png
+[27-May-2025 10:57:11 UTC] Saving avatar to: C:/xampp2/htdocs/uploads/avatars/avatar_68359a8764a6a.png
+[27-May-2025 10:57:11 UTC] Avatar uploaded: /uploads/avatars/avatar_68359a8764a6a.png
+[27-May-2025 10:57:11 UTC] Checking for existing user with email: sabiranouar99@gmail.com or username: user34
+[27-May-2025 10:57:11 UTC] User uniqueness verified
+[27-May-2025 10:57:11 UTC] Creating new user: user34
+[27-May-2025 10:57:11 UTC] User inserted successfully with ID: 114
+[27-May-2025 10:57:11 UTC] User created successfully with ID: 114
+[27-May-2025 10:57:12 UTC] Brevo API Response - HTTP Code: 201, Response: {"messageId":"<202505270957.74599355807@smtp-relay.mailin.fr>"}
+
+[27-May-2025 10:57:12 UTC] Verification email sent successfully to: sabiranouar99@gmail.com
+[27-May-2025 10:57:32 UTC] Processing verification for token: 03597ef153...
+[27-May-2025 10:57:32 UTC] User verified successfully: user34 (ID: 114)
+[27-May-2025 10:57:32 UTC] Failed to log verification event: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'geniusmo_inwi.verification_logs' doesn't exist

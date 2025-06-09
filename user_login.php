@@ -1,8 +1,12 @@
 <?php
-// CORS headers
-header('Access-Control-Allow-Origin: *');
+// UPDATED login.php - Modified your existing code to use sessions
+// CORS headers - Updated to support credentials
+$db_config = require 'db_config.php';
+
+header("Access-Control-Allow-Origin: http://{$db_config['api']['host']}:3000"); // Specific origin for credentials
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+header('Access-Control-Allow-Credentials: true'); // IMPORTANT: Allow credentials
 
 // Handle preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -19,7 +23,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-$db_config = require 'db_config.php';
+// START SESSION - IMPORTANT ADDITION
+session_start();
+
 
 try {
     $pdo = new PDO(
@@ -67,7 +73,20 @@ try {
         // Continue with login process
     }
 
-    // Generate a session token
+    // STORE USER DATA IN SESSION - NEW ADDITION
+    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['user_data'] = [
+        'id' => $user['id'],
+        'username' => $user['username'],
+        'email' => $user['email'],
+        'avatar' => $user['avatar'],
+        'bio' => $user['bio'],
+        'points' => $user['points'],
+        'user_type' => $user['type']
+    ];
+    $_SESSION['login_time'] = time();
+
+    // Generate a session token (keep your existing token system)
     $session_token = bin2hex(random_bytes(32));
     
     // Store remember token in database, including the id field
@@ -112,14 +131,9 @@ try {
     echo json_encode([
         'success' => true, 
         'message' => 'Login successful',
-        'user_id' => $user['id'],
-        'username' => $user['username'],
-        'email' => $user['email'],
-        'avatar' => $user['avatar'],
-        'bio' => $user['bio'],
-        'points' => $user['points'],
-        'user_type' => $user['type'],
-        'session_token' => $session_token
+        'user' => $_SESSION['user_data'], // Return user data from session
+        'session_token' => $session_token,
+        'redirect_url' => "http://{$db_config['api']['host']}:5173/" // Tell frontend where to redirect
     ]);
 } catch (Exception $e) {
     // Detailed error logging for debugging
