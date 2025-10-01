@@ -5,7 +5,7 @@ return [
     'host' => 'localhost',
     'db'   => 'geniusmo_inwi',
     'user' => 'root',
-    'pass' => 'super@00',
+    'pass' => '',
     'port'=> '3306' ,
     'debug' => true, // Set to false in production
     'api' => [

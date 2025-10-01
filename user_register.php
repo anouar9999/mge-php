@@ -46,12 +46,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 error_reporting(E_ALL);
-ini_set('error_log', __DIR__ . '/error.log');
+ini_set('error_log', __DIR__ . 'error.log');
 
 // ============================================
 // STEP 3: Load Configuration
 // ============================================
-$db_config = require __DIR__ . '/db_config.php';
+$db_config = require __DIR__ . 'db_config.php';
 
 // ============================================
 // STEP 4: Main Processing
