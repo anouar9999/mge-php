@@ -1,8 +1,8 @@
 <?php
-$db_config = require 'db_config.php';
+$db_config = require '../db_config.php'; // Adjust path as needed
 
 // api/auth/logout.php - NEW FILE (Create this file)
-$allowedOrigins = ["http://{$db_config['api']['host']}:3000", "http://{$db_config['api']['host']}:5173"];
+$allowedOrigins = ["https://user.gnews.ma","https://gnews.ma", "http://{$db_config['api']['host']}:3000", "http://{$db_config['api']['host']}:5173"];
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 if (in_array($origin, $allowedOrigins)) {
     header("Access-Control-Allow-Origin: $origin");
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 session_start();
 
-$db_config = require '../db_config.php'; // Adjust path as needed
+
 
 try {
     // Get user ID before destroying session (for logging and token cleanup)

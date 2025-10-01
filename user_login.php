@@ -1,12 +1,29 @@
 <?php
-// UPDATED login.php - Modified your existing code to use sessions
-// CORS headers - Updated to support credentials
+// UPDATED login.php - Fixed CORS for production
 $db_config = require 'db_config.php';
 
-header("Access-Control-Allow-Origin: http://{$db_config['api']['host']}:3000"); // Specific origin for credentials
+// Get the origin of the request
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
+// Define allowed origins
+$allowed_origins = [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'https://user.gnews.ma',
+    'https://api.gnews.ma'
+];
+
+// Check if the origin is allowed
+if (in_array($origin, $allowed_origins)) {
+    header("Access-Control-Allow-Origin: $origin");
+} else {
+    // Fallback for development - remove in production
+    header("Access-Control-Allow-Origin: https://user.gnews.ma");
+}
+
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-header('Access-Control-Allow-Credentials: true'); // IMPORTANT: Allow credentials
+header('Access-Control-Allow-Credentials: true');
 
 // Handle preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -23,9 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-// START SESSION - IMPORTANT ADDITION
+// START SESSION
 session_start();
-
 
 try {
     $pdo = new PDO(
@@ -50,12 +66,10 @@ try {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$user) {
-        // User not found
         throw new Exception('Invalid email or password');
     }
 
     if (!password_verify($password, $user['password'])) {
-        // Wrong password
         throw new Exception('Invalid email or password');
     }
 
@@ -63,17 +77,15 @@ try {
         throw new Exception('Account not verified. Please check your email for verification instructions.');
     }
 
-    // Reset failed attempts on successful login (if this field exists)
+    // Reset failed attempts on successful login
     try {
         $updateStmt = $pdo->prepare("UPDATE users SET failed_attempts = 0 WHERE id = :id");
         $updateStmt->execute([':id' => $user['id']]);
     } catch (Exception $e) {
-        // If the column doesn't exist or there's another issue, just log it
         error_log("Failed to reset failed_attempts: " . $e->getMessage());
-        // Continue with login process
     }
 
-    // STORE USER DATA IN SESSION - NEW ADDITION
+    // STORE USER DATA IN SESSION
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['user_data'] = [
         'id' => $user['id'],
@@ -86,10 +98,10 @@ try {
     ];
     $_SESSION['login_time'] = time();
 
-    // Generate a session token (keep your existing token system)
+    // Generate a session token
     $session_token = bin2hex(random_bytes(32));
     
-    // Store remember token in database, including the id field
+    // Store remember token in database
     try {
         $expiry = (new DateTime())->modify('+30 days');
         $maxIdQuery = $pdo->query("SELECT MAX(id) as max_id FROM remember_tokens");
@@ -104,12 +116,10 @@ try {
             ':expires' => $expiry->format('Y-m-d H:i:s')
         ]);
     } catch (Exception $e) {
-        // If there's an issue with remember_tokens, just log it
         error_log("Failed to store remember token: " . $e->getMessage());
-        // Continue with login process, token will still be returned to client
     }
 
-    // Log the successful login in activity_log table
+    // Log the successful login
     try {
         $maxIdQuery = $pdo->query("SELECT MAX(id) as max_id FROM activity_log");
         $maxId = $maxIdQuery->fetch(PDO::FETCH_ASSOC)['max_id'];
@@ -123,20 +133,24 @@ try {
             ':ip_address' => $_SERVER['REMOTE_ADDR']
         ]);
     } catch (Exception $e) {
-        // If there's an issue with activity_log, just log it
         error_log("Failed to log activity: " . $e->getMessage());
-        // Continue with login process
     }
 
+    // Return response structure that matches frontend expectations
     echo json_encode([
         'success' => true, 
         'message' => 'Login successful',
-        'user' => $_SESSION['user_data'], // Return user data from session
+        'username' => $user['username'],
+        'user_id' => $user['id'], 
+        'user_type' => $user['type'],
+        'avatar' => $user['avatar'],
+        'bio' => $user['bio'],
+        'points' => $user['points'],
         'session_token' => $session_token,
-        'redirect_url' => "http://{$db_config['api']['host']}:5173/" // Tell frontend where to redirect
+        'redirect_url' => 'https://user.gnews.ma/'
     ]);
+
 } catch (Exception $e) {
-    // Detailed error logging for debugging
     error_log("Login error: " . $e->getMessage() . 
               (isset($pdo) && $pdo->errorInfo()[0] !== '00000' ? 
               " - SQL Error: " . implode(', ', $pdo->errorInfo()) : ''));

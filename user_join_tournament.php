@@ -102,12 +102,13 @@ try {
             throw new Exception('Team ID is required for team tournaments');
         }
 
-        // Check team eligibility
+        // Check team eligibility - FIXED QUERY
         $stmt = $pdo->prepare("
             SELECT t.*, 
                   (SELECT COUNT(*) FROM team_members tm WHERE tm.team_id = t.id) as member_count
             FROM teams t
             WHERE t.id = :team_id 
+            AND t.game_id = :game_id
             AND (
                 t.captain_id = :user_id 
                 OR EXISTS (
@@ -115,7 +116,6 @@ try {
                     FROM team_members tm 
                     WHERE tm.team_id = t.id 
                     AND tm.user_id = :user_id
-                  
                 )
             )
         ");
@@ -129,11 +129,13 @@ try {
         $team = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if (!$team) {
-            throw new Exception('You must be the owner or captain of an eligible team for this tournament');
+            throw new Exception('You must be the captain or member of an eligible team for this tournament');
         }
 
-        // Check if team has minimum required members
-       
+        // Check if team has minimum required members (if specified in tournament)
+        if (isset($tournament['min_team_size']) && $team['member_count'] < $tournament['min_team_size']) {
+            throw new Exception("Team must have at least {$tournament['min_team_size']} members to register");
+        }
 
         // Check if team is already registered
         $stmt = $pdo->prepare("
@@ -160,12 +162,13 @@ try {
         $stmt = $pdo->prepare("
             INSERT INTO tournament_registrations 
             (id, tournament_id, user_id, team_id, registration_date, status)
-            VALUES (:id, :tournament_id, NULL, :team_id, NOW(), 'pending')
+            VALUES (:id, :tournament_id, :user_id, :team_id, NOW(), 'pending')
         ");
         
         $stmt->execute([
             ':id' => $next_id,
             ':tournament_id' => $tournament['id'],
+            ':user_id' => $data['user_id'],
             ':team_id' => $team['id']
         ]);
 

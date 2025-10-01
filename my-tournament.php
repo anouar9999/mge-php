@@ -9,6 +9,7 @@ ini_set('display_errors', 1);
 $allowedOrigins = [
     "http://{$db_config['api']['host']}:3000",  // Next.js app
     "http://{$db_config['api']['host']}:5173",  // Vite app
+	'https://user.gnews.ma',
     'https://yourdomain.com'  // Production (update as needed)
 ];
 
