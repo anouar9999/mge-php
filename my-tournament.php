@@ -7,7 +7,7 @@ ini_set('display_errors', 1);
 
 // 🔥 FIXED: Proper CORS headers with multiple origins support
 $allowedOrigins = [
-    "http://{$db_config['api']['host']}:3000",  // Next.js app
+   "http://localhost:3000",  // ✅ CORRECT  // Next.js app
     "http://{$db_config['api']['host']}:5173",  // Vite app
 	'https://user.gnews.ma',
     'https://yourdomain.com'  // Production (update as needed)
@@ -18,7 +18,7 @@ if (in_array($origin, $allowedOrigins)) {
     header("Access-Control-Allow-Origin: $origin");
 } else {
     // Fallback for development
-    header("Access-Control-Allow-Origin: http://{$db_config['api']['host']}:3000");
+    header("Access-Control-Allow-Origin: http://{$db_config['api']['host']}");
 }
 
 header('Access-Control-Allow-Methods: GET, OPTIONS');

@@ -1,0 +1,327 @@
+[02-Oct-2025 16:28:13 UTC] Database connection established
+[02-Oct-2025 16:28:13 UTC] Processing registration request from origin: http://localhost:3000
+[02-Oct-2025 16:28:13 UTC] Processing form POST data
+[02-Oct-2025 16:28:13 UTC] Input validated for user: ziyad
+[02-Oct-2025 16:28:13 UTC] Avatar uploaded: /uploads/avatars/avatar_68dea81de52d65.59665798.png
+[02-Oct-2025 16:28:13 UTC] User uniqueness verified
+[02-Oct-2025 16:28:14 UTC] User created with ID: 134, token expires at: 2025-10-03 16:28:13
+[02-Oct-2025 16:28:14 UTC] User created successfully with ID: 134
+[02-Oct-2025 16:28:14 UTC] Brevo API - HTTP: 201, Response: {"messageId":"<202510021628.75973820154@smtp-relay.mailin.fr>"}
+
+[02-Oct-2025 16:28:14 UTC] Verification email sent successfully to: ziyadsamsari@gmail.com
+[02-Oct-2025 16:29:59 UTC] Processing verification for token: 0acfed3819...
+[02-Oct-2025 16:29:59 UTC] User verified successfully: ziyad (ID: 134)
+[02-Oct-2025 16:29:59 UTC] Failed to log verification event: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'geniusmo_inwi.verification_logs' doesn't exist
+[06-Oct-2025 11:38:40 UTC] Database connection established
+[06-Oct-2025 11:38:40 UTC] Processing registration request from origin: http://localhost:3000
+[06-Oct-2025 11:38:40 UTC] Processing form POST data
+[06-Oct-2025 11:38:40 UTC] Input validated for user: host1
+[06-Oct-2025 11:38:40 UTC] Avatar uploaded: /uploads/avatars/avatar_68e3aa401fb747.09862409.png
+[06-Oct-2025 11:38:40 UTC] User uniqueness verified
+[06-Oct-2025 11:38:40 UTC] User created with ID: 135, token expires at: 2025-10-07 11:38:40
+[06-Oct-2025 11:38:40 UTC] User created successfully with ID: 135
+[06-Oct-2025 11:38:40 UTC] Brevo API - HTTP: 201, Response: {"messageId":"<202510061138.37223334469@smtp-relay.mailin.fr>"}
+
+[06-Oct-2025 11:38:40 UTC] Verification email sent successfully to: host1.genius@gmail.com
+[06-Oct-2025 11:39:21 UTC] Processing verification for token: 5022425609...
+[06-Oct-2025 11:39:21 UTC] User verified successfully: host1 (ID: 135)
+[06-Oct-2025 11:39:21 UTC] Failed to log verification event: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'geniusmo_inwi.verification_logs' doesn't exist
+[06-Oct-2025 11:39:26 UTC] Processing verification for token: 5022425609...
+[06-Oct-2025 11:39:26 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
+[06-Oct-2025 11:39:26 UTC] Processing verification for token: 5022425609...
+[06-Oct-2025 11:39:26 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
+[06-Oct-2025 11:39:26 UTC] Processing verification for token: 5022425609...
+[06-Oct-2025 11:39:26 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
+[06-Oct-2025 12:12:03 UTC] Processing verification for token: 5022425609...
+[06-Oct-2025 12:12:03 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
+[07-Oct-2025 14:20:12 UTC] Database connection established
+[07-Oct-2025 14:20:12 UTC] Processing registration request from origin: https://user.gnews.ma
+[07-Oct-2025 14:20:12 UTC] Processing form POST data
+[07-Oct-2025 14:20:12 UTC] Input validated for user: tamarhh9
+[07-Oct-2025 14:20:12 UTC] User uniqueness verified
+[07-Oct-2025 14:20:13 UTC] User created with ID: 136, token expires at: 2025-10-08 14:20:12
+[07-Oct-2025 14:20:13 UTC] User created successfully with ID: 136
+[07-Oct-2025 14:20:13 UTC] Brevo API - HTTP: 201, Response: {"messageId":"<202510071420.32918382466@smtp-relay.mailin.fr>"}
+
+[07-Oct-2025 14:20:13 UTC] Verification email sent successfully to: oussa.benaamimi@gmail.com
+[07-Oct-2025 14:21:32 UTC] Processing verification for token: a68061cff7...
+[07-Oct-2025 14:21:32 UTC] User verified successfully: tamarhh9 (ID: 136)
+[07-Oct-2025 14:21:32 UTC] Failed to log verification event: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'geniusmo_inwi.verification_logs' doesn't exist
+[07-Oct-2025 14:22:03 UTC] Processing verification for token: a68061cff7...
+[07-Oct-2025 14:22:03 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
+[07-Oct-2025 14:29:36 UTC] Processing verification for token: a68061cff7...
+[07-Oct-2025 14:29:36 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
+[07-Oct-2025 14:29:44 UTC] Verification error: Missing verification token. Please check your email for the correct link.
+[07-Oct-2025 16:21:56 UTC] Database connection established
+[07-Oct-2025 16:21:56 UTC] Processing registration request from origin: https://user.gnews.ma
+[07-Oct-2025 16:21:56 UTC] Processing form POST data
+[07-Oct-2025 16:21:56 UTC] General Error: Password must be at least 8 characters long
+#0 /home/devgnews/mge-php/user_register.php(76): validateInput()
+#1 {main}
+[07-Oct-2025 16:21:56 UTC] Error [400]: Password must be at least 8 characters long
+[07-Oct-2025 16:22:39 UTC] Database connection established
+[07-Oct-2025 16:22:39 UTC] Processing registration request from origin: https://user.gnews.ma
+[07-Oct-2025 16:22:39 UTC] Processing form POST data
+[07-Oct-2025 16:22:39 UTC] Input validated for user: TOFITA
+[07-Oct-2025 16:22:39 UTC] Avatar uploaded: /uploads/avatars/avatar_68e53e4f644fa0.86603727.png
+[07-Oct-2025 16:22:39 UTC] User uniqueness verified
+[07-Oct-2025 16:22:39 UTC] User created with ID: 137, token expires at: 2025-10-08 16:22:39
+[07-Oct-2025 16:22:39 UTC] User created successfully with ID: 137
+[07-Oct-2025 16:22:39 UTC] Brevo API - HTTP: 201, Response: {"messageId":"<202510071622.37658577766@smtp-relay.mailin.fr>"}
+
+[07-Oct-2025 16:22:39 UTC] Verification email sent successfully to: host2.genius@gmail.com
+[07-Oct-2025 16:23:19 UTC] Processing verification for token: 3ea109ada9...
+[07-Oct-2025 16:23:19 UTC] User verified successfully: TOFITA (ID: 137)
+[07-Oct-2025 16:23:19 UTC] Failed to log verification event: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'geniusmo_inwi.verification_logs' doesn't exist
+[07-Oct-2025 16:23:24 UTC] Processing verification for token: 3ea109ada9...
+[07-Oct-2025 16:23:24 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
+[07-Oct-2025 16:23:24 UTC] Processing verification for token: 3ea109ada9...
+[07-Oct-2025 16:23:24 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
+[07-Oct-2025 16:23:24 UTC] Processing verification for token: 3ea109ada9...
+[07-Oct-2025 16:23:24 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
+[08-Oct-2025 16:10:59 UTC] Received data: Array
+(
+    [id] => 17
+    [name] => PRIME - HIGHEST SURVIVAL TIME (SANHOK)
+    [competition_type] => 8
+    [participation_type] => individual
+    [nombre_maximum] => 16
+    [start_date] => 2025-10-16
+    [end_date] => 2025-10-18
+    [status] => ongoing
+    [description_des_qualifications] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [rules] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [prize_pool] => 25000.00
+    [format_des_qualifications] => Double Elimination
+    [type_de_match] => Bo1
+    [type_de_jeu] => 
+)
+
+[08-Oct-2025 16:10:59 UTC] SQL Query: UPDATE tournaments SET `slug` = :slug, `game_id` = :game_id, `start_date` = :start_date, `end_date` = :end_date, `name` = :name, `description` = :description, `rules` = :rules, `bracket_type` = :bracket_type, `max_participants` = :max_participants, `prize_pool` = :prize_pool, `match_format` = :match_format, `participation_type` = :participation_type, `status` = :status, `updated_at` = NOW() WHERE id = :id
+[08-Oct-2025 16:10:59 UTC] Params: Array
+(
+    [:id] => 17
+    [:slug] => prime-highest-survival-time-sanhok
+    [:game_id] => 8
+    [:start_date] => 2025-10-16
+    [:end_date] => 2025-10-18
+    [:name] => PRIME - HIGHEST SURVIVAL TIME (SANHOK)
+    [:description] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [:rules] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [:bracket_type] => Double Elimination
+    [:max_participants] => 16
+    [:prize_pool] => 25000.00
+    [:match_format] => Bo1
+    [:participation_type] => individual
+    [:status] => ongoing
+)
+
+[08-Oct-2025 16:11:36 UTC] Received data: Array
+(
+    [id] => 17
+    [name] => PRIME - HIGHEST SURVIVAL TIME (SANHOK)
+    [competition_type] => 8
+    [participation_type] => individual
+    [nombre_maximum] => 16
+    [start_date] => 2025-10-16
+    [end_date] => 2025-10-18
+    [status] => registration_open
+    [description_des_qualifications] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [rules] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [prize_pool] => 25000.00
+    [format_des_qualifications] => Round Robin
+    [type_de_match] => Bo1
+    [type_de_jeu] => 
+)
+
+[08-Oct-2025 16:11:36 UTC] SQL Query: UPDATE tournaments SET `slug` = :slug, `game_id` = :game_id, `start_date` = :start_date, `end_date` = :end_date, `name` = :name, `description` = :description, `rules` = :rules, `bracket_type` = :bracket_type, `max_participants` = :max_participants, `prize_pool` = :prize_pool, `match_format` = :match_format, `participation_type` = :participation_type, `status` = :status, `updated_at` = NOW() WHERE id = :id
+[08-Oct-2025 16:11:36 UTC] Params: Array
+(
+    [:id] => 17
+    [:slug] => prime-highest-survival-time-sanhok
+    [:game_id] => 8
+    [:start_date] => 2025-10-16
+    [:end_date] => 2025-10-18
+    [:name] => PRIME - HIGHEST SURVIVAL TIME (SANHOK)
+    [:description] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [:rules] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [:bracket_type] => Round Robin
+    [:max_participants] => 16
+    [:prize_pool] => 25000.00
+    [:match_format] => Bo1
+    [:participation_type] => individual
+    [:status] => registration_open
+)
+
+[08-Oct-2025 16:16:32 UTC] Received data: Array
+(
+    [id] => 17
+    [name] => PRIME - HIGHEST SURVIVAL TIME (SANHOK)
+    [competition_type] => 8
+    [participation_type] => individual
+    [nombre_maximum] => 16
+    [start_date] => 2025-10-16
+    [end_date] => 2025-10-18
+    [status] => registration_open
+    [description_des_qualifications] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [rules] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [prize_pool] => 25000.00
+    [format_des_qualifications] => Battle Royale
+    [type_de_match] => Bo1
+    [type_de_jeu] => 
+)
+
+[08-Oct-2025 16:16:32 UTC] SQL Query: UPDATE tournaments SET `slug` = :slug, `game_id` = :game_id, `start_date` = :start_date, `end_date` = :end_date, `name` = :name, `description` = :description, `rules` = :rules, `bracket_type` = :bracket_type, `max_participants` = :max_participants, `prize_pool` = :prize_pool, `match_format` = :match_format, `participation_type` = :participation_type, `status` = :status, `updated_at` = NOW() WHERE id = :id
+[08-Oct-2025 16:16:32 UTC] Params: Array
+(
+    [:id] => 17
+    [:slug] => prime-highest-survival-time-sanhok
+    [:game_id] => 8
+    [:start_date] => 2025-10-16
+    [:end_date] => 2025-10-18
+    [:name] => PRIME - HIGHEST SURVIVAL TIME (SANHOK)
+    [:description] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [:rules] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [:bracket_type] => Battle Royale
+    [:max_participants] => 16
+    [:prize_pool] => 25000.00
+    [:match_format] => Bo1
+    [:participation_type] => individual
+    [:status] => registration_open
+)
+
+[08-Oct-2025 16:19:17 UTC] Received data: Array
+(
+    [id] => 17
+    [name] => PRIME - HIGHEST SURVIVAL TIME (SANHOK)
+    [competition_type] => 8
+    [participation_type] => individual
+    [nombre_maximum] => 16
+    [start_date] => 2025-10-16
+    [end_date] => 2025-10-18
+    [status] => ongoing
+    [description_des_qualifications] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [rules] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [prize_pool] => 25000.00
+    [format_des_qualifications] => Round Robin
+    [type_de_match] => Bo1
+    [type_de_jeu] => 
+)
+
+[08-Oct-2025 16:19:17 UTC] SQL Query: UPDATE tournaments SET `slug` = :slug, `game_id` = :game_id, `start_date` = :start_date, `end_date` = :end_date, `name` = :name, `description` = :description, `rules` = :rules, `bracket_type` = :bracket_type, `max_participants` = :max_participants, `prize_pool` = :prize_pool, `match_format` = :match_format, `participation_type` = :participation_type, `status` = :status, `updated_at` = NOW() WHERE id = :id
+[08-Oct-2025 16:19:17 UTC] Params: Array
+(
+    [:id] => 17
+    [:slug] => prime-highest-survival-time-sanhok
+    [:game_id] => 8
+    [:start_date] => 2025-10-16
+    [:end_date] => 2025-10-18
+    [:name] => PRIME - HIGHEST SURVIVAL TIME (SANHOK)
+    [:description] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [:rules] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [:bracket_type] => Round Robin
+    [:max_participants] => 16
+    [:prize_pool] => 25000.00
+    [:match_format] => Bo1
+    [:participation_type] => individual
+    [:status] => ongoing
+)
+
+[08-Oct-2025 16:24:09 UTC] Received data: Array
+(
+    [id] => 17
+    [name] => PRIME - HIGHEST SURVIVAL TIME (SANHOK)
+    [competition_type] => 8
+    [participation_type] => individual
+    [nombre_maximum] => 16
+    [start_date] => 2025-10-16
+    [end_date] => 2025-10-18
+    [status] => ongoing
+    [description_des_qualifications] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [rules] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [prize_pool] => 25000.00
+    [format_des_qualifications] => Double Elimination
+    [type_de_match] => Bo1
+    [type_de_jeu] => 
+)
+
+[08-Oct-2025 16:24:09 UTC] SQL Query: UPDATE tournaments SET `slug` = :slug, `game_id` = :game_id, `start_date` = :start_date, `end_date` = :end_date, `name` = :name, `description` = :description, `rules` = :rules, `bracket_type` = :bracket_type, `max_participants` = :max_participants, `prize_pool` = :prize_pool, `match_format` = :match_format, `participation_type` = :participation_type, `status` = :status, `updated_at` = NOW() WHERE id = :id
+[08-Oct-2025 16:24:09 UTC] Params: Array
+(
+    [:id] => 17
+    [:slug] => prime-highest-survival-time-sanhok
+    [:game_id] => 8
+    [:start_date] => 2025-10-16
+    [:end_date] => 2025-10-18
+    [:name] => PRIME - HIGHEST SURVIVAL TIME (SANHOK)
+    [:description] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [:rules] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [:bracket_type] => Double Elimination
+    [:max_participants] => 16
+    [:prize_pool] => 25000.00
+    [:match_format] => Bo1
+    [:participation_type] => individual
+    [:status] => ongoing
+)
+
+[08-Oct-2025 16:55:46 UTC] Received data: Array
+(
+    [id] => 17
+    [name] => PRIME - HIGHEST SURVIVAL TIME (SANHOK)
+    [competition_type] => 8
+    [participation_type] => individual
+    [nombre_maximum] => 16
+    [start_date] => 2025-10-16
+    [end_date] => 2025-10-18
+    [status] => ongoing
+    [description_des_qualifications] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [rules] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [prize_pool] => 25000.00
+    [format_des_qualifications] => Single Elimination
+    [type_de_match] => Bo1
+    [type_de_jeu] => 
+)
+
+[08-Oct-2025 16:55:46 UTC] SQL Query: UPDATE tournaments SET `slug` = :slug, `game_id` = :game_id, `start_date` = :start_date, `end_date` = :end_date, `name` = :name, `description` = :description, `rules` = :rules, `bracket_type` = :bracket_type, `max_participants` = :max_participants, `prize_pool` = :prize_pool, `match_format` = :match_format, `participation_type` = :participation_type, `status` = :status, `updated_at` = NOW() WHERE id = :id
+[08-Oct-2025 16:55:46 UTC] Params: Array
+(
+    [:id] => 17
+    [:slug] => prime-highest-survival-time-sanhok
+    [:game_id] => 8
+    [:start_date] => 2025-10-16
+    [:end_date] => 2025-10-18
+    [:name] => PRIME - HIGHEST SURVIVAL TIME (SANHOK)
+    [:description] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [:rules] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [:bracket_type] => Single Elimination
+    [:max_participants] => 16
+    [:prize_pool] => 25000.00
+    [:match_format] => Bo1
+    [:participation_type] => individual
+    [:status] => ongoing
+)
+

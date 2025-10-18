@@ -63,9 +63,14 @@ try {
     $deleteStmt = $pdo->prepare("DELETE FROM `password_reset_tokens` WHERE `user_id` = :user_id");
     $deleteStmt->execute([':user_id' => $user['id']]);
 
-    // Insert new token
-    $insertStmt = $pdo->prepare("INSERT INTO `password_reset_tokens` (`user_id`, `token`, `expires`) VALUES (:user_id, :token, :expires)");
+    // Get the next available ID
+    $maxIdStmt = $pdo->query("SELECT COALESCE(MAX(`id`), 0) + 1 as next_id FROM `password_reset_tokens`");
+    $nextId = $maxIdStmt->fetch(PDO::FETCH_ASSOC)['next_id'];
+
+    // Insert new token with explicit ID
+    $insertStmt = $pdo->prepare("INSERT INTO `password_reset_tokens` (`id`, `user_id`, `token`, `expires`) VALUES (:id, :user_id, :token, :expires)");
     $insertStmt->execute([
+        ':id' => $nextId,
         ':user_id' => $user['id'],
         ':token' => $token,
         ':expires' => $expires
@@ -80,7 +85,7 @@ try {
     ]);
 
     // Create reset link - update this URL to match your frontend
-    $resetLink = "http://{$db_config['api']['host']}:3000/reset-password?token=" . $token;
+    $resetLink = "http://user.gnews.ma/reset-password?token=" . $token;
     
     // Send password reset email using your email code
     $emailSent = sendPasswordResetEmail($user['email'], $user['username'], $resetLink, $db_config['api']['api_key']);
@@ -189,120 +194,71 @@ function getPasswordResetEmailTemplate($username, $resetLink) {
         <meta charset='UTF-8'>
         <meta name='viewport' content='width=device-width, initial-scale=1.0'>
         <title>Password Reset</title>
-        <style>
-            body { 
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-                line-height: 1.6; 
-                color: #333; 
-                margin: 0; 
-                padding: 0; 
-                background-color: #f4f4f4; 
-            }
-            .container { 
-                max-width: 600px; 
-                margin: 20px auto; 
-                background: white; 
-                border-radius: 10px; 
-                overflow: hidden; 
-                box-shadow: 0 0 20px rgba(0,0,0,0.1); 
-            }
-            .header { 
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                color: white; 
-                padding: 30px 20px; 
-                text-align: center; 
-            }
-            .header h1 { 
-                margin: 0; 
-                font-size: 28px; 
-                font-weight: 300; 
-            }
-            .content { 
-                padding: 40px 30px; 
-                background: white; 
-            }
-            .content h2 { 
-                color: #333; 
-                margin-bottom: 20px; 
-                font-size: 24px; 
-            }
-            .content p { 
-                margin-bottom: 15px; 
-                font-size: 16px; 
-                line-height: 1.5; 
-            }
-            .button { 
-                display: inline-block; 
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                color: white !important; 
-                padding: 15px 30px; 
-                text-decoration: none; 
-                border-radius: 25px; 
-                margin: 25px 0; 
-                font-weight: 600; 
-                text-align: center; 
-                transition: transform 0.2s ease; 
-            }
-            .button:hover { 
-                transform: translateY(-2px); 
-            }
-            .warning { 
-                background: #fff3cd; 
-                border: 1px solid #ffeaa7; 
-                color: #856404; 
-                padding: 15px; 
-                border-radius: 5px; 
-                margin: 20px 0; 
-            }
-            .footer { 
-                text-align: center; 
-                padding: 20px; 
-                background: #f8f9fa; 
-                color: #666; 
-                font-size: 14px; 
-            }
-            .security-note { 
-                font-size: 12px; 
-                color: #999; 
-                margin-top: 20px; 
-                padding-top: 20px; 
-                border-top: 1px solid #eee; 
-            }
-        </style>
+        <link rel='preconnect' href='https://fonts.googleapis.com'>
+        <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+        <link href='https://fonts.googleapis.com/css2?family=Saira:wght@300;400;500;600;700;800&display=swap' rel='stylesheet'>
     </head>
-    <body>
-        <div class='container'>
-            <div class='header'>
-                <h1>🏆 Gamius Tournament Platform</h1>
-            </div>
-            <div class='content'>
-                <h2>Password Reset Request</h2>
-                <p>Hello <strong>" . htmlspecialchars($username) . "</strong>,</p>
-                <p>We received a request to reset your password for your Gamius Tournament Platform account. If you made this request, click the button below to reset your password:</p>
-                
-                <div style='text-align: center; margin: 30px 0;'>
-                    <a href='" . htmlspecialchars($resetLink) . "' class='button'>Reset My Password</a>
+    <body style='font-family: \"Saira\", sans-serif; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 20px; margin: 0;'>
+        <div style='max-width: 650px; margin: 0 auto; background-color: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3); border: 1px solid #333;'>
+            <div style='height: 8px; background: linear-gradient(90deg, #F43620 0%, #ff6b4a 50%, #F43620 100%);'></div>
+            
+            <div style='background: #1a1a1a; background-image: radial-gradient(circle at 20% 50%, rgba(244, 54, 32, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(244, 54, 32, 0.1) 0%, transparent 50%), repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255, 255, 255, 0.02) 35px, rgba(255, 255, 255, 0.02) 70px); color: white; text-align: center; padding: 45px 30px; position: relative; border-bottom: 3px solid #F43620;'>
+                <div style='margin-bottom: 18px;'>
+                    <div style='width: 80px; height: 80px; margin: 0 auto; background: radial-gradient(circle, #F43620 0%, #d42810 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(244, 54, 32, 0.5), 0 0 60px rgba(244, 54, 32, 0.3);'>
+                        <svg width='40' height='40' viewBox='0 0 40 40' fill='none'>
+                            <path d='M15 17 L15 14 Q15 10 19 10 L21 10 Q25 10 25 14 L25 17 M12 17 L28 17 Q30 17 30 19 L30 28 Q30 30 28 30 L12 30 Q10 30 10 28 L10 19 Q10 17 12 17 M20 21 L20 25' stroke='white' stroke-width='2.5' fill='none'/>
+                        </svg>
+                    </div>
                 </div>
-                
-                <div class='warning'>
-                    <strong>⚠️ Important Security Information:</strong>
-                    <ul style='margin: 10px 0; padding-left: 20px;'>
-                        <li>This link will expire in <strong>1 hour</strong> for security reasons</li>
-                        <li>If you didn't request this reset, please ignore this email</li>
-                        <li>Your password will remain unchanged if you don't click the link</li>
-                    </ul>
-                </div>
-                
-                <p>If the button doesn't work, you can copy and paste this link into your browser:</p>
-                <p style='word-break: break-all; background: #f8f9fa; padding: 10px; border-radius: 5px; font-size: 14px;'>" . htmlspecialchars($resetLink) . "</p>
-                
-                <div class='security-note'>
-                    <p><strong>Security Tip:</strong> Always verify that password reset emails come from our official domain. Never share your password or reset links with anyone.</p>
+                <h1 style='margin: 0 0 12px 0; font-size: 38px; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);'>GAMIUS</h1>
+                <div style='padding: 8px 24px; background: transparent; border: 2px solid #F43620; border-radius: 30px; display: inline-block;'>
+                    <p style='margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #F43620;'>PASSWORD RESET</p>
                 </div>
             </div>
-            <div class='footer'>
-                <p>© 2025 Gamius Tournament Platform. All rights reserved.</p>
-                <p>This is an automated message, please do not reply to this email.</p>
+            
+            <div style='padding: 50px 40px; text-align: center; background: #ffffff;'>
+                <div style='display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%); padding: 12px 24px; border-radius: 50px; margin-bottom: 25px; border: 2px solid #e0e0e0;'>
+                    <span style='font-size: 24px;'>🔑</span>
+                    <span style='color: #1a1a1a; font-size: 18px; font-weight: 700;'>Hello, " . htmlspecialchars($username) . "!</span>
+                </div>
+                
+                <h2 style='color: #1a1a1a; font-size: 28px; margin-bottom: 20px; font-weight: 700;'>Reset Your Password</h2>
+                <p style='color: #6b7280; font-size: 17px; line-height: 1.8; margin-bottom: 30px; max-width: 500px; margin-left: auto; margin-right: auto;'>We received a request to <strong style='color: #F43620;'>reset your password</strong> for your Gamius account. Click the button below to create a new secure password:</p>
+                
+                <div style='text-align: center; margin: 35px 0;'>
+                    <a href='" . htmlspecialchars($resetLink) . "' style='display: inline-block; background: linear-gradient(135deg, #F43620 0%, #ff4520 100%); color: white; padding: 20px 50px; text-decoration: none; border-radius: 50px; font-weight: 800; font-size: 18px; box-shadow: 0 8px 25px rgba(244, 54, 32, 0.4); text-transform: uppercase; letter-spacing: 1px; border: 2px solid #F43620;'>
+                        <span style='display: inline-flex; align-items: center; gap: 10px;'>
+                            <svg width='20' height='20' viewBox='0 0 20 20' fill='white'>
+                                <path d='M5 8 L5 6 Q5 3 8 3 L12 3 Q15 3 15 6 L15 8 M3 8 L17 8 Q18 8 18 9 L18 16 Q18 17 17 17 L3 17 Q2 17 2 16 L2 9 Q2 8 3 8' fill='white'/>
+                            </svg>
+                            Reset Password
+                        </span>
+                    </a>
+                </div>
+                
+                <div style='background: linear-gradient(135deg, #fff5f3 0%, #ffe8e5 100%); border: 2px solid #F43620; border-radius: 12px; padding: 25px; margin: 40px 0; text-align: left;'>
+                    <div style='display: flex; align-items: flex-start; gap: 15px;'>
+                        <div style='flex-shrink: 0;'>
+                            <svg width='32' height='32' viewBox='0 0 32 32'>
+                                <circle cx='16' cy='16' r='15' fill='#F43620'/>
+                                <path d='M16 8 L16 12 M16 20 L16 16 M16 22 L16 24' stroke='white' stroke-width='3' stroke-linecap='round'/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p style='margin: 0 0 10px 0; color: #1a1a1a; font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;'>Security Information</p>
+                            <p style='margin: 0; color: #4a5568; font-size: 14px; line-height: 1.8;'>
+                                • Link expires in <strong style='color: #F43620;'>1 hour</strong><br>
+                                • Didn't request this? <strong>Ignore safely</strong><br>
+                                • Never share this link with anyone<br>
+                                • Your password is safe until you complete the reset
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style='background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%); color: #9ca3af; text-align: center; padding: 25px 30px; font-size: 13px; border-top: 3px solid #F43620;'>
+                <p style='margin: 0; color: #6b7280; font-size: 12px;'>© 2025 Gamius Tournament Platform. All rights reserved.</p>
             </div>
         </div>
     </body>
@@ -339,50 +295,4 @@ This is an automated message, please do not reply to this email.
 Support: support@genius-morocco.com
     ";
 }
-
-/**
- * Alternative email sending function using SMTP (if you prefer this approach)
- * Uncomment and configure this if you want to use SMTP instead
- */
-/*
-function sendPasswordResetEmailSMTP($email, $username, $resetLink) {
-    require_once 'path/to/PHPMailer/PHPMailer.php';
-    require_once 'path/to/PHPMailer/SMTP.php';
-    require_once 'path/to/PHPMailer/Exception.php';
-    
-    use PHPMailer\PHPMailer\PHPMailer;
-    use PHPMailer\PHPMailer\SMTP;
-    use PHPMailer\PHPMailer\Exception;
-    
-    $mail = new PHPMailer(true);
-    
-    try {
-        // Server settings
-        $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com'; // Replace with your SMTP server
-        $mail->SMTPAuth   = true;
-        $mail->Username   = 'your-email@gmail.com'; // Replace with your email
-        $mail->Password   = 'your-app-password'; // Replace with your app password
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = 587;
-        
-        // Recipients
-        $mail->setFrom('noreply@yoursite.com', 'Tournament Platform');
-        $mail->addAddress($email, $username);
-        $mail->addReplyTo('support@yoursite.com', 'Tournament Support');
-        
-        // Content
-        $mail->isHTML(true);
-        $mail->Subject = 'Password Reset Request - Tournament Platform';
-        $mail->Body    = getPasswordResetEmailTemplate($username, $resetLink);
-        $mail->AltBody = "Hello {$username},\n\nYou have requested to reset your password. Visit this link to reset your password: {$resetLink}\n\nThis link will expire in 1 hour.\n\nIf you didn't request this, please ignore this email.";
-        
-        $mail->send();
-        return true;
-    } catch (Exception $e) {
-        error_log("SMTP Email sending failed: {$mail->ErrorInfo}");
-        return false;
-    }
-}
-*/
 ?>

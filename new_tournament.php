@@ -9,10 +9,6 @@ function safe_json_encode($data)
     return json_encode($data, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
 }
 
-// CORS headers
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
 
 // Handle preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -170,7 +166,6 @@ try {
     }
 
     // Convert bracket type to new format
-
     if (isset($data['format_des_qualifications'])) {
         switch ($data['format_des_qualifications']) {
             case 'Single Elimination':
@@ -183,7 +178,7 @@ try {
                 $bracket_type = 'Round Robin';
                 break;
             case 'Battle Royale':
-                $bracket_type = 'Battle Royale'; // Map to Single Elimination as Battle Royale is not in the enum
+                $bracket_type = 'Battle Royale';
                 break;
             default:
                 $bracket_type = 'Single Elimination';
@@ -200,9 +195,14 @@ try {
             case 'Round Robin':
                 $bracket_type = 'Round Robin';
                 break;
+            case 'Battle Royale':
+                $bracket_type = 'Battle Royale';
+                break;
             default:
                 $bracket_type = 'Single Elimination';
         }
+    } else {
+        $bracket_type = 'Single Elimination';
     }
 
     // Get game_id from games table based on competition_type
@@ -234,26 +234,6 @@ try {
         $organizer_id = $_SESSION['admin_id'];
     }
 
-    // Format prize distribution as JSON
-    $prize_distribution = null;
-    if (isset($data['prize_pool']) && !empty($data['prize_pool']) && $data['prize_pool'] > 0) {
-        // Create a default prize distribution based on participant count
-        if ($data['nombre_maximum'] >= 8) {
-            $prize_distribution = json_encode([
-                "1st" => 50,
-                "2nd" => 25,
-                "3rd-4th" => 10,
-                "5th-8th" => 5
-            ]);
-        } else {
-            $prize_distribution = json_encode([
-                "1st" => 60,
-                "2nd" => 30,
-                "3rd" => 10
-            ]);
-        }
-    }
-
     // Get the highest ID from the tournaments table and increment it
     $id_query = "SELECT MAX(id) as max_id FROM tournaments";
     $id_stmt = $pdo->query($id_query);
@@ -276,15 +256,12 @@ try {
         bracket_type,
         participation_type,
         max_participants,
-        min_team_size,
-        max_team_size,
         status,
         registration_start,
         registration_end,
         start_date,
         end_date,
         prize_pool,
-        prize_distribution,
         stream_url,
         featured_image,
         match_format,
@@ -304,15 +281,12 @@ try {
         :bracket_type,
         :participation_type,
         :max_participants,
-        :min_team_size,
-        :max_team_size,
         :status,
         :registration_start,
         :registration_end,
         :start_date,
         :end_date,
         :prize_pool,
-        :prize_distribution,
         :stream_url,
         :featured_image,
         :match_format,
@@ -329,22 +303,15 @@ try {
     $max_participants = filter_var($data['nombre_maximum'], FILTER_VALIDATE_INT);
     $prize_pool = isset($data['prize_pool']) && !empty($data['prize_pool']) ? 
         filter_var($data['prize_pool'], FILTER_VALIDATE_FLOAT) : 0.00;
-    
-    // Team size values
-    $min_team_size = isset($data['min_team_size']) && is_numeric($data['min_team_size']) ? 
-        (int)$data['min_team_size'] : 5;
-    
-    $max_team_size = isset($data['max_team_size']) && is_numeric($data['max_team_size']) ? 
-        (int)$data['max_team_size'] : 7;
-    
+
     // Password handling
     $password = isset($data['password']) && !empty($data['password']) ? 
         password_hash($data['password'], PASSWORD_DEFAULT) : null;
-    
+
     // Timezone handling
     $timezone = isset($data['timezone']) && !empty($data['timezone']) ? 
         $data['timezone'] : 'UTC';
-    
+
     // Match format handling
     $match_format = null;
     if (isset($data['match_format']) && !empty($data['match_format'])) {
@@ -352,7 +319,7 @@ try {
     } elseif (isset($data['type_de_match']) && !empty($data['type_de_match'])) {
         $match_format = $data['type_de_match'];
     }
-    
+
     // Stream URL handling
     $stream_url = isset($data['stream_url']) && !empty($data['stream_url']) ? 
         $data['stream_url'] : null;
@@ -369,15 +336,12 @@ try {
         ':bracket_type' => $bracket_type,
         ':participation_type' => $data['participation_type'],
         ':max_participants' => $max_participants,
-        ':min_team_size' => $min_team_size,
-        ':max_team_size' => $max_team_size,
         ':status' => $status,
         ':registration_start' => $registration_start->format('Y-m-d H:i:s'),
         ':registration_end' => $registration_end->format('Y-m-d H:i:s'),
         ':start_date' => $start_date->format('Y-m-d H:i:s'),
         ':end_date' => $end_date->format('Y-m-d H:i:s'),
         ':prize_pool' => $prize_pool,
-        ':prize_distribution' => $prize_distribution,
         ':stream_url' => $stream_url,
         ':featured_image' => $featured_image,
         ':match_format' => $match_format,
@@ -419,3 +383,4 @@ try {
         'message' => $e->getMessage()
     ]);
 }
+?>

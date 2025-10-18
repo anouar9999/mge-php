@@ -88,7 +88,9 @@ try {
     
 } catch (Exception $e) {
     error_log("Verification error: " . $e->getMessage());
-    echo generateErrorPage($e->getMessage());
+    // Redirect to registration page on error
+    header('Location: https://user.gnews.ma/register');
+    exit();
 }
 
 function logVerificationEvent($pdo, $userId, $status) {
@@ -97,7 +99,6 @@ function logVerificationEvent($pdo, $userId, $status) {
             INSERT INTO verification_logs (user_id, status, verified_at, ip_address) 
             VALUES (?, ?, NOW(), ?)
         ");
-        $stmt->execute([$userId, $status, $_SERVER['REMOTE_ADDR'] ?? 'unknown']);
     } catch (Exception $e) {
         error_log("Failed to log verification event: " . $e->getMessage());
     }
@@ -111,15 +112,19 @@ function generateSuccessPage($username) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Email Verified Successfully - GAMIUS</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Saira:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
         <style>
             * {
                 margin: 0;
                 padding: 0;
                 box-sizing: border-box;
+                font-family: "Saira", sans-serif;
             }
             body {
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                font-family: "Saira", sans-serif;
+                background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
                 min-height: 100vh;
                 display: flex;
                 align-items: center;
@@ -128,13 +133,28 @@ function generateSuccessPage($username) {
             }
             .success-container {
                 background: white;
-                border-radius: 16px;
-                padding: 40px;
+                border-radius: 20px;
+                padding: 0;
                 text-align: center;
-                box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-                max-width: 500px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                max-width: 600px;
                 width: 100%;
                 animation: slideUp 0.6s ease-out;
+                overflow: hidden;
+                border: 1px solid #333;
+            }
+            .top-bar {
+                height: 8px;
+                background: linear-gradient(90deg, #F43620 0%, #ff6b4a 50%, #F43620 100%);
+            }
+            .header-section {
+                background: #1a1a1a;
+                background-image: radial-gradient(circle at 20% 50%, rgba(244, 54, 32, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(244, 54, 32, 0.1) 0%, transparent 50%), repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255, 255, 255, 0.02) 35px, rgba(255, 255, 255, 0.02) 70px);
+                padding: 40px 30px;
+                border-bottom: 3px solid #F43620;
+            }
+            .content-section {
+                padding: 50px 40px;
             }
             @keyframes slideUp {
                 from {
@@ -149,13 +169,14 @@ function generateSuccessPage($username) {
             .success-icon {
                 width: 100px;
                 height: 100px;
-                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                background: radial-gradient(circle, #10b981 0%, #059669 100%);
                 border-radius: 50%;
-                margin: 0 auto 30px;
+                margin: 0 auto;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 animation: checkmark 0.8s ease-in-out 0.3s both;
+                box-shadow: 0 0 30px rgba(16, 185, 129, 0.5), 0 0 60px rgba(16, 185, 129, 0.3);
             }
             @keyframes checkmark {
                 0% {
@@ -168,17 +189,17 @@ function generateSuccessPage($username) {
                     transform: scale(1);
                 }
             }
-            .success-icon::before {
-                content: "✓";
-                font-size: 50px;
-                color: white;
-                font-weight: bold;
+            .success-icon svg {
+                width: 50px;
+                height: 50px;
             }
             .success-title {
-                color: #1f2937;
-                margin-bottom: 15px;
-                font-size: 32px;
-                font-weight: 700;
+                color: #1a1a1a;
+                margin-bottom: 20px;
+                font-size: 42px;
+                font-weight: 900;
+                letter-spacing: 1px;
+                text-transform: uppercase;
             }
             .success-subtitle {
                 color: #6b7280;
@@ -187,8 +208,8 @@ function generateSuccessPage($username) {
                 font-size: 18px;
             }
             .username-highlight {
-                color: #667eea;
-                font-weight: 600;
+                color: #F43620;
+                font-weight: 800;
             }
             .action-buttons {
                 display: flex;
@@ -197,72 +218,68 @@ function generateSuccessPage($username) {
                 margin-top: 30px;
             }
             .btn-primary {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, #F43620 0%, #ff4520 100%);
                 color: white;
-                padding: 16px 32px;
+                padding: 16px 35px;
                 text-decoration: none;
-                border-radius: 10px;
-                font-weight: 600;
+                border-radius: 50px;
+                font-weight: 700;
                 font-size: 16px;
                 transition: all 0.3s ease;
-                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+                box-shadow: 0 6px 20px rgba(244, 54, 32, 0.4);
                 display: inline-block;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                border: 2px solid #F43620;
             }
             .btn-primary:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-            }
-            .btn-secondary {
-                background: transparent;
-                color: #667eea;
-                padding: 12px 24px;
-                text-decoration: none;
-                border: 2px solid #667eea;
-                border-radius: 10px;
-                font-weight: 600;
-                transition: all 0.3s ease;
-                display: inline-block;
-            }
-            .btn-secondary:hover {
-                background: #667eea;
-                color: white;
+                transform: translateY(-3px);
+                box-shadow: 0 10px 30px rgba(244, 54, 32, 0.6);
             }
             .features-preview {
-                background: #f8f9fa;
-                border-radius: 12px;
-                padding: 25px;
-                margin: 30px 0;
+                background: #f9f9f9;
+                border-radius: 15px;
+                padding: 30px 25px;
+                margin: 40px 0;
                 text-align: left;
+                border: 2px solid #e0e0e0;
             }
             .features-title {
                 text-align: center;
-                color: #2d3748;
-                font-weight: 600;
-                margin-bottom: 20px;
-                font-size: 18px;
+                color: #1a1a1a;
+                font-weight: 800;
+                margin-bottom: 25px;
+                font-size: 20px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
             }
             .feature-list {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
-                gap: 12px;
+                gap: 15px;
             }
             .feature-item {
+                background: white;
+                padding: 18px;
+                border-radius: 12px;
                 display: flex;
                 align-items: center;
+                gap: 12px;
                 font-size: 14px;
-                color: #4a5568;
+                color: #1a1a1a;
+                font-weight: 700;
+                border-left: 4px solid #F43620;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             }
             .feature-icon {
-                margin-right: 8px;
-                font-size: 16px;
+                font-size: 28px;
             }
             @media (max-width: 600px) {
-                .success-container {
+                .content-section {
                     padding: 30px 20px;
-                    margin: 10px;
                 }
                 .success-title {
-                    font-size: 28px;
+                    font-size: 32px;
                 }
                 .success-subtitle {
                     font-size: 16px;
@@ -278,227 +295,35 @@ function generateSuccessPage($username) {
     </head>
     <body>
         <div class="success-container">
-            <div class="success-icon"></div>
+            <div class="top-bar"></div>
             
-            <h1 class="success-title">Email Verified! 🎉</h1>
-            
-            <p class="success-subtitle">
-                Welcome to GAMIUS, <span class="username-highlight">' . htmlspecialchars($username) . '</span>!<br>
-                Your email has been successfully verified and your account is now active.
-            </p>
-            
-            <div class="features-preview">
-                <div class="features-title">🎮 You can now enjoy:</div>
-                <div class="feature-list">
-                    <div class="feature-item">
-                        <span class="feature-icon">🏆</span>
-                        <span>Join tournaments</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">👥</span>
-                        <span>Connect with players</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">📊</span>
-                        <span>Track your stats</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">🎯</span>
-                        <span>Earn rewards</span>
-                    </div>
+            <div class="header-section">
+                <div class="success-icon">
+                    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="30" cy="30" r="28" stroke="white" stroke-width="3"/>
+                        <path d="M15 30 L25 40 L45 20" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </div>
             </div>
             
-            <div class="action-buttons">
-                <a href="https://yourdomain.com/login" class="btn-primary">
-                    🚀 Start Gaming Now
-                </a>
-                <a href="https://yourdomain.com/profile" class="btn-secondary">
-                    ⚙️ Complete Your Profile
-                </a>
-            </div>
-        </div>
-    </body>
-    </html>';
-}
-
-function generateErrorPage($message) {
-    return '
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Verification Error - GAMIUS</title>
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-            body {
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-                background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 20px;
-            }
-            .error-container {
-                background: white;
-                border-radius: 16px;
-                padding: 40px;
-                text-align: center;
-                box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-                max-width: 500px;
-                width: 100%;
-                animation: slideUp 0.6s ease-out;
-            }
-            @keyframes slideUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(30px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-            .error-icon {
-                width: 100px;
-                height: 100px;
-                background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-                border-radius: 50%;
-                margin: 0 auto 30px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                animation: shake 0.8s ease-in-out;
-            }
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                25% { transform: translateX(-5px); }
-                75% { transform: translateX(5px); }
-            }
-            .error-icon::before {
-                content: "✗";
-                font-size: 50px;
-                color: white;
-                font-weight: bold;
-            }
-            .error-title {
-                color: #1f2937;
-                margin-bottom: 15px;
-                font-size: 32px;
-                font-weight: 700;
-            }
-            .error-message {
-                color: #6b7280;
-                line-height: 1.6;
-                margin-bottom: 30px;
-                font-size: 16px;
-                padding: 20px;
-                background: #fef2f2;
-                border: 1px solid #fecaca;
-                border-radius: 10px;
-            }
-            .help-section {
-                background: #f0f9ff;
-                border: 1px solid #bae6fd;
-                border-radius: 12px;
-                padding: 25px;
-                margin: 25px 0;
-                text-align: left;
-            }
-            .help-title {
-                color: #0369a1;
-                font-weight: 600;
-                margin-bottom: 15px;
-                text-align: center;
-            }
-            .help-list {
-                color: #0369a1;
-                font-size: 14px;
-                line-height: 1.6;
-            }
-            .help-list li {
-                margin-bottom: 8px;
-            }
-            .action-buttons {
-                display: flex;
-                flex-direction: column;
-                gap: 15px;
-                margin-top: 30px;
-            }
-            .btn-primary {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                padding: 16px 32px;
-                text-decoration: none;
-                border-radius: 10px;
-                font-weight: 600;
-                font-size: 16px;
-                transition: all 0.3s ease;
-                display: inline-block;
-            }
-            .btn-primary:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-            }
-            .btn-secondary {
-                background: transparent;
-                color: #6b7280;
-                padding: 12px 24px;
-                text-decoration: none;
-                border: 2px solid #d1d5db;
-                border-radius: 10px;
-                font-weight: 600;
-                transition: all 0.3s ease;
-                display: inline-block;
-            }
-            .btn-secondary:hover {
-                background: #f3f4f6;
-                border-color: #9ca3af;
-            }
-            @media (max-width: 600px) {
-                .error-container {
-                    padding: 30px 20px;
-                    margin: 10px;
-                }
-                .error-title {
-                    font-size: 28px;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <div class="error-container">
-            <div class="error-icon"></div>
-            
-            <h1 class="error-title">Verification Failed</h1>
-            
-            <div class="error-message">
-                ' . htmlspecialchars($message) . '
-            </div>
-            
-            <div class="help-section">
-                <div class="help-title">💡 What you can do:</div>
-                <ul class="help-list">
-                    <li>Check if you clicked the most recent verification link</li>
-                    <li>Make sure the link hasn\'t expired (valid for 24 hours)</li>
-                    <li>Try registering again with the same email address</li>
-                    <li>Contact our support team if the problem persists</li>
-                </ul>
-            </div>
-            
-            <div class="action-buttons">
-                <a href="https://yourdomain.com/register" class="btn-primary">
-                    🔄 Try Registering Again
-                </a>
-                <a href="mailto:support@gamius.com" class="btn-secondary">
-                    📧 Contact Support
-                </a>
+            <div class="content-section">
+                <h1 class="success-title">Account Verified</h1>
+                
+                <p class="success-subtitle">
+                    Welcome, <span class="username-highlight">' . htmlspecialchars($username) . '</span>.<br>
+                    Your email address has been successfully verified and your account is now active.
+                </p>
+                
+                <div class="action-buttons">
+                    <a href="https://user.gnews.ma/login" class="btn-primary">
+                        <span style="display: inline-flex; align-items: center; gap: 10px;">
+                            <svg width="18" height="18" viewBox="0 0 20 20" fill="white">
+                                <path d="M10 2 L15 7 L12 7 L12 12 L8 12 L8 7 L5 7 Z M3 15 L17 15 L17 18 L3 18 Z" fill="white"/>
+                            </svg>
+                            Start Gaming
+                        </span>
+                    </a>
+                </div>
             </div>
         </div>
     </body>

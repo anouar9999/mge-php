@@ -33,10 +33,11 @@ try {
         throw new Exception('Tournament not found');
     }
 
-    // Calculate rounds
-    $participantCount = $tournament['nombre_maximum'];
+    // Calculate rounds - FIXED: use max_participants instead of nombre_maximum
+    $participantCount = $tournament['max_participants'];
     $winnerRounds = ceil(log($participantCount, 2));
-    $loserRounds = $tournament['format_des_qualifications'] === 'Double Elimination' ? 
+    // FIXED: use bracket_type instead of format_des_qualifications
+    $loserRounds = $tournament['bracket_type'] === 'Double Elimination' ? 
                    ($winnerRounds - 1) * 2 : 0;
 
     // Get formatted matches
@@ -47,7 +48,7 @@ try {
         'data' => [
             'tournament' => $tournament,
             'matches' => $matches,
-            'format' => $tournament['format_des_qualifications'],
+            'format' => $tournament['bracket_type'], // FIXED
             'is_team_tournament' => $tournament['participation_type'] === 'team',
             'total_rounds' => $winnerRounds,
             'loser_rounds' => $loserRounds
@@ -154,7 +155,7 @@ function getMatchParticipants($pdo, $matchIds) {
                 ELSE u.username
             END as participant_name,
             CASE 
-                WHEN mp.participant_id LIKE 'team_%' THEN t.image
+                WHEN mp.participant_id LIKE 'team_%' THEN t.logo
                 ELSE u.avatar
             END as avatar_url
         FROM match_participants mp

@@ -1,4 +1,19 @@
+<IfModule mod_headers.c>
+    # Remove any existing Access-Control-Allow-Origin headers first
+    Header unset Access-Control-Allow-Origin
+    
+    # Set origin based on request
+    SetEnvIf Origin "^http://user\.gnews\.ma$" ORIGIN_ALLOWED=$0
+    SetEnvIf Origin "^http://(localhost|127\.0\.0\.1)(:[0-9]+)?$" ORIGIN_ALLOWED=$0
+    
+    Header always set Access-Control-Allow-Origin "%{ORIGIN_ALLOWED}e" env=ORIGIN_ALLOWED
+    Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE, PUT"
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+    Header always set Access-Control-Allow-Credentials "true"
+    Header always set Access-Control-Max-Age "3600"
+</IfModule>
+
+# Handle preflight OPTIONS requests
 RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php [QSA,L]
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]
