@@ -1,43 +1,40 @@
 <?php
-// api/notifications.php
+// api/notifications.php - FIXED VERSION WITH UTF8MB4 SUPPORT
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 header("Access-Control-Allow-Origin: *");
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 
-// Prevent PHP from outputting HTML errors
 ini_set('display_errors', 0);
 error_reporting(0);
 
-// Handle preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
 try {
-    // Load database configuration
     $db_config = require 'db_config.php';
 
-    // Connect to the database
+    // IMPORTANT: Add charset=utf8mb4 to PDO connection
     $pdo = new PDO(
         "mysql:host={$db_config['host']};dbname={$db_config['db']};charset=utf8mb4" . 
         (isset($db_config['port']) ? ";port={$db_config['port']}" : ""),
         $db_config['user'],
         $db_config['pass'],
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
+        ]
     );
 
-    // Get user_id from multiple sources
     $user_id = null;
 
-    // Option 1: From query parameter
     if (isset($_GET['user_id'])) {
         $user_id = (int)$_GET['user_id'];
     }
 
-    // Option 2: From POST body
     if (!$user_id && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $input = file_get_contents('php://input');
         $data = json_decode($input, true);
@@ -46,7 +43,6 @@ try {
         }
     }
 
-    // Option 3: From session (fallback)
     if (!$user_id) {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -56,21 +52,13 @@ try {
         }
     }
 
-    // Check if user_id is valid
     if (!$user_id) {
-        echo json_encode([
-            'success' => false,
-            'error' => 'Unauthorized. Please provide user_id.'
-        ]);
-        http_response_code(401);
-        exit;
+        sendError('Unauthorized. Please provide user_id.', 401);
     }
 
-    // Get request method and action
     $method = $_SERVER['REQUEST_METHOD'];
     $action = isset($_GET['action']) ? trim($_GET['action']) : '';
 
-    // Route to appropriate handler
     switch ($action) {
         case 'get':
             if ($method === 'GET') {
@@ -134,35 +122,24 @@ try {
     }
 
 } catch (Exception $e) {
-    // Log error to server log but don't expose details
     error_log('Notification API error: ' . $e->getMessage());
-    
-    // Return a clean error response
-    echo json_encode([
-        'success' => false,
-        'message' => 'An error occurred',
-        'error' => $e->getMessage()
-    ]);
+    sendError('An error occurred: ' . $e->getMessage(), 500);
 }
 
-// ============================================
-// FUNCTION: GET ALL NOTIFICATIONS
-// ============================================
 function handleGetNotifications($pdo, $user_id) {
     $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
     $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
     
-    // Validate parameters
     if ($limit < 1) $limit = 1;
     if ($limit > 100) $limit = 100;
     if ($offset < 0) $offset = 0;
     
-    // Get notifications for user
     $stmt = $pdo->prepare("
         SELECT 
             id,
             user_id,
             message,
+            sender_name,
             is_read,
             created_at,
             expiry_date
@@ -180,7 +157,6 @@ function handleGetNotifications($pdo, $user_id) {
     
     $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    // Get total count
     $countStmt = $pdo->prepare("
         SELECT COUNT(*) as total 
         FROM notifications 
@@ -198,25 +174,21 @@ function handleGetNotifications($pdo, $user_id) {
         'total' => (int)$totalCount,
         'limit' => $limit,
         'offset' => $offset
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 }
 
-// ============================================
-// FUNCTION: GET UNREAD NOTIFICATIONS
-// ============================================
 function handleGetUnreadNotifications($pdo, $user_id) {
     $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
     
-    // Validate limit
     if ($limit < 1) $limit = 1;
     if ($limit > 50) $limit = 50;
     
-    // Get unread notifications
     $stmt = $pdo->prepare("
         SELECT 
             id,
             user_id,
             message,
+            sender_name,
             is_read,
             created_at,
             expiry_date
@@ -239,12 +211,9 @@ function handleGetUnreadNotifications($pdo, $user_id) {
         'user_id' => $user_id,
         'notifications' => $notifications,
         'count' => count($notifications)
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 }
 
-// ============================================
-// FUNCTION: GET UNREAD COUNT
-// ============================================
 function handleGetUnreadCount($pdo, $user_id) {
     $stmt = $pdo->prepare("
         SELECT COUNT(*) as count 
@@ -263,12 +232,9 @@ function handleGetUnreadCount($pdo, $user_id) {
         'success' => true,
         'user_id' => $user_id,
         'count' => (int)$result['count']
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 }
 
-// ============================================
-// FUNCTION: MARK NOTIFICATION AS READ
-// ============================================
 function handleMarkAsRead($pdo, $user_id) {
     $input = file_get_contents('php://input');
     $data = json_decode($input, true);
@@ -285,7 +251,6 @@ function handleMarkAsRead($pdo, $user_id) {
         return;
     }
     
-    // Verify notification belongs to user
     $checkStmt = $pdo->prepare("
         SELECT id 
         FROM notifications 
@@ -300,7 +265,6 @@ function handleMarkAsRead($pdo, $user_id) {
         return;
     }
     
-    // Mark as read
     $stmt = $pdo->prepare("
         UPDATE notifications 
         SET is_read = 1 
@@ -313,12 +277,9 @@ function handleMarkAsRead($pdo, $user_id) {
     echo json_encode([
         'success' => $success,
         'message' => 'Notification marked as read'
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 }
 
-// ============================================
-// FUNCTION: MARK ALL AS READ
-// ============================================
 function handleMarkAllAsRead($pdo, $user_id) {
     $stmt = $pdo->prepare("
         UPDATE notifications 
@@ -334,12 +295,9 @@ function handleMarkAllAsRead($pdo, $user_id) {
         'success' => $success,
         'marked_count' => $affectedRows,
         'message' => "Marked {$affectedRows} notification(s) as read"
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 }
 
-// ============================================
-// FUNCTION: DELETE NOTIFICATION
-// ============================================
 function handleDeleteNotification($pdo, $user_id) {
     $input = file_get_contents('php://input');
     $data = json_decode($input, true);
@@ -356,7 +314,6 @@ function handleDeleteNotification($pdo, $user_id) {
         return;
     }
     
-    // Verify notification belongs to user
     $checkStmt = $pdo->prepare("
         SELECT id 
         FROM notifications 
@@ -371,7 +328,6 @@ function handleDeleteNotification($pdo, $user_id) {
         return;
     }
     
-    // Delete notification
     $stmt = $pdo->prepare("
         DELETE FROM notifications 
         WHERE id = :notif_id AND user_id = :user_id
@@ -383,12 +339,9 @@ function handleDeleteNotification($pdo, $user_id) {
     echo json_encode([
         'success' => $success,
         'message' => 'Notification deleted successfully'
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 }
 
-// ============================================
-// FUNCTION: CREATE NOTIFICATION
-// ============================================
 function handleCreateNotification($pdo, $user_id) {
     $input = file_get_contents('php://input');
     $data = json_decode($input, true);
@@ -399,6 +352,7 @@ function handleCreateNotification($pdo, $user_id) {
     }
     
     $message = isset($data['message']) ? trim($data['message']) : '';
+    $sender_name = isset($data['sender_name']) ? trim($data['sender_name']) : null;
     $target_user_id = isset($data['target_user_id']) ? (int)$data['target_user_id'] : $user_id;
     $expiry_date = isset($data['expiry_date']) ? $data['expiry_date'] : null;
     
@@ -407,7 +361,15 @@ function handleCreateNotification($pdo, $user_id) {
         return;
     }
     
-    // Check if current user is admin to allow creating notifications for others
+    // Strip any emoji characters from message as safety measure
+    $message = preg_replace('/[\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}\x{1F680}-\x{1F6FF}\x{1F1E0}-\x{1F1FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]/u', '', $message);
+    $message = trim($message);
+    
+    if (empty($message)) {
+        sendError('message cannot be empty after sanitization');
+        return;
+    }
+    
     if ($target_user_id != $user_id) {
         $adminCheck = $pdo->prepare("SELECT id FROM admin WHERE id = :user_id");
         $adminCheck->bindParam(':user_id', $user_id, PDO::PARAM_INT);
@@ -419,19 +381,18 @@ function handleCreateNotification($pdo, $user_id) {
         }
     }
     
-    // Validate expiry date if provided
     if ($expiry_date && !validateDateTime($expiry_date)) {
         sendError('Invalid expiry_date format. Use Y-m-d H:i:s');
         return;
     }
     
-    // Insert notification
     $stmt = $pdo->prepare("
-        INSERT INTO notifications (user_id, message, expiry_date, created_at) 
-        VALUES (:user_id, :message, :expiry_date, NOW())
+        INSERT INTO notifications (user_id, message, sender_name, expiry_date, created_at) 
+        VALUES (:user_id, :message, :sender_name, :expiry_date, NOW())
     ");
     $stmt->bindParam(':user_id', $target_user_id, PDO::PARAM_INT);
     $stmt->bindParam(':message', $message, PDO::PARAM_STR);
+    $stmt->bindParam(':sender_name', $sender_name, PDO::PARAM_STR);
     $stmt->bindParam(':expiry_date', $expiry_date, PDO::PARAM_STR);
     $success = $stmt->execute();
     $notification_id = $pdo->lastInsertId();
@@ -440,28 +401,18 @@ function handleCreateNotification($pdo, $user_id) {
         'success' => $success,
         'notification_id' => (int)$notification_id,
         'message' => 'Notification created successfully'
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 }
 
-// ============================================
-// HELPER FUNCTIONS
-// ============================================
-
-/**
- * Send error response
- */
 function sendError($message, $code = 400) {
     http_response_code($code);
     echo json_encode([
         'success' => false,
         'error' => $message
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-/**
- * Validate datetime string
- */
 function validateDateTime($dateTime, $format = 'Y-m-d H:i:s') {
     $d = DateTime::createFromFormat($format, $dateTime);
     return $d && $d->format($format) === $dateTime;

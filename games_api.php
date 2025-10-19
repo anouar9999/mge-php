@@ -1,8 +1,15 @@
 <?php
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+header('Access-Control-Max-Age: 86400'); // Cache preflight for 24 hours
+
+// Handle preflight OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 // Prevent PHP from outputting HTML errors
 ini_set('display_errors', 0);
@@ -93,6 +100,7 @@ try {
             unset($game['team_players_count']);
         }
 
+        http_response_code(200);
         echo json_encode([
             'success' => true,
             'games' => $games,
@@ -111,6 +119,7 @@ try {
         $data = json_decode(file_get_contents('php://input'), true);
         
         if (!isset($data['name']) || !isset($data['slug'])) {
+            http_response_code(400);
             throw new Exception('Name and slug are required');
         }
 
@@ -130,6 +139,7 @@ try {
 
         $gameId = $pdo->lastInsertId();
 
+        http_response_code(201);
         echo json_encode([
             'success' => true,
             'message' => 'Game created successfully',
@@ -142,6 +152,7 @@ try {
         $data = json_decode(file_get_contents('php://input'), true);
         
         if (!isset($data['id'])) {
+            http_response_code(400);
             throw new Exception('Game ID is required');
         }
 
@@ -165,6 +176,7 @@ try {
             ':is_active' => $data['is_active'] ?? 1
         ]);
 
+        http_response_code(200);
         echo json_encode([
             'success' => true,
             'message' => 'Game updated successfully'
@@ -176,6 +188,7 @@ try {
         $gameId = $_GET['id'] ?? null;
         
         if (!$gameId || !is_numeric($gameId)) {
+            http_response_code(400);
             throw new Exception('Valid game ID is required');
         }
 
@@ -186,6 +199,7 @@ try {
         $result = $checkStmt->fetch();
 
         if ($result['count'] > 0) {
+            http_response_code(400);
             throw new Exception('Cannot delete game with existing tournaments');
         }
 
@@ -193,6 +207,7 @@ try {
         $stmt = $pdo->prepare($query);
         $stmt->execute([':id' => $gameId]);
 
+        http_response_code(200);
         echo json_encode([
             'success' => true,
             'message' => 'Game deleted successfully'
@@ -200,6 +215,7 @@ try {
     }
 
     else {
+        http_response_code(405);
         throw new Exception('Method not allowed');
     }
 
@@ -207,8 +223,10 @@ try {
     // Log error
     error_log('Games API error: ' . $e->getMessage());
     
-    // Return error response
-    http_response_code(400);
+    // Return error response (keep existing status code if already set)
+    if (http_response_code() === 200) {
+        http_response_code(400);
+    }
     echo json_encode([
         'success' => false,
         'message' => $e->getMessage()
