@@ -1,12 +1,16 @@
 <?php
+// CORS Headers MUST be at the very top, before any other code
+header('Access-Control-Allow-Origin: https://admin.gnews.ma');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+header('Access-Control-Allow-Credentials: true');
+header('Content-Type: application/json; charset=utf-8');
 
 // Handle preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
-
-header('Content-Type: application/json');
 
 // Only process POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

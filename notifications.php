@@ -1,7 +1,7 @@
 <?php
-// api/notifications.php - FIXED VERSION
+// api/notifications.php - FIXED VERSION WITH UTF8MB4 SUPPORT
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 header("Access-Control-Allow-Origin: *");
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
@@ -17,12 +17,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 try {
     $db_config = require 'db_config.php';
 
+    // IMPORTANT: Add charset=utf8mb4 to PDO connection
     $pdo = new PDO(
         "mysql:host={$db_config['host']};dbname={$db_config['db']};charset=utf8mb4" . 
         (isset($db_config['port']) ? ";port={$db_config['port']}" : ""),
         $db_config['user'],
         $db_config['pass'],
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
+        ]
     );
 
     $user_id = null;
@@ -170,7 +174,7 @@ function handleGetNotifications($pdo, $user_id) {
         'total' => (int)$totalCount,
         'limit' => $limit,
         'offset' => $offset
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 }
 
 function handleGetUnreadNotifications($pdo, $user_id) {
@@ -207,7 +211,7 @@ function handleGetUnreadNotifications($pdo, $user_id) {
         'user_id' => $user_id,
         'notifications' => $notifications,
         'count' => count($notifications)
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 }
 
 function handleGetUnreadCount($pdo, $user_id) {
@@ -228,7 +232,7 @@ function handleGetUnreadCount($pdo, $user_id) {
         'success' => true,
         'user_id' => $user_id,
         'count' => (int)$result['count']
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 }
 
 function handleMarkAsRead($pdo, $user_id) {
@@ -273,7 +277,7 @@ function handleMarkAsRead($pdo, $user_id) {
     echo json_encode([
         'success' => $success,
         'message' => 'Notification marked as read'
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 }
 
 function handleMarkAllAsRead($pdo, $user_id) {
@@ -291,7 +295,7 @@ function handleMarkAllAsRead($pdo, $user_id) {
         'success' => $success,
         'marked_count' => $affectedRows,
         'message' => "Marked {$affectedRows} notification(s) as read"
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 }
 
 function handleDeleteNotification($pdo, $user_id) {
@@ -335,7 +339,7 @@ function handleDeleteNotification($pdo, $user_id) {
     echo json_encode([
         'success' => $success,
         'message' => 'Notification deleted successfully'
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 }
 
 function handleCreateNotification($pdo, $user_id) {
@@ -354,6 +358,15 @@ function handleCreateNotification($pdo, $user_id) {
     
     if (empty($message)) {
         sendError('message is required');
+        return;
+    }
+    
+    // Strip any emoji characters from message as safety measure
+    $message = preg_replace('/[\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}\x{1F680}-\x{1F6FF}\x{1F1E0}-\x{1F1FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]/u', '', $message);
+    $message = trim($message);
+    
+    if (empty($message)) {
+        sendError('message cannot be empty after sanitization');
         return;
     }
     
@@ -388,7 +401,7 @@ function handleCreateNotification($pdo, $user_id) {
         'success' => $success,
         'notification_id' => (int)$notification_id,
         'message' => 'Notification created successfully'
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 }
 
 function sendError($message, $code = 400) {
@@ -396,7 +409,7 @@ function sendError($message, $code = 400) {
     echo json_encode([
         'success' => false,
         'error' => $message
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
