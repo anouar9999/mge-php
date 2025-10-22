@@ -1,12 +1,27 @@
 <?php
+/**
+ * fetch_matches_bracket_COMPATIBLE.php
+ * 
+ * Works with standard database (no custom states needed)
+ * 
+ * Filters matches by:
+ * - winner_id = 'EMPTY' → Hide (empty match)
+ * - score = 0,0 and winner_id exists → Bye (optionally show/hide)
+ * - winner_id = NULL and participants >= 2 → Show (needs score)
+ * - winner_id exists and scores > 0 → Show (completed)
+ */
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
-header('Content-Type: application/json');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With');
+header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
-    exit;
+    exit(0);
 }
 
 try {
@@ -22,39 +37,47 @@ try {
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
     );
 
-    $data = json_decode(file_get_contents('php://input'));
-    if (!$data || !isset($data->tournament_id)) {
+    // Support GET and POST
+    $tournamentId = null;
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $data = json_decode(file_get_contents('php://input'));
+        if ($data && isset($data->tournament_id)) {
+            $tournamentId = $data->tournament_id;
+        }
+    } else {
+        $tournamentId = $_GET['tournament_id'] ?? null;
+    }
+
+    if (!$tournamentId) {
         throw new Exception('Tournament ID is required');
     }
 
-    // Get tournament details
-    $tournament = getTournamentDetails($pdo, $data->tournament_id);
+    $tournament = getTournamentDetails($pdo, $tournamentId);
     if (!$tournament) {
         throw new Exception('Tournament not found');
     }
 
-    // Calculate rounds
-    $participantCount = $tournament['max_participants'];
+    $participantCount = $tournament['participant_count'] > 0 ? $tournament['participant_count'] : 2;
     $winnerRounds = ceil(log($participantCount, 2));
-    $loserRounds = $tournament['bracket_type'] === 'Double Elimination' ? 
-                   ($winnerRounds - 1) * 2 : 0;
 
-    // Get formatted matches
-    $matches = getFormattedMatches($pdo, $data->tournament_id);
+    // Get matches (filters out empty ones)
+    $matches = getFormattedMatches($pdo, $tournamentId);
 
-    // FIXED: Restructured response to include bracket_info object
     $response = [
         'success' => true,
         'data' => [
-            'tournament' => $tournament,
             'matches' => $matches,
             'bracket_info' => [
                 'format' => $tournament['bracket_type'],
                 'is_team_tournament' => $tournament['participation_type'] === 'team',
                 'total_rounds' => $winnerRounds,
-                'loser_rounds' => $loserRounds,
-                'participant_count' => $participantCount
-            ]
+                'loser_rounds' => 0
+            ],
+            'tournament' => $tournament,
+            'format' => $tournament['bracket_type'],
+            'is_team_tournament' => $tournament['participation_type'] === 'team',
+            'total_rounds' => $winnerRounds,
+            'loser_rounds' => 0
         ]
     ];
 
@@ -62,11 +85,14 @@ try {
 
 } catch (Exception $e) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    echo json_encode([
+        'success' => false, 
+        'message' => $e->getMessage()
+    ]);
 }
 
 function getTournamentDetails($pdo, $tournamentId) {
-    $query = "
+    $stmt = $pdo->prepare("
         SELECT 
             t.*,
             COUNT(DISTINCT CASE WHEN tr.status = 'accepted' THEN tr.id END) as participant_count
@@ -74,20 +100,20 @@ function getTournamentDetails($pdo, $tournamentId) {
         LEFT JOIN tournament_registrations tr ON t.id = tr.tournament_id
         WHERE t.id = ?
         GROUP BY t.id
-    ";
-    $stmt = $pdo->prepare($query);
+    ");
     $stmt->execute([$tournamentId]);
-    return $stmt->fetch();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
 function getFormattedMatches($pdo, $tournamentId) {
-    // First get matches with proper ordering
+    // FILTER: Exclude empty matches (winner_id = 'EMPTY' means no participants ever)
     $matchQuery = "
         SELECT 
             m.*,
             CAST(tournament_round_text AS UNSIGNED) as round_number
         FROM matches m
         WHERE m.tournament_id = ? 
+        AND (m.winner_id IS NULL OR m.winner_id != 'EMPTY')
         ORDER BY 
             FIELD(m.bracket_type, 'winners', 'losers', 'grand_finals'),
             CAST(tournament_round_text AS UNSIGNED),
@@ -96,24 +122,20 @@ function getFormattedMatches($pdo, $tournamentId) {
     
     $stmt = $pdo->prepare($matchQuery);
     $stmt->execute([$tournamentId]);
-    $matches = $stmt->fetchAll();
+    $matches = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (empty($matches)) {
         return [];
     }
 
-    // Get participants for all matches
     $matchIds = array_column($matches, 'id');
     $participants = getMatchParticipants($pdo, $matchIds);
     
-    // Group participants by match
     $participantsByMatch = [];
     foreach ($participants as $participant) {
-        $matchId = $participant['match_id'];
-        $participantsByMatch[$matchId][] = $participant;
+        $participantsByMatch[$participant['match_id']][] = $participant;
     }
 
-    // Format matches
     $formattedMatches = [];
     foreach ($matches as $match) {
         $matchParticipants = $participantsByMatch[$match['id']] ?? [];
@@ -170,7 +192,7 @@ function getMatchParticipants($pdo, $matchIds) {
     
     $stmt = $pdo->prepare($query);
     $stmt->execute($matchIds);
-    return $stmt->fetchAll();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function formatTeam($participant, $score) {
@@ -187,7 +209,7 @@ function formatTeam($participant, $score) {
 
     return [
         'id' => $participant['participant_id'],
-        'name' => $participant['participant_name'] ?? 'TBD',
+        'name' => $participant['participant_name'] ?? $participant['name'] ?? 'TBD',
         'score' => intval($score ?? $participant['result_text'] ?? 0),
         'winner' => (bool)($participant['is_winner'] ?? false),
         'avatar' => $participant['avatar_url'],
