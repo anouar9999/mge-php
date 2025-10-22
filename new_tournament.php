@@ -1,4 +1,48 @@
 <?php
+/**
+ * ============================================
+ * CORS HEADERS - MUST BE FIRST
+ * ============================================
+ */
+
+// Define allowed origins
+$allowed_origins = [
+    'https://admin.gnews.ma',
+    'https://user.gnews.ma',
+    'https://api.gnews.ma',
+    'http://localhost:3000',
+    'http://localhost:3001',
+];
+
+// Get the origin of the request
+$origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+
+// Check if origin is allowed and set CORS headers
+if (in_array($origin, $allowed_origins)) {
+    header("Access-Control-Allow-Origin: $origin");
+} else {
+    // Fallback to admin domain
+    header("Access-Control-Allow-Origin: https://admin.gnews.ma");
+}
+
+// Always set these headers
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE, PUT, PATCH");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, Accept, Origin");
+header("Access-Control-Max-Age: 3600");
+
+// Handle preflight OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit(0);
+}
+
+/**
+ * ============================================
+ * REST OF THE CODE
+ * ============================================
+ */
+
 // Enable error reporting for debugging
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -7,13 +51,6 @@ ini_set('display_errors', 1);
 function safe_json_encode($data)
 {
     return json_encode($data, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
-}
-
-
-// Handle preflight OPTIONS request
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
 }
 
 header('Content-Type: application/json');
@@ -74,11 +111,11 @@ try {
 
     // Validate required fields
     $required_fields = [
-        'nom_des_qualifications', // will be mapped to name
-        'nombre_maximum', // will be mapped to max_participants
+        'nom_des_qualifications',
+        'nombre_maximum',
         'start_date',
         'end_date',
-        'competition_type' // will be mapped to game_id
+        'competition_type'
     ];
 
     foreach ($required_fields as $field) {
@@ -97,7 +134,7 @@ try {
     
     $status = isset($data['status']) && isset($status_mapping[$data['status']]) 
         ? $status_mapping[$data['status']] 
-        : 'registration_open'; // Default to registration_open
+        : 'registration_open';
 
     // Validate maximum number
     if (!is_numeric($data['nombre_maximum'])) {
@@ -184,7 +221,6 @@ try {
                 $bracket_type = 'Single Elimination';
         }
     } elseif (isset($data['bracket_type'])) {
-        // Use bracket_type if format_des_qualifications is not set
         switch ($data['bracket_type']) {
             case 'Single Elimination':
                 $bracket_type = 'Single Elimination';

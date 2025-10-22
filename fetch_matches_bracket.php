@@ -33,25 +33,28 @@ try {
         throw new Exception('Tournament not found');
     }
 
-    // Calculate rounds - FIXED: use max_participants instead of nombre_maximum
+    // Calculate rounds
     $participantCount = $tournament['max_participants'];
     $winnerRounds = ceil(log($participantCount, 2));
-    // FIXED: use bracket_type instead of format_des_qualifications
     $loserRounds = $tournament['bracket_type'] === 'Double Elimination' ? 
                    ($winnerRounds - 1) * 2 : 0;
 
     // Get formatted matches
     $matches = getFormattedMatches($pdo, $data->tournament_id);
 
+    // FIXED: Restructured response to include bracket_info object
     $response = [
         'success' => true,
         'data' => [
             'tournament' => $tournament,
             'matches' => $matches,
-            'format' => $tournament['bracket_type'], // FIXED
-            'is_team_tournament' => $tournament['participation_type'] === 'team',
-            'total_rounds' => $winnerRounds,
-            'loser_rounds' => $loserRounds
+            'bracket_info' => [
+                'format' => $tournament['bracket_type'],
+                'is_team_tournament' => $tournament['participation_type'] === 'team',
+                'total_rounds' => $winnerRounds,
+                'loser_rounds' => $loserRounds,
+                'participant_count' => $participantCount
+            ]
         ]
     ];
 

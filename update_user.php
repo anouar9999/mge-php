@@ -1,5 +1,32 @@
 <?php
 // Simplified update_user.php
+
+// Handle CORS - CRITICAL: Must be BEFORE any output
+$allowed_origins = [
+    'https://user.gnews.ma',
+    'https://api.gnews.ma',
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:3001'
+];
+
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
+if (in_array($origin, $allowed_origins)) {
+    header("Access-Control-Allow-Origin: $origin");
+    header("Access-Control-Allow-Credentials: true");
+    header("Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE, PUT");
+    header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+    header("Access-Control-Max-Age: 3600");
+}
+
+// Handle preflight OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
 header('Content-Type: application/json');
 
 // Accept both PUT and POST

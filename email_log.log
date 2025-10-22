@@ -1,0 +1,49 @@
+[2025-10-19 22:18:33] [INFO] === STARTING EMAIL SEND PROCESS === | Data: {"recipient":"host6.genius@gmail.com","username":"HOOOST","token_preview":"5115068737..."}
+[2025-10-19 22:18:33] [INFO] API key found (length: 90)
+[2025-10-19 22:18:33] [INFO] Verification URL generated | Data: {"url":"https://api.gnews.ma/api/verify-email.php?token=511506873741c88d9db13620c26efe58d0fa8b325c19fb995aa152a86b82d0e4"}
+[2025-10-19 22:18:33] [INFO] Email payload prepared | Data: {"sender":"anouar.sabir@genius-morocco.com","recipient":"host6.genius@gmail.com","subject":"Verify Your Email Address - Welcome to Gamius!"}
+[2025-10-19 22:18:33] [INFO] Sending request to Brevo API...
+[2025-10-19 22:18:33] [INFO] Brevo API Response | Data: {"http_code":401,"response":"{\"message\":\"Key not found\",\"code\":\"unauthorized\"}\n","curl_error":"none"}
+[2025-10-19 22:18:33] [ERROR] ❌ Failed to send email | Data: {"http_code":401,"response":"{\"message\":\"Key not found\",\"code\":\"unauthorized\"}\n"}
+[2025-10-19 22:52:46] [INFO] === STARTING EMAIL SEND PROCESS === | Data: {"recipient":"host4.genius@gmail.com","username":"HOOOOOST","token_preview":"a9cb09a81d..."}
+[2025-10-19 22:52:46] [INFO] API key found (length: 89)
+[2025-10-19 22:52:46] [INFO] Verification URL generated | Data: {"url":"https://api.gnews.ma/api/verify-email.php?token=a9cb09a81d842b76b2f2c8e164025addc018dfda91cc0132bb78436368eb4963"}
+[2025-10-19 22:52:46] [INFO] Email payload prepared | Data: {"sender":"anouar.sabir@genius-morocco.com","recipient":"host4.genius@gmail.com","subject":"Verify Your Email Address - Welcome to Gamius!"}
+[2025-10-19 22:52:46] [INFO] Sending request to Brevo API...
+[2025-10-19 22:52:46] [INFO] Brevo API Response | Data: {"http_code":201,"response":"{\"messageId\":\"<202510192252.94336559637@smtp-relay.mailin.fr>\"}\n","curl_error":"none"}
+[2025-10-19 22:52:46] [SUCCESS] ✅ Email sent successfully to host4.genius@gmail.com
+[2025-10-19 22:56:11] [INFO] === STARTING EMAIL SEND PROCESS === | Data: {"recipient":"host5.genius@gmail.com","username":"HOST55","token_preview":"285c8219cd..."}
+[2025-10-19 22:56:11] [INFO] API key found (length: 89)
+[2025-10-19 22:56:11] [INFO] Verification URL generated | Data: {"url":"https://api.gnews.ma/api/verify-email.php?token=285c8219cd1af8ca0253714beac18e290bdf5749cb4fd25504bcf95dccba6594"}
+[2025-10-19 22:56:11] [INFO] Email payload prepared | Data: {"sender":"anouar.sabir@genius-morocco.com","recipient":"host5.genius@gmail.com","subject":"Verify Your Email Address - Welcome to Gamius!"}
+[2025-10-19 22:56:11] [INFO] Sending request to Brevo API...
+[2025-10-19 22:56:11] [INFO] Brevo API Response | Data: {"http_code":201,"response":"{\"messageId\":\"<202510192256.87866537012@smtp-relay.mailin.fr>\"}\n","curl_error":"none"}
+[2025-10-19 22:56:11] [SUCCESS] ✅ Email sent successfully to host5.genius@gmail.com
+[2025-10-20 01:47:52] [INFO] === STARTING EMAIL SEND PROCESS === | Data: {"recipient":"host4.genius@gmail.com","username":"HOOST","token_preview":"881458f44c..."}
+[2025-10-20 01:47:52] [INFO] API key found (length: 89)
+[2025-10-20 01:47:52] [INFO] Verification URL generated | Data: {"url":"https://api.gnews.ma/api/verify-email.php?token=881458f44c5a822a407a1018391243bf82932eccb81f968a4b92101dd6bbeb82"}
+[2025-10-20 01:47:52] [INFO] Email payload prepared | Data: {"sender":"anouar.sabir@genius-morocco.com","recipient":"host4.genius@gmail.com","subject":"Verify Your Email Address - Welcome to Gamius!"}
+[2025-10-20 01:47:52] [INFO] Sending request to Brevo API...
+[2025-10-20 01:47:53] [INFO] Brevo API Response | Data: {"http_code":201,"response":"{\"messageId\":\"<202510200147.11133961061@smtp-relay.mailin.fr>\"}\n","curl_error":"none"}
+[2025-10-20 01:47:53] [SUCCESS] ✅ Email sent successfully to host4.genius@gmail.com
+[2025-10-20 01:50:31] [INFO] === STARTING EMAIL SEND PROCESS === | Data: {"recipient":"host5.genius@gmail.com","username":"HOST5","token_preview":"d1830b2ed7..."}
+[2025-10-20 01:50:31] [INFO] API key found (length: 89)
+[2025-10-20 01:50:31] [INFO] Verification URL generated | Data: {"url":"https://api.gnews.ma/api/verify-email.php?token=d1830b2ed797eead4cca3c8b2a7f9569d7fcc8afb33eddd18450786bf2d71f4d"}
+[2025-10-20 01:50:31] [INFO] Email payload prepared | Data: {"sender":"o.benaamimi@genius-morocco.com","recipient":"host5.genius@gmail.com","subject":"Verify Your Email Address - Welcome to Gamius!"}
+[2025-10-20 01:50:31] [INFO] Sending request to Brevo API...
+[2025-10-20 01:50:31] [INFO] Brevo API Response | Data: {"http_code":201,"response":"{\"messageId\":\"<202510200150.75378362379@smtp-relay.mailin.fr>\"}\n","curl_error":"none"}
+[2025-10-20 01:50:31] [SUCCESS] ✅ Email sent successfully to host5.genius@gmail.com
+[2025-10-20 02:00:29] [INFO] === STARTING EMAIL SEND PROCESS === | Data: {"recipient":"host6.genius@gmail.com","username":"MENDOZA","token_preview":"9ca44e8e38..."}
+[2025-10-20 02:00:29] [INFO] API key found (length: 89)
+[2025-10-20 02:00:29] [INFO] Verification URL generated | Data: {"url":"https://api.gnews.ma/api/verify-email.php?token=9ca44e8e38d16479af83d0743a34d474d8b96ec2741ee7495813dcdf9755b627"}
+[2025-10-20 02:00:29] [INFO] Email payload prepared | Data: {"sender":"No-reply@gamiusgroup.com","recipient":"host6.genius@gmail.com","subject":"Verify Your Email Address - Welcome to Gamius!"}
+[2025-10-20 02:00:29] [INFO] Sending request to Brevo API...
+[2025-10-20 02:00:30] [INFO] Brevo API Response | Data: {"http_code":201,"response":"{\"messageId\":\"<202510200200.55061678377@smtp-relay.mailin.fr>\"}\n","curl_error":"none"}
+[2025-10-20 02:00:30] [SUCCESS] ✅ Email sent successfully to host6.genius@gmail.com
+[2025-10-20 11:36:23] [INFO] === STARTING EMAIL SEND PROCESS === | Data: {"recipient":"mrxconnectx@gmail.com","username":"mrconnect01","token_preview":"1152d1d684..."}
+[2025-10-20 11:36:23] [INFO] API key found (length: 89)
+[2025-10-20 11:36:23] [INFO] Verification URL generated | Data: {"url":"https://api.gnews.ma/api/verify-email.php?token=1152d1d68438f4fbef8d61d224393e519fd851a478cd8639fe72a554bc2b97c5"}
+[2025-10-20 11:36:23] [INFO] Email payload prepared | Data: {"sender":"No-reply@gamiusgroup.com","recipient":"mrxconnectx@gmail.com","subject":"Verify Your Email Address - Welcome to Gamius!"}
+[2025-10-20 11:36:23] [INFO] Sending request to Brevo API...
+[2025-10-20 11:36:24] [INFO] Brevo API Response | Data: {"http_code":201,"response":"{\"messageId\":\"<202510201136.56377584510@smtp-relay.mailin.fr>\"}\n","curl_error":"none"}
+[2025-10-20 11:36:24] [SUCCESS] ✅ Email sent successfully to mrxconnectx@gmail.com

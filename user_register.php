@@ -1,7 +1,6 @@
 <?php
 /**
- * USER_REGISTER.PHP - Fixed Version
- * Corrected to match the database schema from users.sql
+ * USER_REGISTER.PHP - With Enhanced Email Logging
  */
 
 // ============================================
@@ -16,7 +15,7 @@ $allowed_origins = [
     'http://127.0.0.1:3001',
     'https://user.gnews.ma',
     'https://api.gnews.ma',
-'http://localhost:3000'
+    'http://localhost:3000'
 ];
 
 if (in_array($origin, $allowed_origins)) {
@@ -46,12 +45,19 @@ error_reporting(E_ALL);
 ini_set('error_log', __DIR__ . '/error.log');
 
 // ============================================
-// STEP 3: Load Configuration
+// STEP 3: Define Log Files
+// ============================================
+define('GENERAL_LOG', __DIR__ . '/error.log');
+define('EMAIL_LOG', __DIR__ . '/email_log.log');
+define('REGISTRATION_LOG', __DIR__ . '/registration_log.log');
+
+// ============================================
+// STEP 4: Load Configuration
 // ============================================
 $db_config = require __DIR__ . '/db_config.php';
 
 // ============================================
-// STEP 4: Main Processing
+// STEP 5: Main Processing
 // ============================================
 try {
     // Database connection
@@ -66,31 +72,33 @@ try {
         ]
     );
 
-    error_log("Database connection established");
+    logToFile(GENERAL_LOG, "Database connection established");
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        error_log("Processing registration request from origin: " . $origin);
+        logToFile(REGISTRATION_LOG, "=== NEW REGISTRATION ATTEMPT ===");
+        logToFile(REGISTRATION_LOG, "Origin: " . $origin);
+        logToFile(REGISTRATION_LOG, "IP Address: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
 
         // Get and validate input
         $input = handleInput();
         validateInput($input);
 
-        error_log("Input validated for user: " . $input['username']);
+        logToFile(REGISTRATION_LOG, "Input validated for user: " . $input['username'] . " | Email: " . $input['email']);
 
         // Handle avatar upload if present
         $avatarPath = null;
         if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
             $avatarPath = handleAvatarUpload($_FILES['avatar']);
-            error_log("Avatar uploaded: " . $avatarPath);
+            logToFile(REGISTRATION_LOG, "Avatar uploaded: " . $avatarPath);
         }
 
         // Check for existing user
         checkExistingUser($pdo, $input['email'], $input['username']);
-        error_log("User uniqueness verified");
+        logToFile(REGISTRATION_LOG, "User uniqueness verified");
 
         // Create new user with verification token
         $userResult = createUser($pdo, $input, $avatarPath);
-        error_log("User created successfully with ID: " . $userResult['user_id']);
+        logToFile(REGISTRATION_LOG, "✅ User created successfully | ID: " . $userResult['user_id'] . " | Token: " . substr($userResult['verification_token'], 0, 10) . "...");
 
         // Send verification email
         $emailResult = sendVerificationEmail(
@@ -100,9 +108,9 @@ try {
         );
 
         if ($emailResult['success']) {
-            error_log("Verification email sent successfully to: " . $input['email']);
+            logToFile(REGISTRATION_LOG, "✅ REGISTRATION COMPLETE | User ID: " . $userResult['user_id'] . " | Email sent successfully");
         } else {
-            error_log("Failed to send verification email: " . $emailResult['message']);
+            logToFile(REGISTRATION_LOG, "⚠️ REGISTRATION COMPLETE BUT EMAIL FAILED | User ID: " . $userResult['user_id'] . " | " . $emailResult['message']);
         }
 
         // Return success response
@@ -125,14 +133,44 @@ try {
     }
     
 } catch (PDOException $e) {
-    error_log("PDO Error: " . $e->getMessage() . "\n" . $e->getTraceAsString());
+    logToFile(GENERAL_LOG, "❌ PDO ERROR: " . $e->getMessage() . "\n" . $e->getTraceAsString());
     handleError('Database error occurred. Please try again later.', 500);
 } catch (Exception $e) {
-    error_log("General Error: " . $e->getMessage() . "\n" . $e->getTraceAsString());
+    logToFile(GENERAL_LOG, "❌ GENERAL ERROR: " . $e->getMessage() . "\n" . $e->getTraceAsString());
     handleError($e->getMessage(), 400);
 }
 
 exit(0);
+
+// =============================================================================
+// LOGGING FUNCTIONS
+// =============================================================================
+
+/**
+ * Write to specific log file with timestamp
+ */
+function logToFile($logFile, $message)
+{
+    $timestamp = date('Y-m-d H:i:s');
+    $logMessage = "[{$timestamp}] {$message}\n";
+    file_put_contents($logFile, $logMessage, FILE_APPEND | LOCK_EX);
+}
+
+/**
+ * Log email activity to dedicated email log
+ */
+function logEmail($level, $message, $data = [])
+{
+    $timestamp = date('Y-m-d H:i:s');
+    $logEntry = "[{$timestamp}] [{$level}] {$message}";
+    
+    if (!empty($data)) {
+        $logEntry .= " | Data: " . json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    }
+    
+    $logEntry .= "\n";
+    file_put_contents(EMAIL_LOG, $logEntry, FILE_APPEND | LOCK_EX);
+}
 
 // =============================================================================
 // HELPER FUNCTIONS
@@ -160,12 +198,12 @@ function getTokenExpiration()
 function handleInput()
 {
     if (!empty($_POST)) {
-        error_log("Processing form POST data");
+        logToFile(GENERAL_LOG, "Processing form POST data");
         return $_POST;
     }
 
     $rawInput = file_get_contents('php://input');
-    error_log("Raw input received: " . strlen($rawInput) . " bytes");
+    logToFile(GENERAL_LOG, "Raw input received: " . strlen($rawInput) . " bytes");
 
     if (empty($rawInput)) {
         throw new Exception('No input data received');
@@ -178,7 +216,7 @@ function handleInput()
     }
 
     if ($jsonInput) {
-        error_log("Processing JSON data");
+        logToFile(GENERAL_LOG, "Processing JSON data");
         return $jsonInput;
     }
 
@@ -274,17 +312,12 @@ function checkExistingUser($pdo, $email, $username)
 
 /**
  * Create new user with verification token
- * FIXED: Now matches the exact database schema from users.sql
  */
 function createUser($pdo, $input, $avatarPath)
 {
     $verificationToken = generateVerificationToken();
     $tokenExpiration = getTokenExpiration();
 
-    // Match exact column order from users.sql:
-    // id, username, password, email, type, points, rank, is_verified, 
-    // verification_token, created_at, bio, avatar, failed_attempts, user_type, token_expires_at
-    
     $stmt = $pdo->prepare('
         INSERT INTO users (
             username, 
@@ -304,19 +337,19 @@ function createUser($pdo, $input, $avatarPath)
     ');
 
     $result = $stmt->execute([
-        $input['username'],                                              // username
-        password_hash($input['password'], PASSWORD_BCRYPT, ['cost' => 12]), // password
-        $input['email'],                                                 // email
-        'participant',                                                   // type (enum)
-        0,                                                              // points
-        null,                                                           // rank
-        0,                                                              // is_verified (tinyint)
-        $verificationToken,                                             // verification_token
-        $input['bio'] ?? '',                                            // bio
-        $avatarPath,                                                    // avatar
-        0,                                                              // failed_attempts
-        '',                                                             // user_type
-        $tokenExpiration                                                // token_expires_at (FIXED)
+        $input['username'],
+        password_hash($input['password'], PASSWORD_BCRYPT, ['cost' => 12]),
+        $input['email'],
+        'participant',
+        0,
+        null,
+        0,
+        $verificationToken,
+        $input['bio'] ?? '',
+        $avatarPath,
+        0,
+        '',
+        $tokenExpiration
     ]);
 
     if (!$result) {
@@ -324,7 +357,6 @@ function createUser($pdo, $input, $avatarPath)
     }
 
     $userId = $pdo->lastInsertId();
-    error_log("User created with ID: " . $userId . ", token expires at: " . $tokenExpiration);
 
     return [
         'success' => true,
@@ -334,19 +366,35 @@ function createUser($pdo, $input, $avatarPath)
 }
 
 /**
- * Send verification email
+ * Send verification email with detailed logging
  */
 function sendVerificationEmail($userEmail, $username, $verificationToken)
 {
+    logEmail('INFO', '=== STARTING EMAIL SEND PROCESS ===', [
+        'recipient' => $userEmail,
+        'username' => $username,
+        'token_preview' => substr($verificationToken, 0, 10) . '...'
+    ]);
+
     $db_config = require __DIR__ . '/db_config.php';
     
+    // Verify API key exists
+    if (empty($db_config['api']['api_key'])) {
+        logEmail('ERROR', 'Brevo API key is missing in db_config.php');
+        return ['success' => false, 'message' => 'Email configuration error: API key missing'];
+    }
+
+    logEmail('INFO', 'API key found (length: ' . strlen($db_config['api']['api_key']) . ')');
+    
     $brevo_config = [
-        'sender_email' => 'anouar.sabir@genius-morocco.com',
+        'sender_email' => 'No-reply@gamiusgroup.com',
         'sender_name' => 'Genius Team',
         'Company' => 'Gamius'
     ];
 
     $verificationUrl = "https://{$db_config['api']['host']}/api/verify-email.php?token=" . urlencode($verificationToken);
+    
+    logEmail('INFO', 'Verification URL generated', ['url' => $verificationUrl]);
 
     $data = [
         'sender' => [
@@ -364,6 +412,12 @@ function sendVerificationEmail($userEmail, $username, $verificationToken)
         'textContent' => createVerificationEmailText($username, $verificationToken)
     ];
 
+    logEmail('INFO', 'Email payload prepared', [
+        'sender' => $brevo_config['sender_email'],
+        'recipient' => $userEmail,
+        'subject' => $data['subject']
+    ]);
+
     $ch = curl_init('https://api.brevo.com/v3/smtp/email');
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
@@ -378,22 +432,42 @@ function sendVerificationEmail($userEmail, $username, $verificationToken)
         CURLOPT_SSL_VERIFYPEER => true
     ]);
 
+    logEmail('INFO', 'Sending request to Brevo API...');
+
     $response = curl_exec($ch);
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $curl_error = curl_error($ch);
     curl_close($ch);
 
-    error_log("Brevo API - HTTP: $http_code, Response: " . substr($response, 0, 200));
+    // Log detailed response
+    logEmail('INFO', 'Brevo API Response', [
+        'http_code' => $http_code,
+        'response' => substr($response, 0, 500),
+        'curl_error' => $curl_error ?: 'none'
+    ]);
 
     if ($curl_error) {
+        logEmail('ERROR', 'cURL Error occurred', ['error' => $curl_error]);
         return ['success' => false, 'message' => 'Email service error: ' . $curl_error];
     }
 
+    $success = ($http_code >= 200 && $http_code < 300);
+
+    if ($success) {
+        logEmail('SUCCESS', '✅ Email sent successfully to ' . $userEmail);
+    } else {
+        logEmail('ERROR', '❌ Failed to send email', [
+            'http_code' => $http_code,
+            'response' => $response
+        ]);
+    }
+
     return [
-        'success' => ($http_code >= 200 && $http_code < 300),
-        'message' => ($http_code >= 200 && $http_code < 300) 
+        'success' => $success,
+        'message' => $success 
             ? 'Verification email sent successfully' 
-            : 'Failed to send email - HTTP ' . $http_code
+            : 'Failed to send email - HTTP ' . $http_code,
+        'http_code' => $http_code
     ];
 }
 
@@ -500,7 +574,7 @@ function createVerificationEmailText($username, $verificationToken)
  */
 function handleError($message, $code = 400)
 {
-    error_log("Error [$code]: $message");
+    logToFile(GENERAL_LOG, "Error [$code]: $message");
     http_response_code($code);
     echo json_encode([
         'success' => false,

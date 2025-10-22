@@ -486,7 +486,90 @@ function handleTeamSettings($pdo, $method, $requestBody = null)
             }
             break;
 
-        case 'PUT':
+        case 'POST': // Add this entire case for file uploads
+    $teamId = $_POST['team_id'] ?? null;
+    if (!$teamId) {
+        sendResponse(false, null, 'Team ID is required', 400);
+    }
+
+    try {
+        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/uploads/teams/';
+        
+        // Create directory if it doesn't exist
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        $updates = [];
+        
+        // Handle logo upload
+        if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if (!in_array($_FILES['logo']['type'], $allowedTypes)) {
+                sendResponse(false, null, 'Invalid logo file type', 400);
+            }
+            
+            if ($_FILES['logo']['size'] > 5 * 1024 * 1024) { // 5MB limit
+                sendResponse(false, null, 'Logo file size too large (max 5MB)', 400);
+            }
+            
+            $fileName = uniqid() . '.' . pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION);
+            $uploadPath = $uploadDir . $fileName;
+            
+            if (move_uploaded_file($_FILES['logo']['tmp_name'], $uploadPath)) {
+                $updates['logo'] = '/uploads/teams/' . $fileName;
+            } else {
+                sendResponse(false, null, 'Failed to upload logo', 500);
+            }
+        }
+        
+        // Handle banner upload
+        if (isset($_FILES['banner']) && $_FILES['banner']['error'] === UPLOAD_ERR_OK) {
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if (!in_array($_FILES['banner']['type'], $allowedTypes)) {
+                sendResponse(false, null, 'Invalid banner file type', 400);
+            }
+            
+            if ($_FILES['banner']['size'] > 10 * 1024 * 1024) { // 10MB limit
+                sendResponse(false, null, 'Banner file size too large (max 10MB)', 400);
+            }
+            
+            $fileName = 'banner_' . uniqid() . '.' . pathinfo($_FILES['banner']['name'], PATHINFO_EXTENSION);
+            $uploadPath = $uploadDir . $fileName;
+            
+            if (move_uploaded_file($_FILES['banner']['tmp_name'], $uploadPath)) {
+                $updates['banner'] = '/uploads/teams/' . $fileName;
+            } else {
+                sendResponse(false, null, 'Failed to upload banner', 500);
+            }
+        }
+        
+        if (empty($updates)) {
+            sendResponse(false, null, 'No files to upload', 400);
+        }
+        
+        // Update database
+        $setClauses = array_map(function($field) {
+            return "{$field} = ?";
+        }, array_keys($updates));
+        
+        $query = "UPDATE teams SET " . implode(', ', $setClauses) . ", updated_at = NOW() WHERE id = ?";
+        $params = array_merge(array_values($updates), [$teamId]);
+        
+        $stmt = $pdo->prepare($query);
+        $result = $stmt->execute($params);
+        
+        if (!$result) {
+            throw new Exception('Failed to update team images');
+        }
+        
+        sendResponse(true, $updates, 'Images uploaded successfully');
+    } catch (Exception $e) {
+        error_log('Error uploading images: ' . $e->getMessage());
+        sendResponse(false, null, 'Failed to upload images: ' . $e->getMessage(), 500);
+    }
+    break;
+            case 'PUT':
             if (!isset($requestBody['team_id'])) {
                 sendResponse(false, null, 'Team ID is required', 400);
             }
@@ -555,7 +638,8 @@ function handleTeamSettings($pdo, $method, $requestBody = null)
             }
             break;
 
-        case 'DELETE':
+       
+            case 'DELETE':
             $teamId = $_GET['team_id'] ?? null;
             if (!$teamId) {
                 sendResponse(false, null, 'Team ID is required', 400);

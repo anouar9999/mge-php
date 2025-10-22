@@ -325,3 +325,186 @@ orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem 
     [:status] => ongoing
 )
 
+[2025-10-19 22:18:32] Database connection established
+[2025-10-19 22:18:32] Processing form POST data
+[2025-10-19 22:52:46] Database connection established
+[2025-10-19 22:52:46] Processing form POST data
+[2025-10-19 22:56:10] Database connection established
+[2025-10-19 22:56:10] Processing form POST data
+[2025-10-20 01:47:52] Database connection established
+[2025-10-20 01:47:52] Processing form POST data
+[2025-10-20 01:50:31] Database connection established
+[2025-10-20 01:50:31] Processing form POST data
+[2025-10-20 02:00:29] Database connection established
+[2025-10-20 02:00:29] Processing form POST data
+[20-Oct-2025 02:01:01 UTC] Processing verification for token: 9ca44e8e38...
+[20-Oct-2025 02:01:01 UTC] User verified successfully: MENDOZA (ID: 152)
+[20-Oct-2025 02:01:06 UTC] Processing verification for token: 9ca44e8e38...
+[20-Oct-2025 02:01:06 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
+[2025-10-20 11:36:23] Database connection established
+[2025-10-20 11:36:23] Processing form POST data
+[20-Oct-2025 11:36:49 UTC] Processing verification for token: 1152d1d684...
+[20-Oct-2025 11:36:49 UTC] User verified successfully: mrconnect01 (ID: 153)
+[20-Oct-2025 11:36:54 UTC] Processing verification for token: 1152d1d684...
+[20-Oct-2025 11:36:54 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
+[20-Oct-2025 11:39:33 UTC] Received data: Array
+(
+    [id] => 22
+    [name] => foundation de gaming
+    [competition_type] => 2
+    [participation_type] => individual
+    [nombre_maximum] => 8
+    [start_date] => 2025-10-28
+    [end_date] => 2025-10-31
+    [status] => registration_open
+    [description_des_qualifications] => وريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى) ويُستخدم في صناعات المطابع ودور النشر. كان لوريم إيبسوم ولايزال المعيار للنص الشكلي منذ القرن الخامس عشر عندما قامت مطبعة مجهولة برص مجموعة من الأحرف بشكل عشوائي أخذتها من نص، لتكوّن كتيّب بمثابة دليل أو مرجع شكلي لهذه الأحرف. خمسة قرون من الزمن لم تقضي على هذا النص،
+    [rules] => وريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى) ويُستخدم في صناعات المطابع ودور النشر. كان لوريم إيبسوم ولايزال المعيار للنص الشكلي منذ القرن الخامس عشر عندما قامت مطبعة مجهولة برص مجموعة من الأحرف بشكل عشوائي أخذتها من نص، لتكوّن كتيّب بمثابة دليل أو مرجع شكلي لهذه الأحرف. خمسة قرون من الزمن لم تقضي على هذا النص،
+وريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى) ويُستخدم في صناعات المطابع ودور النشر. كان لوريم إيبسوم ولايزال المعيار للنص الشكلي منذ القرن الخامس عشر عندما قامت مطبعة مجهولة برص مجموعة من الأحرف بشكل عشوائي أخذتها من نص، لتكوّن كتيّب بمثابة دليل أو مرجع شكلي لهذه الأحرف. خمسة قرون من الزمن لم تقضي على هذا النص،
+وريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى) ويُستخدم في صناعات المطابع ودور النشر. كان لوريم إيبسوم ولايزال المعيار للنص الشكلي منذ القرن الخامس عشر عندما قامت مطبعة مجهولة برص مجموعة من الأحرف بشكل عشوائي أخذتها من نص، لتكوّن كتيّب بمثابة دليل أو مرجع شكلي لهذه الأحرف. خمسة قرون من الزمن لم تقضي على هذا النص،
+    [prize_pool] => 25000.00
+    [format_des_qualifications] => Battle Royale
+    [type_de_match] => Bo3
+    [type_de_jeu] => 
+)
+
+[20-Oct-2025 11:39:33 UTC] SQL Query: UPDATE tournaments SET `slug` = :slug, `game_id` = :game_id, `start_date` = :start_date, `end_date` = :end_date, `name` = :name, `description` = :description, `rules` = :rules, `bracket_type` = :bracket_type, `max_participants` = :max_participants, `prize_pool` = :prize_pool, `match_format` = :match_format, `participation_type` = :participation_type, `status` = :status, `updated_at` = NOW() WHERE id = :id
+[20-Oct-2025 11:39:33 UTC] Params: Array
+(
+    [:id] => 22
+    [:slug] => foundation-de-gaming
+    [:game_id] => 2
+    [:start_date] => 2025-10-28
+    [:end_date] => 2025-10-31
+    [:name] => foundation de gaming
+    [:description] => وريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى) ويُستخدم في صناعات المطابع ودور النشر. كان لوريم إيبسوم ولايزال المعيار للنص الشكلي منذ القرن الخامس عشر عندما قامت مطبعة مجهولة برص مجموعة من الأحرف بشكل عشوائي أخذتها من نص، لتكوّن كتيّب بمثابة دليل أو مرجع شكلي لهذه الأحرف. خمسة قرون من الزمن لم تقضي على هذا النص،
+    [:rules] => وريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى) ويُستخدم في صناعات المطابع ودور النشر. كان لوريم إيبسوم ولايزال المعيار للنص الشكلي منذ القرن الخامس عشر عندما قامت مطبعة مجهولة برص مجموعة من الأحرف بشكل عشوائي أخذتها من نص، لتكوّن كتيّب بمثابة دليل أو مرجع شكلي لهذه الأحرف. خمسة قرون من الزمن لم تقضي على هذا النص،
+وريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى) ويُستخدم في صناعات المطابع ودور النشر. كان لوريم إيبسوم ولايزال المعيار للنص الشكلي منذ القرن الخامس عشر عندما قامت مطبعة مجهولة برص مجموعة من الأحرف بشكل عشوائي أخذتها من نص، لتكوّن كتيّب بمثابة دليل أو مرجع شكلي لهذه الأحرف. خمسة قرون من الزمن لم تقضي على هذا النص،
+وريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى) ويُستخدم في صناعات المطابع ودور النشر. كان لوريم إيبسوم ولايزال المعيار للنص الشكلي منذ القرن الخامس عشر عندما قامت مطبعة مجهولة برص مجموعة من الأحرف بشكل عشوائي أخذتها من نص، لتكوّن كتيّب بمثابة دليل أو مرجع شكلي لهذه الأحرف. خمسة قرون من الزمن لم تقضي على هذا النص،
+    [:bracket_type] => Battle Royale
+    [:max_participants] => 8
+    [:prize_pool] => 25000.00
+    [:match_format] => Bo3
+    [:participation_type] => individual
+    [:status] => registration_open
+)
+
+[20-Oct-2025 13:52:32 UTC] Received data: Array
+(
+    [id] => 22
+    [name] => foundation de gaming
+    [competition_type] => 2
+    [participation_type] => individual
+    [nombre_maximum] => 16
+    [start_date] => 2025-10-27
+    [end_date] => 2025-10-30
+    [status] => ongoing
+    [description_des_qualifications] => وريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى) ويُستخدم في صناعات المطابع ودور النشر. كان لوريم إيبسوم ولايزال المعيار للنص الشكلي منذ القرن الخامس عشر عندما قامت مطبعة مجهولة برص مجموعة من الأحرف بشكل عشوائي أخذتها من نص، لتكوّن كتيّب بمثابة دليل أو مرجع شكلي لهذه الأحرف. خمسة قرون من الزمن لم تقضي على هذا النص،
+    [rules] => وريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى) ويُستخدم في صناعات المطابع ودور النشر. كان لوريم إيبسوم ولايزال المعيار للنص الشكلي منذ القرن الخامس عشر عندما قامت مطبعة مجهولة برص مجموعة من الأحرف بشكل عشوائي أخذتها من نص، لتكوّن كتيّب بمثابة دليل أو مرجع شكلي لهذه الأحرف. خمسة قرون من الزمن لم تقضي على هذا النص،
+وريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى) ويُستخدم في صناعات المطابع ودور النشر. كان لوريم إيبسوم ولايزال المعيار للنص الشكلي منذ القرن الخامس عشر عندما قامت مطبعة مجهولة برص مجموعة من الأحرف بشكل عشوائي أخذتها من نص، لتكوّن كتيّب بمثابة دليل أو مرجع شكلي لهذه الأحرف. خمسة قرون من الزمن لم تقضي على هذا النص،
+وريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى) ويُستخدم في صناعات المطابع ودور النشر. كان لوريم إيبسوم ولايزال المعيار للنص الشكلي منذ القرن الخامس عشر عندما قامت مطبعة مجهولة برص مجموعة من الأحرف بشكل عشوائي أخذتها من نص، لتكوّن كتيّب بمثابة دليل أو مرجع شكلي لهذه الأحرف. خمسة قرون من الزمن لم تقضي على هذا النص،
+    [prize_pool] => 25000.00
+    [format_des_qualifications] => Battle Royale
+    [type_de_match] => Bo3
+    [type_de_jeu] => 
+)
+
+[20-Oct-2025 13:52:32 UTC] SQL Query: UPDATE tournaments SET `slug` = :slug, `game_id` = :game_id, `start_date` = :start_date, `end_date` = :end_date, `name` = :name, `description` = :description, `rules` = :rules, `bracket_type` = :bracket_type, `max_participants` = :max_participants, `prize_pool` = :prize_pool, `match_format` = :match_format, `participation_type` = :participation_type, `status` = :status, `updated_at` = NOW() WHERE id = :id
+[20-Oct-2025 13:52:32 UTC] Params: Array
+(
+    [:id] => 22
+    [:slug] => foundation-de-gaming
+    [:game_id] => 2
+    [:start_date] => 2025-10-27
+    [:end_date] => 2025-10-30
+    [:name] => foundation de gaming
+    [:description] => وريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى) ويُستخدم في صناعات المطابع ودور النشر. كان لوريم إيبسوم ولايزال المعيار للنص الشكلي منذ القرن الخامس عشر عندما قامت مطبعة مجهولة برص مجموعة من الأحرف بشكل عشوائي أخذتها من نص، لتكوّن كتيّب بمثابة دليل أو مرجع شكلي لهذه الأحرف. خمسة قرون من الزمن لم تقضي على هذا النص،
+    [:rules] => وريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى) ويُستخدم في صناعات المطابع ودور النشر. كان لوريم إيبسوم ولايزال المعيار للنص الشكلي منذ القرن الخامس عشر عندما قامت مطبعة مجهولة برص مجموعة من الأحرف بشكل عشوائي أخذتها من نص، لتكوّن كتيّب بمثابة دليل أو مرجع شكلي لهذه الأحرف. خمسة قرون من الزمن لم تقضي على هذا النص،
+وريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى) ويُستخدم في صناعات المطابع ودور النشر. كان لوريم إيبسوم ولايزال المعيار للنص الشكلي منذ القرن الخامس عشر عندما قامت مطبعة مجهولة برص مجموعة من الأحرف بشكل عشوائي أخذتها من نص، لتكوّن كتيّب بمثابة دليل أو مرجع شكلي لهذه الأحرف. خمسة قرون من الزمن لم تقضي على هذا النص،
+وريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى) ويُستخدم في صناعات المطابع ودور النشر. كان لوريم إيبسوم ولايزال المعيار للنص الشكلي منذ القرن الخامس عشر عندما قامت مطبعة مجهولة برص مجموعة من الأحرف بشكل عشوائي أخذتها من نص، لتكوّن كتيّب بمثابة دليل أو مرجع شكلي لهذه الأحرف. خمسة قرون من الزمن لم تقضي على هذا النص،
+    [:bracket_type] => Battle Royale
+    [:max_participants] => 16
+    [:prize_pool] => 25000.00
+    [:match_format] => Bo3
+    [:participation_type] => individual
+    [:status] => ongoing
+)
+
+[22-Oct-2025 00:05:24 UTC] Received data: Array
+(
+    [id] => 17
+    [name] => PRIME - HIGHEST SURVIVAL TIME (SANHOK)
+    [competition_type] => 8
+    [participation_type] => participant
+    [nombre_maximum] => 16
+    [start_date] => 2025-10-16
+    [end_date] => 2025-10-18
+    [status] => registration_open
+    [description_des_qualifications] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [rules] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [prize_pool] => 25000.00
+    [format_des_qualifications] => Single Elimination
+    [type_de_match] => Bo1
+    [type_de_jeu] => 
+)
+
+[22-Oct-2025 00:05:24 UTC] SQL Query: UPDATE tournaments SET `slug` = :slug, `game_id` = :game_id, `start_date` = :start_date, `end_date` = :end_date, `name` = :name, `description` = :description, `rules` = :rules, `bracket_type` = :bracket_type, `max_participants` = :max_participants, `prize_pool` = :prize_pool, `match_format` = :match_format, `participation_type` = :participation_type, `status` = :status, `updated_at` = NOW() WHERE id = :id
+[22-Oct-2025 00:05:24 UTC] Params: Array
+(
+    [:id] => 17
+    [:slug] => prime-highest-survival-time-sanhok
+    [:game_id] => 8
+    [:start_date] => 2025-10-16
+    [:end_date] => 2025-10-18
+    [:name] => PRIME - HIGHEST SURVIVAL TIME (SANHOK)
+    [:description] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [:rules] => orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+    [:bracket_type] => Single Elimination
+    [:max_participants] => 16
+    [:prize_pool] => 25000.00
+    [:match_format] => Bo1
+    [:participation_type] => participant
+    [:status] => registration_open
+)
+
+[22-Oct-2025 00:05:24 UTC] Database Error: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'participation_type' at row 1
+[22-Oct-2025 00:47:39 UTC] Received data: Array
+(
+    [id] => 20
+    [name] => test
+    [competition_type] => 8
+    [participation_type] => individual
+    [nombre_maximum] => 32
+    [start_date] => 2025-10-24
+    [end_date] => 2025-10-25
+    [status] => registration_open
+    [description_des_qualifications] => dddddddddddddddddddddd
+    [rules] => rrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+    [prize_pool] => 25000.00
+    [format_des_qualifications] => Single Elimination
+    [type_de_match] => Bo1
+    [type_de_jeu] => 
+)
+
+[22-Oct-2025 00:47:39 UTC] SQL Query: UPDATE tournaments SET `slug` = :slug, `game_id` = :game_id, `start_date` = :start_date, `end_date` = :end_date, `name` = :name, `description` = :description, `rules` = :rules, `bracket_type` = :bracket_type, `max_participants` = :max_participants, `prize_pool` = :prize_pool, `match_format` = :match_format, `participation_type` = :participation_type, `status` = :status, `updated_at` = NOW() WHERE id = :id
+[22-Oct-2025 00:47:39 UTC] Params: Array
+(
+    [:id] => 20
+    [:slug] => test
+    [:game_id] => 8
+    [:start_date] => 2025-10-24
+    [:end_date] => 2025-10-25
+    [:name] => test
+    [:description] => dddddddddddddddddddddd
+    [:rules] => rrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+    [:bracket_type] => Single Elimination
+    [:max_participants] => 32
+    [:prize_pool] => 25000.00
+    [:match_format] => Bo1
+    [:participation_type] => individual
+    [:status] => registration_open
+)
+
