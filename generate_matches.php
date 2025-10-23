@@ -40,22 +40,36 @@ try {
 
     try {
         $tournament = getTournamentDetails($pdo, $data->tournament_id);
+        
+        // Get ONLY accepted registrations
         $registrations = getAcceptedRegistrations($pdo, $data->tournament_id);
         
         if (empty($registrations)) {
             throw new Exception('No accepted registrations found for this tournament');
         }
         
-        clearExistingMatches($pdo, $data->tournament_id);
-        
-        if ($tournament['bracket_type'] === 'Double Elimination') {
-            generateDoubleEliminationBracket($pdo, $tournament, $registrations);
-        } else {
-            generateSingleEliminationBracket($pdo, $tournament, $registrations);
+        // Check if accepted participants exceed max_participants
+        if (count($registrations) > $tournament['max_participants']) {
+            throw new Exception('Too many accepted participants (' . count($registrations) . '). Tournament max is ' . $tournament['max_participants']);
         }
         
+        // Clear any existing matches
+        clearExistingMatches($pdo, $data->tournament_id);
+        
+        // Generate bracket using max_participants for bracket size
+        // But fill only with accepted participants
+        generateSingleEliminationBracket($pdo, $tournament, $registrations);
+        
         $pdo->commit();
-        echo json_encode(['success' => true, 'message' => 'Matches generated successfully']);
+        
+        echo json_encode([
+            'success' => true, 
+            'message' => 'Matches generated successfully',
+            'participants_count' => count($registrations),
+            'max_participants' => $tournament['max_participants'],
+            'bracket_type' => 'Single Elimination',
+            'rounds' => ceil(log($tournament['max_participants'], 2))
+        ]);
 
     } catch (Exception $e) {
         $pdo->rollBack();
@@ -67,8 +81,7 @@ try {
     echo json_encode([
         'success' => false, 
         'message' => 'Database error: ' . $e->getMessage(),
-        'error_code' => $e->getCode(),
-        'trace' => $e->getTraceAsString()
+        'error_code' => $e->getCode()
     ]);
 } catch (Exception $e) {
     http_response_code(400);
@@ -80,120 +93,35 @@ try {
     ]);
 }
 
-function generateDoubleEliminationBracket($pdo, $tournament, $registrations) {
-    $winnerRounds = ceil(log($tournament['max_participants'], 2));
-    
-    $winnerMatches = generateWinnersBracket($pdo, $tournament, $registrations, $winnerRounds);
-    $loserMatches = [];
-    
-    $loserMatchCounts = [2, 1];
-    
-    for ($round = 1; $round <= count($loserMatchCounts); $round++) {
-        $matchesInRound = $loserMatchCounts[$round - 1];
-        
-        for ($pos = 0; $pos < $matchesInRound; $pos++) {
-            $match = createMatch($pdo, [
-                'tournament_id' => $tournament['id'],
-                'round' => $round,
-                'position' => $pos,
-                'bracket_type' => 'losers'
-            ]);
-            $loserMatches[] = $match;
-        }
-    }
-
-    $grandFinals = createMatch($pdo, [
-        'tournament_id' => $tournament['id'],
-        'round' => $winnerRounds,
-        'position' => 0,
-        'bracket_type' => 'grand_finals'
-    ]);
-
-    setupDoubleEliminationConnections($pdo, $winnerMatches, $loserMatches, $grandFinals);
-    return true;
-}
-
-function setupDoubleEliminationConnections($pdo, $winnerMatches, $loserMatches, $grandFinals) {
-    $stmt = $pdo->prepare("UPDATE matches SET next_match_id = ?, loser_goes_to = ? WHERE id = ?");
-    
-    $losersByRound = [];
-    foreach ($loserMatches as $match) {
-        $round = $match['round'];
-        if (!isset($losersByRound[$round])) {
-            $losersByRound[$round] = [];
-        }
-        $losersByRound[$round][] = $match;
-    }
-
-    foreach ($winnerMatches as $match) {
-        if ($match['round'] == 1) {
-            $position = $match['position'];
-            $loserPos = floor($position / 2);
-            
-            if (isset($losersByRound[1][$loserPos])) {
-                $loserMatch = $losersByRound[1][$loserPos];
-                $stmt->execute([null, $loserMatch['id'], $match['id']]);
-            }
-        }
-    }
-
-    if (isset($losersByRound[1])) {
-        foreach ($losersByRound[1] as $index => $match) {
-            if (isset($losersByRound[2][0])) {
-                $stmt->execute([$losersByRound[2][0]['id'], null, $match['id']]);
-            }
-        }
-    }
-
-    if (isset($losersByRound[2][0])) {
-        $stmt->execute([$grandFinals['id'], null, $losersByRound[2][0]['id']]);
-    }
-}
-
-function generateWinnersBracket($pdo, $tournament, $registrations, $numRounds) {
-    $matches = [];
-    $totalSlots = pow(2, $numRounds);
-    $matchesInFirstRound = $totalSlots / 2;
-    
-    for ($i = 0; $i < $matchesInFirstRound; $i++) {
-        $match = createMatch($pdo, [
-            'tournament_id' => $tournament['id'],
-            'round' => 1,
-            'position' => $i,
-            'bracket_type' => 'winners'
-        ]);
-        
-        $participant1 = $registrations[$i * 2] ?? null;
-        $participant2 = $registrations[$i * 2 + 1] ?? null;
-        
-        if ($participant1) addParticipantToMatch($pdo, $match['id'], $participant1);
-        if ($participant2) addParticipantToMatch($pdo, $match['id'], $participant2);
-        
-        $matches[] = $match;
-    }
-    
-    for ($round = 2; $round <= $numRounds; $round++) {
-        $matchesInRound = $totalSlots / pow(2, $round);
-        for ($i = 0; $i < $matchesInRound; $i++) {
-            $match = createMatch($pdo, [
-                'tournament_id' => $tournament['id'],
-                'round' => $round,
-                'position' => $i,
-                'bracket_type' => 'winners'
-            ]);
-            $matches[] = $match;
-        }
-    }
-    
-    return $matches;
-}
-
+/**
+ * Generate Single Elimination Bracket
+ * 
+ * IMPORTANT: Bracket size is based on max_participants
+ * But only accepted participants are placed in matches
+ * 
+ * Example:
+ * - max_participants = 16
+ * - accepted = 4 participants
+ * 
+ * Result:
+ * - Bracket has 16 slots (4 rounds)
+ * - Only 4 participants are placed (rest are TBD/bye)
+ * - First round: 8 matches (4 with participants, 4 empty)
+ */
 function generateSingleEliminationBracket($pdo, $tournament, $registrations) {
-    $numRounds = ceil(log(count($registrations), 2));
+    // CRITICAL: Use max_participants to determine bracket size
+    // This ensures the bracket structure matches tournament settings
+    $maxParticipants = $tournament['max_participants'];
+    
+    // Calculate bracket structure based on max_participants
+    $numRounds = ceil(log($maxParticipants, 2));
     $totalSlots = pow(2, $numRounds);
     $matchesInFirstRound = $totalSlots / 2;
+    
     $matches = [];
     
+    // STEP 1: Create first round matches
+    // Fill with accepted participants, leave rest as TBD
     for ($i = 0; $i < $matchesInFirstRound; $i++) {
         $match = createMatch($pdo, [
             'tournament_id' => $tournament['id'],
@@ -202,17 +130,27 @@ function generateSingleEliminationBracket($pdo, $tournament, $registrations) {
             'bracket_type' => 'winners'
         ]);
         
+        // Add accepted participants (if available for this match slot)
         $participant1 = $registrations[$i * 2] ?? null;
         $participant2 = $registrations[$i * 2 + 1] ?? null;
         
-        if ($participant1) addParticipantToMatch($pdo, $match['id'], $participant1);
-        if ($participant2) addParticipantToMatch($pdo, $match['id'], $participant2);
+        if ($participant1) {
+            addParticipantToMatch($pdo, $match['id'], $participant1);
+        }
+        
+        if ($participant2) {
+            addParticipantToMatch($pdo, $match['id'], $participant2);
+        }
+        
+        // Matches with 0 or 1 participant will show as TBD
         
         $matches[] = $match;
     }
     
+    // STEP 2: Create empty matches for subsequent rounds
     for ($round = 2; $round <= $numRounds; $round++) {
         $matchesInRound = $totalSlots / pow(2, $round);
+        
         for ($i = 0; $i < $matchesInRound; $i++) {
             $match = createMatch($pdo, [
                 'tournament_id' => $tournament['id'],
@@ -224,27 +162,51 @@ function generateSingleEliminationBracket($pdo, $tournament, $registrations) {
         }
     }
     
-    setupSingleEliminationConnections($pdo, $matches);
+    // STEP 3: Connect matches
+    setupSingleEliminationConnections($pdo, $matches, $numRounds);
 }
 
-function setupSingleEliminationConnections($pdo, $matches) {
+/**
+ * Setup match connections for Single Elimination
+ */
+function setupSingleEliminationConnections($pdo, $matches, $numRounds) {
     $stmt = $pdo->prepare("UPDATE matches SET next_match_id = ? WHERE id = ?");
     
-    foreach ($matches as $index => $match) {
-        $nextMatchIndex = floor($index / 2) + count($matches) / 2;
-        if (isset($matches[$nextMatchIndex])) {
-            $stmt->execute([$matches[$nextMatchIndex]['id'], $match['id']]);
+    // Organize matches by round
+    $matchesByRound = [];
+    foreach ($matches as $match) {
+        $round = $match['round'];
+        if (!isset($matchesByRound[$round])) {
+            $matchesByRound[$round] = [];
+        }
+        $matchesByRound[$round][] = $match;
+    }
+    
+    // Connect each round to the next
+    for ($round = 1; $round < $numRounds; $round++) {
+        if (!isset($matchesByRound[$round])) continue;
+        
+        foreach ($matchesByRound[$round] as $index => $match) {
+            // Every 2 matches feed into 1 match in next round
+            $nextMatchIndex = floor($index / 2);
+            
+            if (isset($matchesByRound[$round + 1][$nextMatchIndex])) {
+                $nextMatchId = $matchesByRound[$round + 1][$nextMatchIndex]['id'];
+                $stmt->execute([$nextMatchId, $match['id']]);
+            }
         }
     }
 }
 
+/**
+ * Create a match record
+ */
 function createMatch($pdo, $data) {
-    // CRITICAL: Get next ID manually since AUTO_INCREMENT is not working
+    // Get next ID manually
     $stmt = $pdo->query("SELECT COALESCE(MAX(id), 0) + 1 as next_id FROM matches");
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $nextId = intval($result['next_id']);
     
-    // Insert with explicit ID
     $stmt = $pdo->prepare("
         INSERT INTO matches (
             id,
@@ -278,8 +240,10 @@ function createMatch($pdo, $data) {
     ];
 }
 
+/**
+ * Add a participant to a match
+ */
 function addParticipantToMatch($pdo, $matchId, $participant) {
-    // Get next ID for match_participants table
     $stmt = $pdo->query("SELECT COALESCE(MAX(id), 0) + 1 as next_id FROM match_participants");
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $nextId = intval($result['next_id']);
@@ -304,16 +268,20 @@ function addParticipantToMatch($pdo, $matchId, $participant) {
     ]);
 }
 
+/**
+ * Clear existing matches
+ */
 function clearExistingMatches($pdo, $tournamentId) {
-    // Delete match participants first (foreign key constraint)
     $stmt = $pdo->prepare("DELETE FROM match_participants WHERE match_id IN (SELECT id FROM matches WHERE tournament_id = ?)");
     $stmt->execute([$tournamentId]);
     
-    // Then delete matches
     $stmt = $pdo->prepare("DELETE FROM matches WHERE tournament_id = ?");
     $stmt->execute([$tournamentId]);
 }
 
+/**
+ * Get tournament details
+ */
 function getTournamentDetails($pdo, $tournamentId) {
     $stmt = $pdo->prepare("SELECT * FROM tournaments WHERE id = ?");
     $stmt->execute([$tournamentId]);
@@ -326,6 +294,10 @@ function getTournamentDetails($pdo, $tournamentId) {
     return $tournament;
 }
 
+/**
+ * Get ONLY accepted registrations
+ * These are the participants that will be placed in the bracket
+ */
 function getAcceptedRegistrations($pdo, $tournamentId) {
     $stmt = $pdo->prepare("
         SELECT 

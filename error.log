@@ -508,3 +508,60 @@ orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem 
     [:status] => registration_open
 )
 
+[22-Oct-2025 00:58:07 UTC] Processing verification for token: 3f2b2046db...
+[22-Oct-2025 00:58:07 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
+[22-Oct-2025 01:21:42 UTC] Processing verification for token: a9cb09a81d...
+[22-Oct-2025 01:21:42 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
+[22-Oct-2025 01:21:43 UTC] Processing verification for token: 285c8219cd...
+[22-Oct-2025 01:21:43 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
+[22-Oct-2025 01:21:43 UTC] Processing verification for token: 5115068737...
+[22-Oct-2025 01:21:43 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
+[22-Oct-2025 01:21:43 UTC] Processing verification for token: 9ca44e8e38...
+[22-Oct-2025 01:21:43 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
+[22-Oct-2025 01:21:43 UTC] Processing verification for token: 5115068737...
+[22-Oct-2025 01:21:43 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
+[22-Oct-2025 01:21:43 UTC] Processing verification for token: 1152d1d684...
+[22-Oct-2025 01:21:43 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
+[22-Oct-2025 01:21:43 UTC] Processing verification for token: d1830b2ed7...
+[22-Oct-2025 01:21:43 UTC] Verification error: Verification link has expired. Links are valid for 24 hours. Please register again.
+[22-Oct-2025 01:21:43 UTC] Processing verification for token: a9cb09a81d...
+[22-Oct-2025 01:21:43 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
+[22-Oct-2025 01:21:44 UTC] Processing verification for token: 881458f44c...
+[22-Oct-2025 01:21:44 UTC] Verification error: Verification link has expired. Links are valid for 24 hours. Please register again.
+[22-Oct-2025 19:12:48 UTC] Received data: Array
+(
+    [id] => 20
+    [name] => test2
+    [competition_type] => 8
+    [participation_type] => individual
+    [nombre_maximum] => 32
+    [start_date] => 2025-10-24
+    [end_date] => 2025-10-25
+    [status] => ongoing
+    [description_des_qualifications] => dddddddddddddddddddddd
+    [rules] => rrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+    [prize_pool] => 25000.00
+    [format_des_qualifications] => Single Elimination
+    [type_de_match] => Bo1
+    [type_de_jeu] => 
+)
+
+[22-Oct-2025 19:12:48 UTC] SQL Query: UPDATE tournaments SET `slug` = :slug, `game_id` = :game_id, `start_date` = :start_date, `end_date` = :end_date, `name` = :name, `description` = :description, `rules` = :rules, `bracket_type` = :bracket_type, `max_participants` = :max_participants, `prize_pool` = :prize_pool, `match_format` = :match_format, `participation_type` = :participation_type, `status` = :status, `updated_at` = NOW() WHERE id = :id
+[22-Oct-2025 19:12:48 UTC] Params: Array
+(
+    [:id] => 20
+    [:slug] => test2
+    [:game_id] => 8
+    [:start_date] => 2025-10-24
+    [:end_date] => 2025-10-25
+    [:name] => test2
+    [:description] => dddddddddddddddddddddd
+    [:rules] => rrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+    [:bracket_type] => Single Elimination
+    [:max_participants] => 32
+    [:prize_pool] => 25000.00
+    [:match_format] => Bo1
+    [:participation_type] => individual
+    [:status] => ongoing
+)
+
