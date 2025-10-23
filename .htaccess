@@ -9,9 +9,9 @@
     
     # Set CORS headers for all requests
     # PRODUCTION DOMAINS
-    SetEnvIf Origin "^https://admin\.gnews\.ma$" ORIGIN_ALLOWED=$0
-    SetEnvIf Origin "^https://user\.gnews\.ma$" ORIGIN_ALLOWED=$0
-    SetEnvIf Origin "^https://api\.gnews\.ma$" ORIGIN_ALLOWED=$0
+    SetEnvIf Origin "^https://admin\.gamius\.ma$" ORIGIN_ALLOWED=$0
+    SetEnvIf Origin "^https://user\.gamius\.ma$" ORIGIN_ALLOWED=$0
+    SetEnvIf Origin "^https://api\.gamius\.ma$" ORIGIN_ALLOWED=$0
     SetEnvIf Origin "^https://([a-z0-9-]+\.)?gnews\.ma$" ORIGIN_ALLOWED=$0
     
     # DEVELOPMENT DOMAINS (remove these in production if not needed)
