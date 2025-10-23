@@ -2,7 +2,7 @@
 // create_team.php
 
 // CORS headers - MUST be at the very top
-header("Access-Control-Allow-Origin: https://user.gnews.ma");
+header("Access-Control-Allow-Origin: https://user.gamius.ma");
 header("Access-Control-Allow-Methods: POST, OPTIONS, GET");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 header("Access-Control-Allow-Credentials: true");

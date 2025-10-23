@@ -9,8 +9,8 @@ $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 $allowed_origins = [
     'http://localhost:3000',
     'http://localhost:5173',
-    'https://user.gnews.ma',
-    'https://api.gnews.ma'
+    'https://user.gamius.ma',
+    'https://api.gamius.ma'
 ];
 
 // Check if the origin is allowed
@@ -18,7 +18,7 @@ if (in_array($origin, $allowed_origins)) {
     header("Access-Control-Allow-Origin: $origin");
 } else {
     // Fallback for development - remove in production
-    header("Access-Control-Allow-Origin: https://user.gnews.ma");
+    header("Access-Control-Allow-Origin: https://user.gamius.ma");
 }
 
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
@@ -147,7 +147,7 @@ try {
         'bio' => $user['bio'],
         'points' => $user['points'],
         'session_token' => $session_token,
-        'redirect_url' => 'https://user.gnews.ma/'
+        'redirect_url' => 'https://user.gamius.ma/'
     ]);
 
 } catch (Exception $e) {

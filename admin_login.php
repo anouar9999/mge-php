@@ -1,7 +1,7 @@
 <?php
 // CORS Headers MUST be at the very top, before any other code
 $allowed_origins = [
-    'https://admin.gnews.ma',
+    'https://admin.gamius.ma',
     'http://localhost:3000',
     'http://localhost:3001',
     'http://127.0.0.1:3000',
@@ -14,7 +14,7 @@ if (in_array($origin, $allowed_origins)) {
     header("Access-Control-Allow-Origin: $origin");
 } else {
     // Default to production domain if origin not in whitelist
-    header('Access-Control-Allow-Origin: https://admin.gnews.ma');
+    header('Access-Control-Allow-Origin: https://admin.gamius.ma');
 }
 
 header('Access-Control-Allow-Methods: POST, OPTIONS');

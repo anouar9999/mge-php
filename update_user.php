@@ -3,8 +3,8 @@
 
 // Handle CORS - CRITICAL: Must be BEFORE any output
 $allowed_origins = [
-    'https://user.gnews.ma',
-    'https://api.gnews.ma',
+    'https://user.gamius.ma',
+    'https://api.gamius.ma',
     'http://localhost:3000',
     'http://localhost:3001',
     'http://127.0.0.1:3000',

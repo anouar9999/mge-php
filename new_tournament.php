@@ -7,9 +7,9 @@
 
 // Define allowed origins
 $allowed_origins = [
-    'https://admin.gnews.ma',
-    'https://user.gnews.ma',
-    'https://api.gnews.ma',
+    'https://admin.gamius.ma',
+    'https://user.gamius.ma',
+    'https://api.gamius.ma',
     'http://localhost:3000',
     'http://localhost:3001',
 ];
@@ -22,7 +22,7 @@ if (in_array($origin, $allowed_origins)) {
     header("Access-Control-Allow-Origin: $origin");
 } else {
     // Fallback to admin domain
-    header("Access-Control-Allow-Origin: https://admin.gnews.ma");
+    header("Access-Control-Allow-Origin: https://admin.gamius.ma");
 }
 
 // Always set these headers

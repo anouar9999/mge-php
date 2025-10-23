@@ -2,7 +2,7 @@
 $db_config = require '../db_config.php'; // Adjust path as needed
 
 // api/auth/logout.php - NEW FILE (Create this file)
-$allowedOrigins = ["https://user.gnews.ma","https://gnews.ma", "http://{$db_config['api']['host']}:3000", "http://{$db_config['api']['host']}:5173"];
+$allowedOrigins = ["https://user.gamius.ma","https://gamius.ma", "http://{$db_config['api']['host']}:3000", "http://{$db_config['api']['host']}:5173"];
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 if (in_array($origin, $allowedOrigins)) {
     header("Access-Control-Allow-Origin: $origin");

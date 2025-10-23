@@ -35,7 +35,7 @@
 [06-Oct-2025 12:12:03 UTC] Processing verification for token: 5022425609...
 [06-Oct-2025 12:12:03 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
 [07-Oct-2025 14:20:12 UTC] Database connection established
-[07-Oct-2025 14:20:12 UTC] Processing registration request from origin: https://user.gnews.ma
+[07-Oct-2025 14:20:12 UTC] Processing registration request from origin: https://user.gamius.ma
 [07-Oct-2025 14:20:12 UTC] Processing form POST data
 [07-Oct-2025 14:20:12 UTC] Input validated for user: tamarhh9
 [07-Oct-2025 14:20:12 UTC] User uniqueness verified
@@ -53,14 +53,14 @@
 [07-Oct-2025 14:29:36 UTC] Verification error: Invalid or expired verification link. Please register again or contact support.
 [07-Oct-2025 14:29:44 UTC] Verification error: Missing verification token. Please check your email for the correct link.
 [07-Oct-2025 16:21:56 UTC] Database connection established
-[07-Oct-2025 16:21:56 UTC] Processing registration request from origin: https://user.gnews.ma
+[07-Oct-2025 16:21:56 UTC] Processing registration request from origin: https://user.gamius.ma
 [07-Oct-2025 16:21:56 UTC] Processing form POST data
 [07-Oct-2025 16:21:56 UTC] General Error: Password must be at least 8 characters long
-#0 /home/devgnews/mge-php/user_register.php(76): validateInput()
+#0 /home/devgamius/mge-php/user_register.php(76): validateInput()
 #1 {main}
 [07-Oct-2025 16:21:56 UTC] Error [400]: Password must be at least 8 characters long
 [07-Oct-2025 16:22:39 UTC] Database connection established
-[07-Oct-2025 16:22:39 UTC] Processing registration request from origin: https://user.gnews.ma
+[07-Oct-2025 16:22:39 UTC] Processing registration request from origin: https://user.gamius.ma
 [07-Oct-2025 16:22:39 UTC] Processing form POST data
 [07-Oct-2025 16:22:39 UTC] Input validated for user: TOFITA
 [07-Oct-2025 16:22:39 UTC] Avatar uploaded: /uploads/avatars/avatar_68e53e4f644fa0.86603727.png

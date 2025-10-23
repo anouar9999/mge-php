@@ -89,7 +89,7 @@ try {
 } catch (Exception $e) {
     error_log("Verification error: " . $e->getMessage());
     // Redirect to registration page on error
-    header('Location: https://user.gnews.ma/register');
+    header('Location: https://user.gamius.ma/register');
     exit();
 }
 
@@ -315,7 +315,7 @@ function generateSuccessPage($username) {
                 </p>
                 
                 <div class="action-buttons">
-                    <a href="https://user.gnews.ma/login" class="btn-primary">
+                    <a href="https://user.gamius.ma/login" class="btn-primary">
                         <span style="display: inline-flex; align-items: center; gap: 10px;">
                             <svg width="18" height="18" viewBox="0 0 20 20" fill="white">
                                 <path d="M10 2 L15 7 L12 7 L12 12 L8 12 L8 7 L5 7 Z M3 15 L17 15 L17 18 L3 18 Z" fill="white"/>

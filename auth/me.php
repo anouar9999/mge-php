@@ -12,18 +12,18 @@ $allowed_origins = [
     'http://localhost:3000',
     'http://localhost:5173',
     'http://127.0.0.1:5173',
-    'https://gnews.ma',
-    'https://www.gnews.ma',
-    'https://user.gnews.ma',
-    'https://api.gnews.ma'
+    'https://gamius.ma',
+    'https://www.gamius.ma',
+    'https://user.gamius.ma',
+    'https://api.gamius.ma'
 ];
 
 // Allow any origin that matches
 if (in_array($origin, $allowed_origins)) {
     header("Access-Control-Allow-Origin: $origin");
 } else {
-    // Fallback - allow gnews.ma
-    header("Access-Control-Allow-Origin: https://gnews.ma");
+    // Fallback - allow gamius.ma
+    header("Access-Control-Allow-Origin: https://gamius.ma");
 }
 
 // Critical CORS headers
@@ -45,7 +45,7 @@ header('Content-Type: application/json');
 // Session Configuration for Cross-Subdomain
 // ============================================
 // MUST be set before session_start()
-ini_set('session.cookie_domain', '.gnews.ma');
+ini_set('session.cookie_domain', '.gamius.ma');
 ini_set('session.cookie_samesite', 'None');
 ini_set('session.cookie_secure', '1');
 ini_set('session.cookie_httponly', '1');
@@ -53,7 +53,7 @@ ini_set('session.cookie_httponly', '1');
 session_set_cookie_params([
     'lifetime' => 86400,           // 24 hours
     'path' => '/',
-    'domain' => '.gnews.ma',       // Leading dot allows all subdomains
+    'domain' => '.gamius.ma',       // Leading dot allows all subdomains
     'secure' => true,              // HTTPS only
     'httponly' => true,            // No JavaScript access
     'samesite' => 'None'           // Required for cross-site cookies

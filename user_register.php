@@ -13,15 +13,15 @@ $allowed_origins = [
     'http://localhost:3001',
     'http://127.0.0.1:3000',
     'http://127.0.0.1:3001',
-    'https://user.gnews.ma',
-    'https://api.gnews.ma',
+    'https://user.gamius.ma',
+    'https://api.gamius.ma',
     'http://localhost:3000'
 ];
 
 if (in_array($origin, $allowed_origins)) {
     header('Access-Control-Allow-Origin: ' . $origin);
 } else {
-    header('Access-Control-Allow-Origin: https://user.gnews.ma');
+    header('Access-Control-Allow-Origin: https://user.gamius.ma');
 }
 
 header('Access-Control-Allow-Credentials: true');

@@ -85,7 +85,7 @@ try {
     ]);
 
     // Create reset link - update this URL to match your frontend
-    $resetLink = "http://user.gnews.ma/reset-password?token=" . $token;
+    $resetLink = "http://user.gamius.ma/reset-password?token=" . $token;
     
     // Send password reset email using your email code
     $emailSent = sendPasswordResetEmail($user['email'], $user['username'], $resetLink, $db_config['api']['api_key']);
